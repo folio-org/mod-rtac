@@ -1,0 +1,73 @@
+{
+	"items": [
+		{
+			"id": "650559de-a159-4620-a923-11f38cfcdb87",
+			"status": {
+				"name": "Checked out"
+			},
+			"title": "Testing RTAC for Dummies",
+			"holdingsRecordId": "9fec4043-6963-4e2f-8e48-c12f914462bb",
+			"barcode": "012345678904",
+			"pieceIdentifiers": [],
+			"notes": [],
+			"materialType": {
+				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
+				"name": "dvd"
+			},
+			"permanentLoanType": {
+				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
+				"name": "Can circulate"
+			},
+			"temporaryLocation": {
+				"id": "2fe4a1ff-fa0f-44e6-8b9a-f93eacf0e8d6",
+				"name": "Demo library"
+			},
+			"metadata": {
+				"createdDate": "2018-04-13T06:11:57.563+0000",
+				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
+				"updatedDate": "2018-04-13T06:18:48.317+0000",
+				"updatedByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01"
+			},
+			"links": {
+				"self": "http://localhost:9130/inventory/items/650559de-a159-4620-a923-11f38cfcdb87"
+			},
+			"permanentLocation": {
+				"id": "b241764c-1466-4e1d-a028-1a3684a5da87",
+				"name": "Popular Reading Collection"
+			}
+		},
+		{
+			"id": "64a37e8b-1967-4a7e-a20f-d7d2da96e8f6",
+			"status": {
+				"name": "Checked out"
+			},
+			"title": "Testing RTAC for Dummies",
+			"holdingsRecordId": "9fec4043-6963-4e2f-8e48-c12f914462bb",
+			"barcode": "012345678905",
+			"pieceIdentifiers": [],
+			"notes": [],
+			"materialType": {
+				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
+				"name": "dvd"
+			},
+			"permanentLoanType": {
+				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
+				"name": "Can circulate"
+			},
+			"metadata": {
+				"createdDate": "2018-04-13T06:11:57.563+0000",
+				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
+				"updatedDate": "2018-04-13T06:18:48.317+0000",
+				"updatedByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01"
+			},
+			"links": {
+				"self": "http://localhost:9130/inventory/items/64a37e8b-1967-4a7e-a20f-d7d2da96e8f6"
+			},
+			"permanentLocation": {
+				"id": "495f140b-98e7-42c7-b402-8c0724a30aa0",
+				"name": "Media library"
+			}
+		}
+	],
+	"totalRecords": 2
+}

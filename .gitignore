@@ -1,0 +1,9 @@
+.idea/
+/.classpath
+/.settings/
+*.iml
+node_modules/
+/target
+/bin/
+/.vertx/
+/.project

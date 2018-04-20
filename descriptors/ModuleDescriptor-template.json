@@ -1,0 +1,70 @@
+{
+  "id": "${artifactId}-${version}",
+  "name": "Real Time Availability Check Module",
+  "provides": [
+    {
+      "id": "${artifactId}",
+      "version": "1.0",
+      "handlers": [
+        {
+          "methods": ["GET"],
+          "pathPattern": "/rtac",
+          "permissionsRequired": ["rtac.holdings.collection.get"]
+        },
+        {
+          "methods": ["GET"],
+          "pathPattern": "/rtac/{id}",
+          "permissionsRequired": ["rtac.holdings.item.get"],
+          "modulePermissions": [
+            "inventory.instances.item.get",
+            "inventory-storage.holdings.collection.get",
+            "inventory.items.collection.get",
+            "circulation.loans.collection.get"
+          ]
+        }
+      ]
+    }
+  ],
+  "requires": [
+    {
+      "id": "inventory",
+      "version": "5.2"
+    },
+    {
+      "id": "holdings-storage",
+      "version": "1.2"
+    },
+    {
+      "id": "circulation",
+      "version": "2.13"
+    }
+  ],
+  "permissionSets": [
+    {
+      "permissionName": "rtac.holdings.collection.get",
+      "displayName": "RTAC - get holding collection",
+      "description": "Get holding collection"
+    },
+    {
+      "permissionName": "rtac.holdings.item.get",
+      "displayName": "RTAC - get individual holding",
+      "description": "Get individual holding"
+    },
+    {
+      "permissionName": "rtac.all",
+      "displayName": "RTAC - all permissions",
+      "description": "Entire set of permissions needed to use RTAC",
+      "subPermissions": [
+        "rtac.holdings.collection.get",
+        "rtac.holdings.item.get"
+      ]
+    }
+  ],
+  "launchDescriptor": {
+    "dockerImage": "${artifactId}:${version}",
+    "dockerArgs": {
+      "HostConfig": { "PortBindings": { "8081/tcp":  [{ "HostPort": "%p" }] } } 
+    },
+    "dockerPull" : false
+  }
+}

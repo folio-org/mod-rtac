@@ -1,0 +1,48 @@
+{
+	"loans": [
+		{
+			"id": "3d77bde3-31d1-43be-8281-b4dd8954cc26",
+			"userId": "7dfc294d-734c-4537-a785-7f28feae34b7",
+			"itemId": "b116cfe0-b75f-4e12-bdb7-61b08505e164",
+			"status": {
+				"name": "Open"
+			},
+			"loanDate": "2017-11-07T08:43:15Z",
+			"dueDate": "2017-11-27T08:43:15.000+0000",
+			"action": "checkedout",
+			"renewalCount": 0,
+			"loanPolicyId": "d9cd0bed-1b49-4b5e-a7bd-064b8d177231",
+			"metaData": {
+				"createdDate": "2018-04-13T06:18:48.382+0000",
+				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
+				"updatedDate": "2018-04-13T06:18:48.382+0000",
+				"updatedByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01"
+			},
+			"item": {
+				"title": "Testing RTAC for Dummies",
+				"contributors": [
+					{
+						"name": "Some Guy"
+					},
+					{
+						"name": "Some Other Guy"
+					}
+				],
+				"barcode": "012345678902",
+				"holdingsRecordId": "13269e78-d7bd-4e7c-b06a-0a979238f3fd",
+				"instanceId": "76d5a72a-af24-4ac6-8e73-4e39604f6f59",
+				"callNumber": "MCN FICTION",
+				"status": {
+					"name": "Checked out"
+				},
+				"location": {
+					"name": "Popular Reading Collection"
+				},
+				"materialType": {
+					"name": "dvd"
+				}
+			}
+		}
+	],
+	"totalRecords": 1
+}

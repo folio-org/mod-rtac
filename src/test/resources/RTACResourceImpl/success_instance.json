@@ -1,0 +1,30 @@
+{
+	"@context": "http://localhost:9130/inventory/instances/context",
+	"id": "76d5a72a-af24-4ac6-8e73-4e39604f6f59",
+	"title": "Testing RTAC for Dummies",
+	"source": "Sample",
+	"instanceTypeId": "2b94c631-fca9-4892-a730-03ee529ffe2c",
+	"identifiers": [
+		{
+			"identifierTypeId": "7f907515-a1bf-4513-8a38-92e1a07c539d",
+			"value": "ABC000000"
+		}
+	],
+	"contributors": [
+		{
+			"contributorNameTypeId": "2e48e713-17f3-4c13-a9f8-23845bb210aa",
+			"name": "Some Guy",
+			"contributorTypeId": null,
+			"contributorTypeText": null
+		},
+		{
+			"contributorNameTypeId": "e8b311a6-3b21-43f2-a269-dd9310cb2d0a",
+			"name": "Some Other Guy",
+			"contributorTypeId": null,
+			"contributorTypeText": null
+		}
+	],
+	"links": {
+		"self": "http://localhost:9130/inventory/instances/76d5a72a-af24-4ac6-8e73-4e39604f6f59"
+	}
+}

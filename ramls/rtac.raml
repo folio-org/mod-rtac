@@ -1,0 +1,53 @@
+#%RAML 0.8
+title: Real Time Availability Check
+baseUri: https://github.com/folio-org/mod-rtac
+version: v1
+
+documentation:
+  - title: Real Time Availability Check
+    content: This module allows 3rd party discovery services to check for FOLIO inventory availability
+
+schemas:
+  - holdings: !include holdings.json
+  - holding.json: !include holding.json
+
+traits:
+  - secured: !include raml-util/traits/auth.raml
+  - language: !include raml-util/traits/language.raml
+
+resourceTypes:
+  - item-collection-get: !include raml-util/rtypes/item-collection-get.raml
+
+/rtac:
+  displayName: RTAC
+  get:
+    description: Not implemented
+    responses:
+      501:
+        description: "Not Implemented"
+        body:
+          text/plain:
+  /{id}:
+    displayName: RTAC for the specified id
+    type:
+      item-collection-get:
+        exampleItem: !include examples/holdings.sample
+        schema: holdings
+    uriParameters:
+      id:
+        description: "The UUID of a FOLIO instance"
+        type: string
+        pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    get:
+      responses:
+        400:
+          description: "Bad request"
+          body:
+            text/plain:
+              example: |
+                "unable to process request -- constraint violation"
+        403:
+          description: "Access Denied"
+          body:
+            text/plain:
+              example: "Access Denied"

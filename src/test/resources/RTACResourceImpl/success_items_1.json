@@ -1,0 +1,105 @@
+{
+	"items": [
+		{
+			"id": "1a2f476a-436b-4530-82fe-b21a22d55514",
+			"status": {
+				"name": "Checked out"
+			},
+			"title": "Testing RTAC for Dummies",
+			"holdingsRecordId": "13269e78-d7bd-4e7c-b06a-0a979238f3fd",
+			"barcode": "012345678901",
+			"pieceIdentifiers": [],
+			"notes": [],
+			"materialType": {
+				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
+				"name": "dvd"
+			},
+			"permanentLoanType": {
+				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
+				"name": "Can circulate"
+			},
+			"temporaryLocation": {
+				"id": "53cf956f-c1df-410b-8bea-27f712cca7c0",
+				"name": "Annex"
+			},
+			"metadata": {
+				"createdDate": "2018-04-13T06:11:57.563+0000",
+				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
+				"updatedDate": "2018-04-13T06:18:48.317+0000",
+				"updatedByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01"
+			},
+			"links": {
+				"self": "http://localhost:9130/inventory/items/1a2f476a-436b-4530-82fe-b21a22d55514"
+			},
+			"permanentLocation": {
+				"id": "b241764c-1466-4e1d-a028-1a3684a5da87",
+				"name": "Popular Reading Collection"
+			}
+		},
+		{
+			"id": "b116cfe0-b75f-4e12-bdb7-61b08505e164",
+			"status": {
+				"name": "Checked out"
+			},
+			"title": "Testing RTAC for Dummies",
+			"holdingsRecordId": "13269e78-d7bd-4e7c-b06a-0a979238f3fd",
+			"barcode": "012345678902",
+			"pieceIdentifiers": [],
+			"notes": [],
+			"materialType": {
+				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
+				"name": "dvd"
+			},
+			"permanentLoanType": {
+				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
+				"name": "Can circulate"
+			},
+			"metadata": {
+				"createdDate": "2018-04-13T06:11:57.563+0000",
+				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
+				"updatedDate": "2018-04-13T06:18:48.317+0000",
+				"updatedByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01"
+			},
+			"links": {
+				"self": "http://localhost:9130/inventory/items/b116cfe0-b75f-4e12-bdb7-61b08505e164"
+			},
+			"permanentLocation": {
+				"id": "b241764c-1466-4e1d-a028-1a3684a5da87",
+				"name": "Popular Reading Collection"
+			}
+		},
+		{
+			"id": "a754a5d1-6bd4-4f41-8239-87b7afecccc6",
+			"status": {
+				"name": "Available"
+			},
+			"title": "Testing RTAC for Dummies",
+			"holdingsRecordId": "13269e78-d7bd-4e7c-b06a-0a979238f3fd",
+			"barcode": "012345678903",
+			"pieceIdentifiers": [],
+			"notes": [],
+			"materialType": {
+				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
+				"name": "dvd"
+			},
+			"permanentLoanType": {
+				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
+				"name": "Can circulate"
+			},
+			"metadata": {
+				"createdDate": "2018-04-13T06:11:57.563+0000",
+				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
+				"updatedDate": "2018-04-13T06:18:48.317+0000",
+				"updatedByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01"
+			},
+			"links": {
+				"self": "http://localhost:9130/inventory/items/a754a5d1-6bd4-4f41-8239-87b7afecccc6"
+			},
+			"permanentLocation": {
+				"id": "b241764c-1466-4e1d-a028-1a3684a5da87",
+				"name": "Popular Reading Collection"
+			}
+		}
+	],
+	"totalRecords": 3
+}

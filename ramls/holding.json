@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "RTAC Holding Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The FOLIO id of the holding (item)"
+    },
+    "location": {
+      "type": "string",
+      "description": "The location of the holding"
+    },
+    "callNumber": {
+      "type": "string",
+      "description": "The call number of the holding"
+    },
+    "status": {
+      "type": "string",
+      "description": "The avialibility states of the holding"
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date when the holding will be available"
+    },
+    "tempLocation": {
+      "type": "string",
+      "description": "Temporary location of the holding"
+    }
+  },
+  "required": [
+    "id",
+    "location",
+    "callNumber",
+    "status"
+  ]
+}
