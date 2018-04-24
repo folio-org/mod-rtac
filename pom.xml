@@ -8,8 +8,8 @@
 
   <licenses>
     <license>
-      <name>Apache License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <name>Apache License 2.0</name>
+      <url>https://spdx.org/licenses/Apache-2.0</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -479,7 +479,7 @@
   <inceptionYear>2018</inceptionYear>
   <organization>
     <name>The Open Library Foundation</name>
-    <url>http://dev.folio.org/</url>
+    <url>https://dev.folio.org/</url>
   </organization>
   <scm>
     <url>https://github.com/folio-org/mod-rtac.git</url>
