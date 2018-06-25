@@ -1,3 +1,9 @@
+## 1.0.1 Unreleased
+ * The RTAC "dueDate" field was incorrectly being set to the current date/time
+   in the case where "dueDate" was not set in the FOLIO loan. In this case,
+   RTAC should not set the "dueDate" in the response.
+ * Updated RMB dependency to 19.1.3.
+
 ## 1.0.0 2018-05-18
  * POM file cleanup
 

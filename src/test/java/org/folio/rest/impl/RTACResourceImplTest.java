@@ -85,6 +85,11 @@ public class RTACResourceImplTest {
           .setStatusCode(200)
           .putHeader("content-type", "application/json")
           .end(readMockFile("RTACResourceImpl/success_instance_3.json"));
+      } else if (req.path().equals(String.format("/inventory/instances/%s", "0085f8ed-80ba-435b-8734-d3262aa4fc07"))) {
+        req.response()
+          .setStatusCode(200)
+          .putHeader("content-type", "application/json")
+          .end(readMockFile("RTACResourceImpl/success_instance_4.json"));
       } else if (req.path().equals("/holdings-storage/holdings")) {
         if (req.query().equals(String.format("limit=100&query=instanceId%%3D%%3D%s", "76d5a72a-af24-4ac6-8e73-4e39604f6f59"))) {
           req.response()
@@ -101,6 +106,11 @@ public class RTACResourceImplTest {
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_holdings_2.json"));
+        } else if (req.query().equals(String.format("limit=100&query=instanceId%%3D%%3D%s", "0085f8ed-80ba-435b-8734-d3262aa4fc07"))) {
+          req.response()
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_holdings_3.json"));
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -120,6 +130,11 @@ public class RTACResourceImplTest {
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_items_3.json"));
+        } else if (req.query().equals(String.format("limit=100&query=holdingsRecordId%%3D%%3D%s", "aa3487a4-af65-4285-939c-05601b98827c"))) {
+          req.response()
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_items_4.json"));
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -149,6 +164,11 @@ public class RTACResourceImplTest {
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_loans_5.json"));
+        } else if (req.query().equals(String.format("limit=100&query=%%28itemId%%3D%%3D%s%%20and%%20status.name%%3D%%3DOpen%%29", "53462dc6-55aa-4b99-8717-6ae8bbef5331"))) {
+          req.response()
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_loans_6.json"));
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -195,6 +215,55 @@ public class RTACResourceImplTest {
 
       boolean found = false;
       for (int j = 0; j < 5; j++) {
+        final JsonObject expectedJO = expectedJson.getJsonArray("holdings").getJsonObject(j);
+        if (id.equals(expectedJO.getString("id"))) {
+          found = true;
+          context.assertEquals(expectedJO.getString("location"), jo.getString("location"));
+          context.assertEquals(expectedJO.getString("callNumber"), jo.getString("callNumber"));
+          context.assertEquals(expectedJO.getString("status"), jo.getString("status"));
+          context.assertEquals(expectedJO.getString("dueDate"), jo.getString("dueDate"));
+          context.assertEquals(expectedJO.getString("tempLocation"), jo.getString("tempLocation"));
+          break;
+        }
+      }
+
+      if (found == false) {
+        context.fail("Unexpected id: " + id);
+      }
+    }
+
+    asyncLocal.complete();
+
+    // Test done
+    logger.info("Test done");
+  }
+
+  @Test
+  public final void testGetRtacByIdNoDueDate(TestContext context) {
+    logger.info("Testing for successful RTAC by instance id");
+    final Async asyncLocal = context.async();
+
+    final Response r = RestAssured
+      .given()
+        .header(tenantHeader)
+        .header(urlHeader)
+        .header(contentTypeHeader)
+      .get("/rtac/0085f8ed-80ba-435b-8734-d3262aa4fc07")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(200).extract().response();
+
+    final String body = r.getBody().asString();
+    final JsonObject json = new JsonObject(body);
+    final JsonObject expectedJson = new JsonObject(readMockFile("RTACResourceImpl/success_rtac_response_no_dueDate.json"));
+
+    context.assertEquals(1, json.getJsonArray("holdings").size());
+    for (int i = 0; i < 1; i++) {
+      final JsonObject jo = json.getJsonArray("holdings").getJsonObject(i);
+      final String id = jo.getString("id");
+
+      boolean found = false;
+      for (int j = 0; j < 1; j++) {
         final JsonObject expectedJO = expectedJson.getJsonArray("holdings").getJsonObject(j);
         if (id.equals(expectedJO.getString("id"))) {
           found = true;

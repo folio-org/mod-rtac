@@ -1,0 +1,47 @@
+{
+  "loans": [
+    {
+      "id": "10dd7e77-2613-4002-a3bb-4f1fa2de4283",
+      "userId": "6fec4d7a-581d-41bc-a772-0cbd63c631b2",
+      "itemId": "53462dc6-55aa-4b99-8717-6ae8bbef5331",
+      "status": {
+        "name": "Open"
+      },
+      "loanDate": "2018-02-07T08:43:15Z",
+      "action": "checkedout",
+      "renewalCount": 5,
+      "loanPolicyId": "d9cd0bed-1b49-4b5e-a7bd-064b8d177231",
+      "metaData": {
+        "createdDate": "2018-04-13T06:18:48.382+0000",
+        "createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
+        "updatedDate": "2018-04-13T06:18:48.382+0000",
+        "updatedByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01"
+      },
+      "item": {
+        "title": "Testing RTAC for Dummies",
+        "contributors": [
+          {
+            "name": "Some Guy"
+          },
+          {
+            "name": "Some Other Guy"
+          }
+        ],
+        "barcode": "012345678905",
+        "holdingsRecordId": "aa3487a4-af65-4285-939c-05601b98827c",
+        "instanceId": "0085f8ed-80ba-435b-8734-d3262aa4fc07",
+        "callNumber": "13579.0",
+        "status": {
+          "name": "Checked out"
+        },
+        "location": {
+          "name": "Media library"
+        },
+        "materialType": {
+          "name": "dvd"
+        }
+      }
+    }
+  ],
+  "totalRecords": 1
+}

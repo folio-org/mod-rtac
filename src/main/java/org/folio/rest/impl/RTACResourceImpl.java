@@ -202,7 +202,10 @@ public final class RTACResourceImpl implements RTACResource {
       }
       Date dueDate = null;
       try {
-        dueDate = new DateTime(responseBody.getJsonArray("loans").getJsonObject(0).getString("dueDate")).toDate();
+        final String dueDateString = responseBody.getJsonArray("loans").getJsonObject(0).getString("dueDate");
+        if (dueDateString != null) {
+          dueDate = new DateTime(dueDateString).toDate();
+        }
       } catch (Exception e) {
         log.error("Unable to extract the loan dueDate", e);
       }
