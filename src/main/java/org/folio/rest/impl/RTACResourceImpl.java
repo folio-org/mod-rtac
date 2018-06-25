@@ -1,6 +1,5 @@
 package org.folio.rest.impl;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +20,7 @@ import org.folio.rest.tools.client.Response;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
 import org.folio.rest.tools.utils.TenantTool;
 import org.folio.rtac.rest.exceptions.HttpException;
+import org.joda.time.DateTime;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
@@ -204,7 +204,7 @@ public final class RTACResourceImpl implements RTACResource {
       try {
         final String dueDateString = responseBody.getJsonArray("loans").getJsonObject(0).getString("dueDate");
         if (dueDateString != null) {
-          dueDate = Date.from(ZonedDateTime.parse(dueDateString).toInstant());
+          dueDate = new DateTime(dueDateString).toDate();
         }
       } catch (Exception e) {
         log.error("Unable to extract the loan dueDate", e);
