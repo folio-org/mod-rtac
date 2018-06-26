@@ -24,10 +24,6 @@
       "type": "string",
       "format": "date-time",
       "description": "The date when the holding will be available"
-    },
-    "tempLocation": {
-      "type": "string",
-      "description": "Temporary location of the holding"
     }
   },
   "required": [

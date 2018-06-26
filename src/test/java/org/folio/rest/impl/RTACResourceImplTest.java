@@ -222,7 +222,6 @@ public class RTACResourceImplTest {
           context.assertEquals(expectedJO.getString("callNumber"), jo.getString("callNumber"));
           context.assertEquals(expectedJO.getString("status"), jo.getString("status"));
           context.assertEquals(expectedJO.getString("dueDate"), jo.getString("dueDate"));
-          context.assertEquals(expectedJO.getString("tempLocation"), jo.getString("tempLocation"));
           break;
         }
       }
@@ -271,7 +270,6 @@ public class RTACResourceImplTest {
           context.assertEquals(expectedJO.getString("callNumber"), jo.getString("callNumber"));
           context.assertEquals(expectedJO.getString("status"), jo.getString("status"));
           context.assertEquals(expectedJO.getString("dueDate"), jo.getString("dueDate"));
-          context.assertEquals(expectedJO.getString("tempLocation"), jo.getString("tempLocation"));
           break;
         }
       }

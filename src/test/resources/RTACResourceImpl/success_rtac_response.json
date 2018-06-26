@@ -1,11 +1,10 @@
 {
   "holdings" : [ {
     "id" : "1a2f476a-436b-4530-82fe-b21a22d55514",
-    "location" : "Popular Reading Collection",
+    "location" : "Annex",
     "callNumber" : "MCN FICTION",
     "status" : "Checked out",
-    "dueDate" : "2017-10-17T08:43:15.000+0000",
-    "tempLocation" : "Annex"
+    "dueDate" : "2017-10-17T08:43:15.000+0000"
   }, {
     "id" : "b116cfe0-b75f-4e12-bdb7-61b08505e164",
     "location" : "Popular Reading Collection",
@@ -19,11 +18,10 @@
     "status" : "Available"
   }, {
     "id" : "650559de-a159-4620-a923-11f38cfcdb87",
-    "location" : "Popular Reading Collection",
+    "location" : "Demo library",
     "callNumber" : "13579.0",
     "status" : "Checked out",
-    "dueDate" : "2018-02-27T08:43:15.000+0000",
-    "tempLocation" : "Demo library"
+    "dueDate" : "2018-02-27T08:43:15.000+0000"
   }, {
     "id" : "64a37e8b-1967-4a7e-a20f-d7d2da96e8f6",
     "location" : "Media library",
