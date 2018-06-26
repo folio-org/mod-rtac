@@ -18,7 +18,7 @@
 				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
 				"name": "Can circulate"
 			},
-			"temporaryLocation": {
+			"effectiveLocation": {
 				"id": "53cf956f-c1df-410b-8bea-27f712cca7c0",
 				"name": "Annex"
 			},
@@ -63,7 +63,7 @@
 			"links": {
 				"self": "http://localhost:9130/inventory/items/b116cfe0-b75f-4e12-bdb7-61b08505e164"
 			},
-			"permanentLocation": {
+			"effectiveLocation": {
 				"id": "b241764c-1466-4e1d-a028-1a3684a5da87",
 				"name": "Popular Reading Collection"
 			}
@@ -95,7 +95,7 @@
 			"links": {
 				"self": "http://localhost:9130/inventory/items/a754a5d1-6bd4-4f41-8239-87b7afecccc6"
 			},
-			"permanentLocation": {
+			"effectiveLocation": {
 				"id": "b241764c-1466-4e1d-a028-1a3684a5da87",
 				"name": "Popular Reading Collection"
 			}

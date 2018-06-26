@@ -114,8 +114,7 @@ public final class RTACResourceImpl implements RTACResource {
     holding.setCallNumber(callNumber);
     holding.setId(item.getString("id"));
     holding.setStatus(item.getJsonObject("status", new JsonObject()).getString("name"));
-    holding.setLocation(item.getJsonObject("permanentLocation", new JsonObject()).getString("name"));
-    holding.setTempLocation(item.getJsonObject("temporaryLocation", new JsonObject()).getString("name"));
+    holding.setLocation(item.getJsonObject("effectiveLocation", new JsonObject()).getString("name"));
 
     return holding;
   }

@@ -18,7 +18,7 @@
         "id": "2b94c631-fca9-4892-a730-03ee529ffe27",
         "name": "Can circulate"
       },
-      "temporaryLocation": {
+      "effectiveLocation": {
         "id": "2fe4a1ff-fa0f-44e6-8b9a-f93eacf0e8d6",
         "name": "Demo library"
       },
