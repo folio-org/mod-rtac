@@ -1,4 +1,5 @@
 ## 1.0.1 Unreleased
+ * Added support for the new way item locations are set in mod-inventory.
  * The RTAC "dueDate" field was incorrectly being set to the current date/time
    in the case where "dueDate" was not set in the FOLIO loan. In this case,
    RTAC should not set the "dueDate" in the response.
