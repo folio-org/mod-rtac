@@ -1,3 +1,5 @@
+## 1.0.2 Unreleased
+
 ## 1.0.1 2018-06-29
  * Added support for the new way item locations are set in mod-inventory.
  * The RTAC "dueDate" field was incorrectly being set to the current date/time
