@@ -28,7 +28,7 @@
   "requires": [
     {
       "id": "inventory",
-      "version": "5.3"
+      "version": "5.3 6.0"
     },
     {
       "id": "holdings-storage",
