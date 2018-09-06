@@ -1,4 +1,6 @@
-## 1.0.2 Unreleased
+## 1.1.0 Unreleased
+
+* Requires either `circulation` 3.0 or 4.0 (MODRTAC-3, CIRC-136)
 
 ## 1.0.1 2018-06-29
  * Added support for the new way item locations are set in mod-inventory.
