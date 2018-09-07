@@ -1,4 +1,4 @@
-## 1.1.0 Unreleased
+## 1.1.0 2018-09-07
  * Updated the query limit value from `100` to `Integer.MAX_VALUE` (MODRTAC-2)
  * Requires either `circulation` 3.0 or 4.0 (MODRTAC-3, CIRC-136)
 
