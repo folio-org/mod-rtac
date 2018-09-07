@@ -128,7 +128,7 @@ public final class RTACResourceImpl implements RTACResource {
   private CompletableFuture<Response> getHoldings(String id,
       HttpClientInterface httpClient, Map<String, String> okapiHeaders) {
     try {
-      return httpClient.request("/holdings-storage/holdings?limit=100&query=instanceId%3D%3D" + id, okapiHeaders);
+      return httpClient.request("/holdings-storage/holdings?limit=" + Integer.MAX_VALUE + "&query=instanceId%3D%3D" + id, okapiHeaders);
     } catch (Exception e) {
       throw new CompletionException(e);
     }
@@ -149,7 +149,7 @@ public final class RTACResourceImpl implements RTACResource {
       if (o instanceof JsonObject) {
         final JsonObject jo = (JsonObject) o;
         try {
-          cfs.put(httpClient.request("/inventory/items?limit=100&query=holdingsRecordId%3D%3D" + jo.getString("id"), okapiHeaders), jo.getString("callNumber"));
+          cfs.put(httpClient.request("/inventory/items?limit=" + Integer.MAX_VALUE + "&query=holdingsRecordId%3D%3D" + jo.getString("id"), okapiHeaders), jo.getString("callNumber"));
         } catch (Exception e) {
           throw new CompletionException(e);
         }
@@ -166,7 +166,7 @@ public final class RTACResourceImpl implements RTACResource {
     for (Holding holding : holdings.getHoldings()) {
       try {
         cfs.put(holding,
-            httpClient.request("/circulation/loans?limit=100&query=%28itemId%3D%3D"
+            httpClient.request("/circulation/loans?limit=" + Integer.MAX_VALUE + "&query=%28itemId%3D%3D"
                 + holding.getId() + "%20and%20status.name%3D%3DOpen%29",
                 okapiHeaders));
       } catch (Exception e) {
