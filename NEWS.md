@@ -1,3 +1,7 @@
+## 1.2.0 Unreleased
+ * Requires either `inventory` 5.3, 6.0 or 7.0 (MODRTAC-4)
+ * Requires either `holdings-storage` 1.2 or 2.0 (MODRTAC-4)
+
 ## 1.1.0 2018-09-07
  * Updated the query limit value from `100` to `Integer.MAX_VALUE` (MODRTAC-2)
  * Requires either `circulation` 3.0 or 4.0 (MODRTAC-3, CIRC-136)
