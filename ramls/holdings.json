@@ -5,6 +5,7 @@
   "description": "Collection of holdings",
   "properties": {
     "holdings": {
+      "description": "Collection of holdings",
       "type": "array",
       "items": {
         "type": "object",

@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "RTAC Holding Schema",
   "type": "object",
+  "description": "Real Time Availability Check (RTAC) holding details",
   "additionalProperties": false,
   "properties": {
     "id": {
