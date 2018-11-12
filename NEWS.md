@@ -1,4 +1,4 @@
-## 1.2.0 Unreleased
+## 1.2.0 2018-11-12
  * Added missing description fields to JSON schemas (MODRTAC-5)
  * Requires either `circulation` 3.0, 4.0 or 5.0 (MODRTAC-6)
  * Requires either `inventory` 5.3, 6.0 or 7.0 (MODRTAC-4)
