@@ -1,3 +1,7 @@
+## Unreleased
+
+ * Requires `holdings-storage` versions `1.2 2.0 3.0` (MODRTAC-10)
+
 ## 1.2.0 2018-11-12
  * Added missing description fields to JSON schemas (MODRTAC-5)
  * Requires either `circulation` 3.0, 4.0 or 5.0 (MODRTAC-6)
