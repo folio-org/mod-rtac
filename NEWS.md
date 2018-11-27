@@ -1,5 +1,5 @@
 ## Unreleased
-
+ * Requires `inventory` version 8.0 (MODRTAC-9)
  * Requires `holdings-storage` versions `1.2 2.0 3.0` (MODRTAC-10)
 
 ## 1.2.0 2018-11-12
