@@ -8,7 +8,7 @@
 			"title": "Testing RTAC for Dummies",
 			"holdingsRecordId": "9fec4043-6963-4e2f-8e48-c12f914462bb",
 			"barcode": "012345678904",
-			"pieceIdentifiers": [],
+			"copyNumbers": [],
 			"notes": [],
 			"materialType": {
 				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
@@ -44,7 +44,7 @@
 			"title": "Testing RTAC for Dummies",
 			"holdingsRecordId": "9fec4043-6963-4e2f-8e48-c12f914462bb",
 			"barcode": "012345678905",
-			"pieceIdentifiers": [],
+			"copyNumbers": [],
 			"notes": [],
 			"materialType": {
 				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
