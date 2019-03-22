@@ -1,3 +1,6 @@
+## 1.2.2 2019-03-22
+ * Requires either `circulation` 3.0, 4.0, 5.0, 6.0 or 7.0 (MODRTAC-11, MODRTAC-12)
+
 ## 1.2.1 2018-12-04
  * Requires `inventory` version 8.0 (MODRTAC-9)
  * Requires `holdings-storage` versions `1.2 2.0 3.0` (MODRTAC-10)
