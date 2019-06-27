@@ -1,34 +1,28 @@
-#%RAML 0.8
+#%RAML 1.0
 title: Real Time Availability Check
 baseUri: https://github.com/folio-org/mod-rtac
-version: v1
+version: v1.1
 
 documentation:
-  - title: Real Time Availability Check
+  - title: Real Time Availability Checker Integration
     content: This module allows 3rd party discovery services to check for FOLIO inventory availability
 
-schemas:
-  - holdings: !include holdings.json
-  - holding.json: !include holding.json
+types:
+  holdings: !include holdings.json
+  holding: !include holding.json
 
 traits:
-  - secured: !include raml-util/traits/auth.raml
-  - language: !include raml-util/traits/language.raml
+  language: !include raml-util/traits/language.raml
 
 resourceTypes:
-  - item-collection-get: !include raml-util/rtypes/item-collection-get.raml
+  item-collection-get: !include raml-util/rtypes/item-collection-get.raml
 
 /rtac:
   displayName: RTAC
-  get:
-    description: Not implemented
-    responses:
-      501:
-        description: "Not Implemented"
-        body:
-          text/plain:
+  description: RTAC operations
   /{id}:
     displayName: RTAC for the specified id
+    description: Returns availability details about each item for the given instance id
     type:
       item-collection-get:
         exampleItem: !include examples/holdings.sample

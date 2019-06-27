@@ -14,7 +14,7 @@ import org.folio.rest.RestVerticle;
 import org.folio.rest.annotations.Validate;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.Holdings;
-import org.folio.rest.jaxrs.resource.RTACResource;
+import org.folio.rest.jaxrs.resource.Rtac;
 import org.folio.rest.tools.client.HttpClientFactory;
 import org.folio.rest.tools.client.Response;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
@@ -31,23 +31,14 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
-public final class RTACResourceImpl implements RTACResource {
+public final class RTACResourceImpl implements Rtac {
   private final Logger log = LoggerFactory.getLogger(RTACResourceImpl.class);
-
-  @Override
-  @Validate
-  public void getRtac(Map<String, String> okapiHeaders,
-      Handler<AsyncResult<javax.ws.rs.core.Response>> asyncResultHandler, Context vertxContext)
-      throws Exception {
-    asyncResultHandler.handle(Future.succeededFuture(GetRtacResponse.withPlainNotImplemented("Not implemented")));
-  }
 
   @Override
   @Validate
   public void getRtacById(String id, String lang,
       Map<String, String> okapiHeaders,
-      Handler<AsyncResult<javax.ws.rs.core.Response>> asyncResultHandler, Context vertxContext)
-      throws Exception {
+      Handler<AsyncResult<javax.ws.rs.core.Response>> asyncResultHandler, Context vertxContext) {
     final String okapiURL;
     if (okapiHeaders.containsKey("X-Okapi-Url")) {
       okapiURL = okapiHeaders.get("X-Okapi-Url");
@@ -65,7 +56,7 @@ public final class RTACResourceImpl implements RTACResource {
       .thenCompose(res -> getItems(res, httpClient, okapiHeaders))
       .thenCompose(holdings -> checkForLoans(holdings, httpClient, okapiHeaders))
       .thenAccept(holdings -> {
-        asyncResultHandler.handle(Future.succeededFuture(RTACResource.GetRtacByIdResponse.withJsonOK(holdings)));
+        asyncResultHandler.handle(Future.succeededFuture(Rtac.GetRtacByIdResponse.respond200WithApplicationJson(holdings)));
         httpClient.closeClient();
       }).exceptionally(throwable -> {
         asyncResultHandler.handle(handleError(throwable));
@@ -73,7 +64,7 @@ public final class RTACResourceImpl implements RTACResource {
         return null;
       });
     } catch (Exception e) {
-      asyncResultHandler.handle(Future.succeededFuture(RTACResource.GetRtacByIdResponse.withPlainInternalServerError(e.getMessage())));
+      asyncResultHandler.handle(Future.succeededFuture(Rtac.GetRtacByIdResponse.respond500WithTextPlain(e.getMessage())));
       httpClient.closeClient();
     }
   }
@@ -227,22 +218,22 @@ public final class RTACResourceImpl implements RTACResource {
         // module. This API only takes a UUID, so a client side 400 is not
         // possible here, only server side, which the client won't be able to
         // do anything about.
-        result = Future.succeededFuture(RTACResource.GetRtacByIdResponse.withPlainInternalServerError(message));
+        result = Future.succeededFuture(Rtac.GetRtacByIdResponse.respond500WithTextPlain(message));
         break;
       case 401:
-        result = Future.succeededFuture(RTACResource.GetRtacByIdResponse.withPlainUnauthorized(message));
+        result = Future.succeededFuture(Rtac.GetRtacByIdResponse.respond401WithTextPlain(message));
         break;
       case 403:
-        result = Future.succeededFuture(RTACResource.GetRtacByIdResponse.withPlainForbidden(message));
+        result = Future.succeededFuture(Rtac.GetRtacByIdResponse.respond403WithTextPlain(message));
         break;
       case 404:
-        result = Future.succeededFuture(RTACResource.GetRtacByIdResponse.withPlainNotFound(message));
+        result = Future.succeededFuture(Rtac.GetRtacByIdResponse.respond404WithTextPlain(message));
         break;
       default:
-        result = Future.succeededFuture(RTACResource.GetRtacByIdResponse.withPlainInternalServerError(message));
+        result = Future.succeededFuture(Rtac.GetRtacByIdResponse.respond500WithTextPlain(message));
       }
     } else {
-      result = Future.succeededFuture(RTACResource.GetRtacByIdResponse.withPlainInternalServerError(throwable.getMessage()));
+      result = Future.succeededFuture(Rtac.GetRtacByIdResponse.respond500WithTextPlain(throwable.getMessage()));
     }
 
     return result;

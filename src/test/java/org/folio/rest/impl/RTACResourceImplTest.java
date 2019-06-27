@@ -5,7 +5,6 @@ import static org.folio.rtac.utils.Utils.readMockFile;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.tools.PomReader;
 import org.folio.rtac.utils.Utils;
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -351,29 +350,6 @@ public class RTACResourceImplTest {
     final JsonObject json = new JsonObject(body);
 
     context.assertEquals(0, json.getJsonArray("holdings").size());
-
-    asyncLocal.complete();
-
-    // Test done
-    logger.info("Test done");
-  }
-
-  @Test
-  public final void testGetTitles(TestContext context) {
-    logger.info("Testing for successful RTAC collection");
-
-    final Async asyncLocal = context.async();
-
-    RestAssured
-      .given()
-        .header(tenantHeader)
-        .header(urlHeader)
-        .header(contentTypeHeader)
-      .get("/rtac")
-        .then()
-          .contentType(ContentType.TEXT)
-          .statusCode(501)
-          .body(Matchers.containsString("Not implemented"));
 
     asyncLocal.complete();
 
