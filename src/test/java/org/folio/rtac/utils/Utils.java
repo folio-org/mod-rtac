@@ -1,24 +1,21 @@
-/**
- *
- */
 package org.folio.rtac.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
 import java.util.Random;
-
 import org.apache.commons.io.IOUtils;
-
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
+ * Test utils class.
+ * 
  * @author mreno
  *
  */
 public final class Utils {
-  private static final Logger logger = LoggerFactory.getLogger("okapi");
+  private static final Logger logger = LogManager.getLogger("okapi");
 
   private Utils() {
     super();
@@ -47,6 +44,12 @@ public final class Utils {
     return port;
   }
 
+  /**
+   * Read in a JSON mock file.
+   * 
+   * @param path file location
+   * @return the file contents as a string
+   */
   public static String readMockFile(final String path) {
     try {
       final InputStream is = Utils.class.getClassLoader().getResourceAsStream(path);
