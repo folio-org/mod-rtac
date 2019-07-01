@@ -275,6 +275,7 @@ public class RtacResourceImplTest {
           assertEquals(expectedJO.getString("callNumber"), jo.getString("callNumber"));
           assertEquals(expectedJO.getString("status"), jo.getString("status"));
           assertEquals(expectedJO.getString("dueDate"), jo.getString("dueDate"));
+          assertEquals(expectedJO.getString("volume"), jo.getString("volume"));
           break;
         }
       }
@@ -324,6 +325,7 @@ public class RtacResourceImplTest {
           assertEquals(expectedJO.getString("callNumber"), jo.getString("callNumber"));
           assertEquals(expectedJO.getString("status"), jo.getString("status"));
           assertEquals(expectedJO.getString("dueDate"), jo.getString("dueDate"));
+          assertEquals(expectedJO.getString("volume"), jo.getString("volume"));
           break;
         }
       }
@@ -440,6 +442,4 @@ public class RtacResourceImplTest {
         Arguments.of("java.lang.NullPointerException", 500)
       );
   }
-
-
 }

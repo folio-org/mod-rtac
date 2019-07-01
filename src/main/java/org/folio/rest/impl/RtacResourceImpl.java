@@ -106,6 +106,7 @@ public final class RtacResourceImpl implements Rtac {
     holding.setStatus(item.getJsonObject("status", new JsonObject()).getString("name"));
     holding.setLocation(item.getJsonObject("effectiveLocation",
         new JsonObject()).getString("name"));
+    holding.setVolume(item.getString("enumeration"));
 
     return holding;
   }

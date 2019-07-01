@@ -4,17 +4,20 @@
     "location" : "Annex",
     "callNumber" : "MCN FICTION",
     "status" : "Checked out",
+    "volume": "v.125:no.8",
     "dueDate" : "2017-10-17T08:43:15.000+0000"
   }, {
     "id" : "b116cfe0-b75f-4e12-bdb7-61b08505e164",
     "location" : "Popular Reading Collection",
     "callNumber" : "MCN FICTION",
+    "volume": "v.125:no.9",
     "status" : "Checked out",
     "dueDate" : "2017-11-27T08:43:15.000+0000"
   }, {
     "id" : "a754a5d1-6bd4-4f41-8239-87b7afecccc6",
     "location" : "Popular Reading Collection",
     "callNumber" : "MCN FICTION",
+    "volume": "v.125:no.10",
     "status" : "Available"
   }, {
     "id" : "650559de-a159-4620-a923-11f38cfcdb87",
