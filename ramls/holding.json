@@ -19,7 +19,7 @@
     },
     "status": {
       "type": "string",
-      "description": "The availibility states of the holding"
+      "description": "The availability status of the holding"
     },
     "dueDate": {
       "type": "string",
