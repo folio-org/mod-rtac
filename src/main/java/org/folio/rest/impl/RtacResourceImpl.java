@@ -6,6 +6,9 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,6 +33,7 @@ import org.folio.rtac.rest.exceptions.HttpException;
 import org.joda.time.DateTime;
 
 public final class RtacResourceImpl implements Rtac {
+  private static final String QUERY = "&query=";
   private final Logger log = LogManager.getLogger();
 
   @Override
@@ -122,7 +126,7 @@ public final class RtacResourceImpl implements Rtac {
       HttpClientInterface httpClient, Map<String, String> okapiHeaders) {
     try {
       return httpClient.request("/holdings-storage/holdings?limit=" + Integer.MAX_VALUE
-          + "&query=instanceId%3D%3D" + id, okapiHeaders);
+          + QUERY + encode("instanceId==" + id), okapiHeaders);
     } catch (Exception e) {
       throw new CompletionException(e);
     }
@@ -145,7 +149,7 @@ public final class RtacResourceImpl implements Rtac {
         final JsonObject jo = (JsonObject) o;
         try {
           cfs.put(httpClient.request("/inventory/items?limit=" + Integer.MAX_VALUE
-              + "&query=holdingsRecordId%3D%3D" + jo.getString("id"), okapiHeaders),
+              + QUERY + encode("holdingsRecordId==" + jo.getString("id")), okapiHeaders),
               jo.getString("callNumber"));
         } catch (Exception e) {
           throw new CompletionException(e);
@@ -164,8 +168,8 @@ public final class RtacResourceImpl implements Rtac {
       try {
         cfs.put(holding,
             httpClient.request("/circulation/loans?limit="
-                + Integer.MAX_VALUE + "&query=%28itemId%3D%3D"
-                + holding.getId() + "%20and%20status.name%3D%3DOpen%29",
+                + Integer.MAX_VALUE + QUERY
+                + encode("(itemId==" + holding.getId() + " and status.name==Open)"),
                 okapiHeaders));
       } catch (Exception e) {
         throw new CompletionException(e);
@@ -212,6 +216,15 @@ public final class RtacResourceImpl implements Rtac {
       if (dueDate != null) {
         holding.setDueDate(dueDate);
       }
+    }
+  }
+
+  private String encode(String value) {
+    try {
+      return URLEncoder.encode(value, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      log.error("JVM unable to encode using UTF-8...", e);
+      return value;
     }
   }
 

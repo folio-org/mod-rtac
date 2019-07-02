@@ -1,6 +1,7 @@
 package org.folio.rest.impl;
 
 import static io.restassured.RestAssured.given;
+import static org.folio.rtac.utils.Utils.encode;
 import static org.folio.rtac.utils.Utils.readMockFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -19,6 +20,7 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
+
 import java.util.stream.Stream;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.tools.PomReader;
@@ -109,8 +111,9 @@ public class RtacResourceImplTest {
           .putHeader("content-type", "application/json")
           .end(readMockFile("RTACResourceImpl/success_instance_4.json"));
       } else if (req.path().equals("/holdings-storage/holdings")) {
-        if (req.query().equals(String.format("limit=%d&query=instanceId%%3D%%3D%s",
-            Integer.MAX_VALUE, "76d5a72a-af24-4ac6-8e73-4e39604f6f59"))) {
+        if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE,
+            encode("instanceId==76d5a72a-af24-4ac6-8e73-4e39604f6f59")))) {
           final String badDataValue = req.getHeader("x-okapi-bad-data");
           if (badDataValue != null) {
             if (badDataValue.equals("java.lang.NullPointerException")) {
@@ -130,20 +133,20 @@ public class RtacResourceImplTest {
               .putHeader("content-type", "application/json")
               .end(readMockFile("RTACResourceImpl/success_holdings.json"));
           }
-        } else if (req.query().equals(String.format("limit=%d&query=instanceId%%3D%%3D%s",
-            Integer.MAX_VALUE, "1613697d-5e18-49b0-9613-08443b87cbc7"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("instanceId==1613697d-5e18-49b0-9613-08443b87cbc7")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_no_holdings.json"));
-        } else if (req.query().equals(String.format("limit=%d&query=instanceId%%3D%%3D%s",
-            Integer.MAX_VALUE, "2ae0635e-5534-4b7d-b28f-f0816329baa3"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("instanceId==2ae0635e-5534-4b7d-b28f-f0816329baa3")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_holdings_2.json"));
-        } else if (req.query().equals(String.format("limit=%d&query=instanceId%%3D%%3D%s",
-            Integer.MAX_VALUE, "0085f8ed-80ba-435b-8734-d3262aa4fc07"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("instanceId==0085f8ed-80ba-435b-8734-d3262aa4fc07")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
@@ -152,26 +155,26 @@ public class RtacResourceImplTest {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
       } else if (req.path().equals("/inventory/items")) {
-        if (req.query().equals(String.format("limit=%d&query=holdingsRecordId%%3D%%3D%s",
-            Integer.MAX_VALUE, "13269e78-d7bd-4e7c-b06a-0a979238f3fd"))) {
+        if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("holdingsRecordId==13269e78-d7bd-4e7c-b06a-0a979238f3fd")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_items_1.json"));
-        } else if (req.query().equals(String.format("limit=%d&query=holdingsRecordId%%3D%%3D%s",
-            Integer.MAX_VALUE, "9fec4043-6963-4e2f-8e48-c12f914462bb"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("holdingsRecordId==9fec4043-6963-4e2f-8e48-c12f914462bb")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_items_2.json"));
-        } else if (req.query().equals(String.format("limit=%d&query=holdingsRecordId%%3D%%3D%s",
-            Integer.MAX_VALUE, "2fad39ae-03f4-496f-9ae9-533ce08c7344"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("holdingsRecordId==2fad39ae-03f4-496f-9ae9-533ce08c7344")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_items_3.json"));
-        } else if (req.query().equals(String.format("limit=%d&query=holdingsRecordId%%3D%%3D%s",
-            Integer.MAX_VALUE, "aa3487a4-af65-4285-939c-05601b98827c"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("holdingsRecordId==aa3487a4-af65-4285-939c-05601b98827c")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
@@ -180,44 +183,44 @@ public class RtacResourceImplTest {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
       } else if (req.path().equals("/circulation/loans")) {
-        if (req.query().equals(String.format(
-            "limit=%d&query=%%28itemId%%3D%%3D%s%%20and%%20status.name%%3D%%3DOpen%%29",
-            Integer.MAX_VALUE, "1a2f476a-436b-4530-82fe-b21a22d55514"))) {
+        if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE,
+            encode("(itemId==1a2f476a-436b-4530-82fe-b21a22d55514 and status.name==Open)")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_loans_1.json"));
-        } else if (req.query().equals(String.format(
-            "limit=%d&query=%%28itemId%%3D%%3D%s%%20and%%20status.name%%3D%%3DOpen%%29",
-            Integer.MAX_VALUE, "b116cfe0-b75f-4e12-bdb7-61b08505e164"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE,
+            encode("(itemId==b116cfe0-b75f-4e12-bdb7-61b08505e164 and status.name==Open)")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_loans_2.json"));
-        } else if (req.query().equals(String.format(
-            "limit=%d&query=%%28itemId%%3D%%3D%s%%20and%%20status.name%%3D%%3DOpen%%29",
-            Integer.MAX_VALUE, "a754a5d1-6bd4-4f41-8239-87b7afecccc6"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE,
+            encode("(itemId==a754a5d1-6bd4-4f41-8239-87b7afecccc6 and status.name==Open)")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_loans_3.json"));
-        } else if (req.query().equals(String.format(
-            "limit=%d&query=%%28itemId%%3D%%3D%s%%20and%%20status.name%%3D%%3DOpen%%29",
-            Integer.MAX_VALUE, "650559de-a159-4620-a923-11f38cfcdb87"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE,
+            encode("(itemId==650559de-a159-4620-a923-11f38cfcdb87 and status.name==Open)")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_loans_4.json"));
-        } else if (req.query().equals(String.format(
-            "limit=%d&query=%%28itemId%%3D%%3D%s%%20and%%20status.name%%3D%%3DOpen%%29",
-            Integer.MAX_VALUE, "64a37e8b-1967-4a7e-a20f-d7d2da96e8f6"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE,
+            encode("(itemId==64a37e8b-1967-4a7e-a20f-d7d2da96e8f6 and status.name==Open)")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_loans_5.json"));
-        } else if (req.query().equals(String.format(
-            "limit=%d&query=%%28itemId%%3D%%3D%s%%20and%%20status.name%%3D%%3DOpen%%29",
-            Integer.MAX_VALUE, "53462dc6-55aa-4b99-8717-6ae8bbef5331"))) {
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE,
+            encode("(itemId==53462dc6-55aa-4b99-8717-6ae8bbef5331 and status.name==Open)")))) {
           req.response()
             .setStatusCode(200)
             .putHeader("content-type", "application/json")

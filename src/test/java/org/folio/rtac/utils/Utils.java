@@ -2,7 +2,9 @@ package org.folio.rtac.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
+import java.net.URLEncoder;
 import java.util.Random;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -65,4 +67,20 @@ public final class Utils {
 
     return "";
   }
+
+  /**
+   * Encodes a query parameter.
+   * 
+   * @param value the query parameter key or value
+   * @return the encoded result
+   */
+  public static String encode(String value) {
+    try {
+      return URLEncoder.encode(value, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      logger.error("JVM unable to encode using UTF-8...", e);
+      throw new IllegalStateException(e);
+    }
+  }
+
 }
