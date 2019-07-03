@@ -221,10 +221,18 @@ public class RtacResourceImplTest {
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
             encode("(itemId==53462dc6-55aa-4b99-8717-6ae8bbef5331 and status.name==Open)")))) {
-          req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_loans_6.json"));
+          final String badDataValue = req.getHeader("x-okapi-bad-data");
+          if (badDataValue != null) {
+            req.response()
+              .setStatusCode(500)
+              .putHeader("content-type", "text/plain")
+              .end("Server Error");
+          } else {
+            req.response()
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_loans_6.json"));
+          }
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -337,6 +345,25 @@ public class RtacResourceImplTest {
         fail("Unexpected id: " + id);
       }
     }
+
+    // Test done
+    logger.info("Test done");
+  }
+
+  @Test
+  public final void testGetRtacByIdErrorRetrievingLoan() {
+    logger.info("Testing for error when loan cannot be retrieved");
+
+    RestAssured
+        .given()
+          .headers(new Headers(tenantHeader, urlHeader, contentTypeHeader,
+              new Header("x-okapi-bad-data", "bad data")))
+        .when()
+          .get("/rtac/0085f8ed-80ba-435b-8734-d3262aa4fc07")
+        .then()
+          .contentType(ContentType.TEXT)
+          .statusCode(500)
+          .body(Matchers.is("Server Error"));
 
     // Test done
     logger.info("Test done");

@@ -33,6 +33,7 @@ import org.folio.rtac.rest.exceptions.HttpException;
 import org.joda.time.DateTime;
 
 public final class RtacResourceImpl implements Rtac {
+  private static final String ERROR_MESSAGE = "errorMessage";
   private static final String QUERY = "&query=";
   private final Logger log = LogManager.getLogger();
 
@@ -118,11 +119,11 @@ public final class RtacResourceImpl implements Rtac {
   private void verifyInstanceExists(Response response) {
     if (!Response.isSuccess(response.getCode())) {
       throw new CompletionException(new HttpException(response.getCode(),
-          response.getError().getString("errorMessage")));
+          response.getError().getString(ERROR_MESSAGE)));
     }
   }
 
-  private CompletableFuture<Response> getHoldings(String id,
+  CompletableFuture<Response> getHoldings(String id,
       HttpClientInterface httpClient, Map<String, String> okapiHeaders) {
     try {
       return httpClient.request("/holdings-storage/holdings?limit=" + Integer.MAX_VALUE
@@ -135,13 +136,13 @@ public final class RtacResourceImpl implements Rtac {
   private JsonArray verifyAndExtractHoldings(Response response) {
     if (!Response.isSuccess(response.getCode())) {
       throw new CompletionException(new HttpException(response.getCode(),
-          response.getError().getString("errorMessage")));
+          response.getError().getString(ERROR_MESSAGE)));
     }
 
     return response.getBody().getJsonArray("holdingsRecords");
   }
 
-  private CompletableFuture<Holdings> getItems(JsonArray holdingsRecords,
+  CompletableFuture<Holdings> getItems(JsonArray holdingsRecords,
       HttpClientInterface httpClient, Map<String, String> okapiHeaders) {
     Map<CompletableFuture<Response>, String> cfs = new HashMap<>();
     for (Object o : holdingsRecords) {
@@ -160,7 +161,7 @@ public final class RtacResourceImpl implements Rtac {
     return convertFolioItemListToRtac(cfs);
   }
 
-  private CompletableFuture<Holdings> checkForLoans(Holdings holdings,
+  CompletableFuture<Holdings> checkForLoans(Holdings holdings,
       HttpClientInterface httpClient, Map<String, String> okapiHeaders) {
     final Map<Holding, CompletableFuture<Response>> cfs = new HashMap<>();
 
@@ -187,7 +188,7 @@ public final class RtacResourceImpl implements Rtac {
         final Response response = cf.join();
         if (!Response.isSuccess(response.getCode())) {
           throw new CompletionException(new HttpException(response.getCode(),
-              response.getError().toString()));
+              response.getError().getString(ERROR_MESSAGE)));
         }
 
         assignDueDate(holding, response.getBody());
@@ -197,7 +198,7 @@ public final class RtacResourceImpl implements Rtac {
     });
   }
 
-  private void assignDueDate(Holding holding, JsonObject responseBody) {
+  void assignDueDate(Holding holding, JsonObject responseBody) {
     final int totalLoans = responseBody.getInteger("totalRecords", Integer.valueOf(0)).intValue();
     if (totalLoans > 0) {
       if (totalLoans != 1) {
