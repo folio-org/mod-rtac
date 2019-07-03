@@ -1,24 +1,23 @@
-/**
- *
- */
 package org.folio.rtac.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
+import java.net.URLEncoder;
 import java.util.Random;
-
 import org.apache.commons.io.IOUtils;
-
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
+ * Test utils class.
+ * 
  * @author mreno
  *
  */
 public final class Utils {
-  private static final Logger logger = LoggerFactory.getLogger("okapi");
+  private static final Logger logger = LogManager.getLogger("okapi");
 
   private Utils() {
     super();
@@ -47,6 +46,12 @@ public final class Utils {
     return port;
   }
 
+  /**
+   * Read in a JSON mock file.
+   * 
+   * @param path file location
+   * @return the file contents as a string
+   */
   public static String readMockFile(final String path) {
     try {
       final InputStream is = Utils.class.getClassLoader().getResourceAsStream(path);
@@ -62,4 +67,20 @@ public final class Utils {
 
     return "";
   }
+
+  /**
+   * Encodes a query parameter.
+   * 
+   * @param value the query parameter key or value
+   * @return the encoded result
+   */
+  public static String encode(String value) {
+    try {
+      return URLEncoder.encode(value, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      logger.error("JVM unable to encode using UTF-8...", e);
+      throw new IllegalStateException(e);
+    }
+  }
+
 }

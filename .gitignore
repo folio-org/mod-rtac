@@ -7,3 +7,6 @@ node_modules/
 /bin/
 /.vertx/
 /.project
+/.checkstyle
+/pom.xml.releaseBackup
+/release.properties
