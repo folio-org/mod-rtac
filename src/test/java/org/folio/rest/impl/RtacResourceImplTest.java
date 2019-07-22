@@ -110,6 +110,12 @@ public class RtacResourceImplTest {
           .setStatusCode(200)
           .putHeader("content-type", "application/json")
           .end(readMockFile("RTACResourceImpl/success_instance_4.json"));
+      } else if (req.path().equals(String.format("/inventory/instances/%s",
+          "a50aa30b-33d0-4067-89cc-67a61df8bc84"))) {
+        req.response()
+          .setStatusCode(200)
+          .putHeader("content-type", "application/json")
+          .end(readMockFile("RTACResourceImpl/success_instance_5.json"));
       } else if (req.path().equals("/holdings-storage/holdings")) {
         if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
@@ -151,6 +157,12 @@ public class RtacResourceImplTest {
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_holdings_3.json"));
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("instanceId==a50aa30b-33d0-4067-89cc-67a61df8bc84")))) {
+          req.response()
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_holdings_4.json"));
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -179,6 +191,12 @@ public class RtacResourceImplTest {
             .setStatusCode(200)
             .putHeader("content-type", "application/json")
             .end(readMockFile("RTACResourceImpl/success_items_4.json"));
+        } else if (req.query().equals(String.format("limit=%d&query=%s",
+            Integer.MAX_VALUE, encode("holdingsRecordId==2839b3fa-a47b-4283-bdc4-6ee54ac67b38")))) {
+          req.response()
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_items_5.json"));
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -234,7 +252,13 @@ public class RtacResourceImplTest {
               .end(readMockFile("RTACResourceImpl/success_loans_6.json"));
           }
         } else {
-          req.response().setStatusCode(500).end("Unexpected call: " + req.path());
+          // Instead of an error here, return no results. This way we don't have to supply each
+          // item ID above with an empty response. If we need to test errors, we can do something
+          // different.
+          req.response()
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_loans_3.json"));
         }
       } else {
         req.response().setStatusCode(500).end("Unexpected call: " + req.path());
@@ -336,6 +360,53 @@ public class RtacResourceImplTest {
           assertEquals(expectedJO.getString("callNumber"), jo.getString("callNumber"));
           assertEquals(expectedJO.getString("status"), jo.getString("status"));
           assertEquals(expectedJO.getString("dueDate"), jo.getString("dueDate"));
+          assertEquals(expectedJO.getString("volume"), jo.getString("volume"));
+          break;
+        }
+      }
+
+      if (found == false) {
+        fail("Unexpected id: " + id);
+      }
+    }
+
+    // Test done
+    logger.info("Test done");
+  }
+
+  @Test
+  public final void testGetRtacByIdVolumeFormatting() {
+    logger.info("Testing for proper volume string formatting");
+
+    final Response r = RestAssured
+        .given()
+          .header(tenantHeader)
+          .header(urlHeader)
+          .header(contentTypeHeader)
+        .when()
+          .get("/rtac/a50aa30b-33d0-4067-89cc-67a61df8bc84")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(200)
+          .extract()
+          .response();
+
+    final String body = r.getBody().asString();
+    final JsonObject json = new JsonObject(body);
+    final JsonObject expectedJson = new JsonObject(
+        readMockFile("RTACResourceImpl/success_rtac_response_volume_formatting.json"));
+
+    final int expectedSize = 7;
+    assertEquals(expectedSize, json.getJsonArray("holdings").size());
+    for (int i = 0; i < expectedSize; i++) {
+      final JsonObject jo = json.getJsonArray("holdings").getJsonObject(i);
+      final String id = jo.getString("id");
+
+      boolean found = false;
+      for (int j = 0; j < expectedSize; j++) {
+        final JsonObject expectedJO = expectedJson.getJsonArray("holdings").getJsonObject(j);
+        if (id.equals(expectedJO.getString("id"))) {
+          found = true;
           assertEquals(expectedJO.getString("volume"), jo.getString("volume"));
           break;
         }

@@ -15,9 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.rest.RestVerticle;
@@ -111,7 +114,7 @@ public final class RtacResourceImpl implements Rtac {
     holding.setStatus(item.getJsonObject("status", new JsonObject()).getString("name"));
     holding.setLocation(item.getJsonObject("effectiveLocation",
         new JsonObject()).getString("name"));
-    holding.setVolume(item.getString("enumeration"));
+    holding.setVolume(getVolume(item));
 
     return holding;
   }
@@ -218,6 +221,34 @@ public final class RtacResourceImpl implements Rtac {
         holding.setDueDate(dueDate);
       }
     }
+  }
+
+  private String getVolume(JsonObject item) {
+    final Optional<String> enumeration = Optional.ofNullable(item.getString("enumeration"));
+    final Optional<String> chronology = Optional.ofNullable(item.getString("chronology"));
+    final Optional<String> volume = Optional.ofNullable(item.getString("volume"));
+
+    // The rules for generating "volume" are as follows:
+    // |data set                     |"volume"                    |
+    // |-----------------------------|----------------------------|
+    // |enumeration                  |(<enumeration>)             |
+    // |enumeration chronology       |(<enumeration> <chronology>)|
+    // |enumeration chronology volume|(<enumeration> <chronology>)|
+    // |volume                       |(<volume>)                  |
+    // |chronology volume            |(<volume>)                  |
+    // |chronology                   |(<chronology>)              |
+
+    final StringJoiner sj = new StringJoiner(" ", "(", ")");
+
+    return enumeration
+        .map(e -> chronology
+          .map(c -> sj.add(e).add(c).toString())
+          .orElse(sj.add(e).toString()))
+        .orElseGet(() -> volume
+            .map(v -> sj.add(v).toString())
+            .orElseGet(() -> chronology
+                .map(c -> sj.add(c).toString())
+                .orElse(null)));
   }
 
   private String encode(String value) {
