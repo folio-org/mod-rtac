@@ -376,7 +376,7 @@ public class RtacResourceImplTest {
 
   @Test
   public final void testGetRtacByIdVolumeFormatting() {
-    logger.info("Testing for proper volume stirng formatting");
+    logger.info("Testing for proper volume string formatting");
 
     final Response r = RestAssured
         .given()
