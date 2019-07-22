@@ -22,7 +22,9 @@
 				"id": "53cf956f-c1df-410b-8bea-27f712cca7c0",
 				"name": "Annex"
 			},
-			"enumeration": "v.125:no.8",
+			"enumeration": "8",
+			"chronology": "1999",
+			"volume": "125",
 			"metadata": {
 				"createdDate": "2018-04-13T06:11:57.563+0000",
 				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
@@ -55,7 +57,9 @@
 				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
 				"name": "Can circulate"
 			},
-      "enumeration": "v.125:no.9",
+      "enumeration": "9",
+      "chronology": "1999",
+      "volume": "125",
 			"metadata": {
 				"createdDate": "2018-04-13T06:11:57.563+0000",
 				"createdByUserId": "1ad737b0-d847-11e6-bf26-cec0c932ce01",
@@ -84,7 +88,9 @@
 				"id": "5ee11d91-f7e8-481d-b079-65d708582ccc",
 				"name": "dvd"
 			},
-      "enumeration": "v.125:no.10",
+      "enumeration": "10",
+      "chronology": "1999",
+      "volume": "125",
 			"permanentLoanType": {
 				"id": "2b94c631-fca9-4892-a730-03ee529ffe27",
 				"name": "Can circulate"
