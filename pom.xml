@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.folio</groupId>
   <artifactId>mod-rtac</artifactId>
-  <version>1.2.3-SNAPSHOT</version>
+  <version>1.2.3</version>
   <packaging>jar</packaging>
 
   <licenses>
@@ -596,7 +596,7 @@
     <url>https://github.com/folio-org/mod-rtac.git</url>
     <connection>scm:git:git://github.com/folio-org/mod-rtac.git</connection>
     <developerConnection>scm:git:git@github.com:folio-org/mod-rtac.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v1.2.3</tag>
   </scm>
   <ciManagement>
     <system>Jenkins</system>
