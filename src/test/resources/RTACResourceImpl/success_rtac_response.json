@@ -2,33 +2,33 @@
   "holdings" : [ {
     "id" : "1a2f476a-436b-4530-82fe-b21a22d55514",
     "location" : "Annex",
-    "callNumber" : "MCN FICTION",
+    "callNumber" : "MCN FICTION suff1",
     "status" : "Checked out",
     "volume": "(8 1999)",
     "dueDate" : "2017-10-17T08:43:15.000+0000"
   }, {
     "id" : "b116cfe0-b75f-4e12-bdb7-61b08505e164",
     "location" : "Popular Reading Collection",
-    "callNumber" : "MCN FICTION",
+    "callNumber" : "MCN FICTION suff1",
     "volume": "(9 1999)",
     "status" : "Checked out",
     "dueDate" : "2017-11-27T08:43:15.000+0000"
   }, {
     "id" : "a754a5d1-6bd4-4f41-8239-87b7afecccc6",
     "location" : "Popular Reading Collection",
-    "callNumber" : "MCN FICTION",
+    "callNumber" : "MCN FICTION suff1",
     "volume": "(10 1999)",
     "status" : "Available"
   }, {
     "id" : "650559de-a159-4620-a923-11f38cfcdb87",
     "location" : "Demo library",
-    "callNumber" : "13579.0",
+    "callNumber" : "prefx2 13579.0 suffx2",
     "status" : "Checked out",
     "dueDate" : "2018-02-27T08:43:15.000+0000"
   }, {
     "id" : "64a37e8b-1967-4a7e-a20f-d7d2da96e8f6",
     "location" : "Media library",
-    "callNumber" : "13579.0",
+    "callNumber" : "prefx2 13579.0 suffx2",
     "status" : "Checked out",
     "dueDate" : "2018-03-27T08:43:15.000+0000"
   } ]
