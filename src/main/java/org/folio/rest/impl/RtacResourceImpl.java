@@ -154,7 +154,9 @@ public final class RtacResourceImpl implements Rtac {
         try {
           cfs.put(httpClient.request("/inventory/items?limit=" + Integer.MAX_VALUE
               + QUERY + encode("holdingsRecordId==" + jo.getString("id")), okapiHeaders),
-              jo.getString("callNumber"));
+            assembleCallNumber( jo.getString("callNumber"),
+                                jo.getString("callNumberPrefix"),
+                                jo.getString("callNumberSuffix")));
         } catch (Exception e) {
           throw new CompletionException(e);
         }
@@ -162,6 +164,16 @@ public final class RtacResourceImpl implements Rtac {
     }
 
     return convertFolioItemListToRtac(cfs);
+  }
+
+  private String assembleCallNumber(String callNumber, String prefix, String suffix) {
+    if (prefix != null && !prefix.isEmpty()) {
+      callNumber = prefix + " " + callNumber;
+    }
+    if (suffix != null && !suffix.isEmpty()) {
+      callNumber = callNumber + " " + suffix;
+    }
+    return callNumber;
   }
 
   CompletableFuture<Holdings> checkForLoans(Holdings holdings,

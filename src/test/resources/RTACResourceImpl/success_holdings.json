@@ -5,6 +5,7 @@
 			"instanceId": "76d5a72a-af24-4ac6-8e73-4e39604f6f59",
 			"permanentLocationId": "b241764c-1466-4e1d-a028-1a3684a5da87",
 			"callNumber": "MCN FICTION",
+      "callNumberSuffix" : "suff1",
 			"holdingsStatements": [
 				"Line 1b",
 				"Line 2b"
@@ -21,6 +22,8 @@
 			"instanceId": "76d5a72a-af24-4ac6-8e73-4e39604f6f59",
 			"permanentLocationId": "b241764c-1466-4e1d-a028-1a3684a5da87",
 			"callNumber": "13579.0",
+      "callNumberPrefix" : "prefx2",
+      "callNumberSuffix" : "suffx2",
 			"holdingsStatements": [
 				"Line 1b",
 				"Line 2b"
