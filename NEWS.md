@@ -1,3 +1,6 @@
+## 1.2.4 2019-09-12
+ * [MODRTAC-16](https://issues.folio.org/browse/MODRTAC-16): adding suffix and prefix to call numbers.
+
 ## 1.2.3 2019-07-24
  * [MODRTAC-15](https://issues.folio.org/browse/MODRTAC-15): Requires either `login` `5.0` or
    `6.0`
