@@ -154,9 +154,9 @@ public final class RtacResourceImpl implements Rtac {
         try {
           cfs.put(httpClient.request("/inventory/items?limit=" + Integer.MAX_VALUE
               + QUERY + encode("holdingsRecordId==" + jo.getString("id")), okapiHeaders),
-            assembleCallNumber( jo.getString("callNumber"),
-                                jo.getString("callNumberPrefix"),
-                                jo.getString("callNumberSuffix")));
+              assembleCallNumber(jo.getString("callNumber"),
+                                 jo.getString("callNumberPrefix"),
+                                 jo.getString("callNumberSuffix")));
         } catch (Exception e) {
           throw new CompletionException(e);
         }
