@@ -1,3 +1,8 @@
+## 1.3.0 2019-12-04
+ * [MODRTAC-25](https://issues.folio.org/browse/MODRTAC-25): Update RMB to 29.1.0
+ * [MODRTAC-20](https://issues.folio.org/browse/MODRTAC-20): Add `holdings-storage` 4.0
+ * [MODRTAC-19](https://issues.folio.org/browse/MODRTAC-19): Add `circulation` 9.0
+
 ## 1.2.4 2019-09-12
  * [MODRTAC-16](https://issues.folio.org/browse/MODRTAC-16): adding suffix and prefix to call numbers.
 
