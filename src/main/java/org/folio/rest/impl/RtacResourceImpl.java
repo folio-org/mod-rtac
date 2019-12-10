@@ -1,5 +1,9 @@
 package org.folio.rest.impl;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -15,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -167,10 +170,10 @@ public final class RtacResourceImpl implements Rtac {
   }
 
   private String assembleCallNumber(String callNumber, String prefix, String suffix) {
-    if (prefix != null && !prefix.isEmpty()) {
+    if (isNotEmpty(prefix)) {
       callNumber = prefix + " " + callNumber;
     }
-    if (suffix != null && !suffix.isEmpty()) {
+    if (isNotEmpty(suffix)) {
       callNumber = callNumber + " " + suffix;
     }
     return callNumber;
@@ -236,9 +239,9 @@ public final class RtacResourceImpl implements Rtac {
   }
 
   private String getVolume(JsonObject item) {
-    final Optional<String> enumeration = Optional.ofNullable(item.getString("enumeration"));
-    final Optional<String> chronology = Optional.ofNullable(item.getString("chronology"));
-    final Optional<String> volume = Optional.ofNullable(item.getString("volume"));
+    final String enumeration = item.getString("enumeration");
+    final String chronology = item.getString("chronology");
+    final String volume = item.getString("volume");
 
     // The rules for generating "volume" are as follows:
     // |data set                     |"volume"                    |
@@ -250,17 +253,21 @@ public final class RtacResourceImpl implements Rtac {
     // |chronology volume            |(<volume>)                  |
     // |chronology                   |(<chronology>)              |
 
-    final StringJoiner sj = new StringJoiner(" ", "(", ")");
+    final StringJoiner sj = new StringJoiner(" ", "(", ")").setEmptyValue("");
 
-    return enumeration
-        .map(e -> chronology
-          .map(c -> sj.add(e).add(c).toString())
-          .orElse(sj.add(e).toString()))
-        .orElseGet(() -> volume
-            .map(v -> sj.add(v).toString())
-            .orElseGet(() -> chronology
-                .map(c -> sj.add(c).toString())
-                .orElse(null)));
+    if (isNotBlank(enumeration)) {
+      sj.add(enumeration);
+      if (isNotBlank(chronology)) {
+        sj.add(chronology);
+      }
+    } else if (isNotBlank(volume)) {
+      sj.add(volume);
+    } else if (isNotBlank(chronology)) {
+      sj.add(chronology);
+    }
+
+    
+    return defaultIfEmpty(sj.toString(), null);
   }
 
   private String encode(String value) {
