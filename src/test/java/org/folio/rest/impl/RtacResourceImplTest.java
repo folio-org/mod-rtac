@@ -396,7 +396,7 @@ public class RtacResourceImplTest {
     final JsonObject expectedJson = new JsonObject(
         readMockFile("RTACResourceImpl/success_rtac_response_volume_formatting.json"));
 
-    final int expectedSize = 7;
+    final int expectedSize = 8;
     assertEquals(expectedSize, json.getJsonArray("holdings").size());
     for (int i = 0; i < expectedSize; i++) {
       final JsonObject jo = json.getJsonArray("holdings").getJsonObject(i);
