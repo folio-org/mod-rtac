@@ -1,3 +1,7 @@
+## 1.4.0 2020-03-18
+ * [MODRTAC-17](https://issues.folio.org/browse/MODRTAC-17): Removing Volume leaves "tl ()" displaying in EDS
+ * [MODRTAC-28](https://issues.folio.org/browse/MODRTAC-28): Migrate to new major version of item-storage, inventory, circulation
+
 ## 1.3.0 2019-12-04
  * [MODRTAC-25](https://issues.folio.org/browse/MODRTAC-25): Update RMB to 29.1.0
  * [MODRTAC-20](https://issues.folio.org/browse/MODRTAC-20): Add `holdings-storage` 4.0
