@@ -1,3 +1,6 @@
+## 1.5.0 2020-06-12
+ * [MODRTAC-33](https://issues.folio.org/browse/MODRTAC-33): Upgrade RMB to 30.0.2
+
 ## 1.4.0 2020-03-18
  * [MODRTAC-17](https://issues.folio.org/browse/MODRTAC-17): Removing Volume leaves "tl ()" displaying in EDS
  * [MODRTAC-28](https://issues.folio.org/browse/MODRTAC-28): Migrate to new major version of item-storage, inventory, circulation
