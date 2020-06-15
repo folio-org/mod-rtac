@@ -20,7 +20,6 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
-
 import java.util.stream.Stream;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.tools.PomReader;
@@ -83,39 +82,39 @@ public class RtacResourceImplTest {
       if (req.path().equals(String.format("/inventory/instances/%s",
           "76d5a72a-af24-4ac6-8e73-4e39604f6f59"))) {
         req.response()
-          .setStatusCode(200)
-          .putHeader("content-type", "application/json")
-          .end(readMockFile("RTACResourceImpl/success_instance.json"));
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_instance.json"));
       } else if (req.path().equals(String.format("/inventory/instances/%s",
           "b285980f-a040-4e62-bc40-e097bec5b09e"))) {
         req.response()
-          .setStatusCode(404)
-          .putHeader("content-type", "text/plain")
-          .end(readMockFile("RTACResourceImpl/not_found_instance.txt"));
+            .setStatusCode(404)
+            .putHeader("content-type", "text/plain")
+            .end(readMockFile("RTACResourceImpl/not_found_instance.txt"));
       } else if (req.path().equals(String.format("/inventory/instances/%s",
           "1613697d-5e18-49b0-9613-08443b87cbc7"))) {
         req.response()
-          .setStatusCode(200)
-          .putHeader("content-type", "application/json")
-          .end(readMockFile("RTACResourceImpl/success_instance_2.json"));
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_instance_2.json"));
       } else if (req.path().equals(String.format("/inventory/instances/%s",
           "2ae0635e-5534-4b7d-b28f-f0816329baa3"))) {
         req.response()
-          .setStatusCode(200)
-          .putHeader("content-type", "application/json")
-          .end(readMockFile("RTACResourceImpl/success_instance_3.json"));
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_instance_3.json"));
       } else if (req.path().equals(String.format("/inventory/instances/%s",
           "0085f8ed-80ba-435b-8734-d3262aa4fc07"))) {
         req.response()
-          .setStatusCode(200)
-          .putHeader("content-type", "application/json")
-          .end(readMockFile("RTACResourceImpl/success_instance_4.json"));
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_instance_4.json"));
       } else if (req.path().equals(String.format("/inventory/instances/%s",
           "a50aa30b-33d0-4067-89cc-67a61df8bc84"))) {
         req.response()
-          .setStatusCode(200)
-          .putHeader("content-type", "application/json")
-          .end(readMockFile("RTACResourceImpl/success_instance_5.json"));
+            .setStatusCode(200)
+            .putHeader("content-type", "application/json")
+            .end(readMockFile("RTACResourceImpl/success_instance_5.json"));
       } else if (req.path().equals("/holdings-storage/holdings")) {
         if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
@@ -124,45 +123,45 @@ public class RtacResourceImplTest {
           if (badDataValue != null) {
             if (badDataValue.equals("java.lang.NullPointerException")) {
               req.response()
-                .setStatusCode(200)
-                .putHeader("content-type", "application/json")
-                .end("{}");
+                  .setStatusCode(200)
+                  .putHeader("content-type", "application/json")
+                  .end("{}");
             } else {
               req.response()
-                .setStatusCode(Integer.parseInt(badDataValue))
-                .putHeader("content-type", "text/plain")
-                .end(badDataValue);
+                  .setStatusCode(Integer.parseInt(badDataValue))
+                  .putHeader("content-type", "text/plain")
+                  .end(badDataValue);
             }
           } else {
             req.response()
-              .setStatusCode(200)
-              .putHeader("content-type", "application/json")
-              .end(readMockFile("RTACResourceImpl/success_holdings.json"));
+                .setStatusCode(200)
+                .putHeader("content-type", "application/json")
+                .end(readMockFile("RTACResourceImpl/success_holdings.json"));
           }
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("instanceId==1613697d-5e18-49b0-9613-08443b87cbc7")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_no_holdings.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_no_holdings.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("instanceId==2ae0635e-5534-4b7d-b28f-f0816329baa3")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_holdings_2.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_holdings_2.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("instanceId==0085f8ed-80ba-435b-8734-d3262aa4fc07")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_holdings_3.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_holdings_3.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("instanceId==a50aa30b-33d0-4067-89cc-67a61df8bc84")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_holdings_4.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_holdings_4.json"));
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -170,33 +169,33 @@ public class RtacResourceImplTest {
         if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("holdingsRecordId==13269e78-d7bd-4e7c-b06a-0a979238f3fd")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_items_1.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_items_1.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("holdingsRecordId==9fec4043-6963-4e2f-8e48-c12f914462bb")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_items_2.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_items_2.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("holdingsRecordId==2fad39ae-03f4-496f-9ae9-533ce08c7344")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_items_3.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_items_3.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("holdingsRecordId==aa3487a4-af65-4285-939c-05601b98827c")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_items_4.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_items_4.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE, encode("holdingsRecordId==2839b3fa-a47b-4283-bdc4-6ee54ac67b38")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_items_5.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_items_5.json"));
         } else {
           req.response().setStatusCode(500).end("Unexpected call: " + req.path());
         }
@@ -205,60 +204,60 @@ public class RtacResourceImplTest {
             Integer.MAX_VALUE,
             encode("(itemId==1a2f476a-436b-4530-82fe-b21a22d55514 and status.name==Open)")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_loans_1.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_loans_1.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
             encode("(itemId==b116cfe0-b75f-4e12-bdb7-61b08505e164 and status.name==Open)")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_loans_2.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_loans_2.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
             encode("(itemId==a754a5d1-6bd4-4f41-8239-87b7afecccc6 and status.name==Open)")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_loans_3.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_loans_3.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
             encode("(itemId==650559de-a159-4620-a923-11f38cfcdb87 and status.name==Open)")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_loans_4.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_loans_4.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
             encode("(itemId==64a37e8b-1967-4a7e-a20f-d7d2da96e8f6 and status.name==Open)")))) {
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_loans_5.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_loans_5.json"));
         } else if (req.query().equals(String.format("limit=%d&query=%s",
             Integer.MAX_VALUE,
             encode("(itemId==53462dc6-55aa-4b99-8717-6ae8bbef5331 and status.name==Open)")))) {
           final String badDataValue = req.getHeader("x-okapi-bad-data");
           if (badDataValue != null) {
             req.response()
-              .setStatusCode(500)
-              .putHeader("content-type", "text/plain")
-              .end("Server Error");
+                .setStatusCode(500)
+                .putHeader("content-type", "text/plain")
+                .end("Server Error");
           } else {
             req.response()
-              .setStatusCode(200)
-              .putHeader("content-type", "application/json")
-              .end(readMockFile("RTACResourceImpl/success_loans_6.json"));
+                .setStatusCode(200)
+                .putHeader("content-type", "application/json")
+                .end(readMockFile("RTACResourceImpl/success_loans_6.json"));
           }
         } else {
           // Instead of an error here, return no results. This way we don't have to supply each
           // item ID above with an empty response. If we need to test errors, we can do something
           // different.
           req.response()
-            .setStatusCode(200)
-            .putHeader("content-type", "application/json")
-            .end(readMockFile("RTACResourceImpl/success_loans_3.json"));
+              .setStatusCode(200)
+              .putHeader("content-type", "application/json")
+              .end(readMockFile("RTACResourceImpl/success_loans_3.json"));
         }
       } else {
         req.response().setStatusCode(500).end("Unexpected call: " + req.path());

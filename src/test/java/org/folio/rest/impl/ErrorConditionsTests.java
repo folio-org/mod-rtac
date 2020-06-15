@@ -6,11 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.Holdings;
 import org.junit.jupiter.api.Test;
