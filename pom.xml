@@ -15,7 +15,7 @@
   </licenses>
 
   <properties>
-    <aspectj.version>1.9.4</aspectj.version>
+    <aspectj.version>1.9.6</aspectj.version>
     <module_name>mod-rtac</module_name>
     <http.port>8081</http.port>
     <ramlfiles_path>${basedir}/ramls</ramlfiles_path>
@@ -64,6 +64,12 @@
       <groupId>org.folio</groupId>
       <artifactId>domain-models-api-interfaces</artifactId>
       <version>${raml-module-builder.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-collections4</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
@@ -152,6 +158,12 @@
       <artifactId>commons-lang3</artifactId>
       <version>3.9</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.4</version>
+    </dependency>
+
     <!-- test dependencies -->
     <dependency>
       <groupId>io.vertx</groupId>
@@ -290,7 +302,7 @@
         <configuration>
           <verbose>true</verbose>
           <showWeaveInfo>false</showWeaveInfo>
-          <complianceLevel>1.8</complianceLevel>
+          <complianceLevel>11</complianceLevel>
           <XaddSerialVersionUID>true</XaddSerialVersionUID>
           <showWeaveInfo>true</showWeaveInfo>
           <aspectLibraries>
@@ -425,28 +437,6 @@
             <goals>
               <goal>run</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>properties-maven-plugin</artifactId>
-        <version>1.0.0</version>
-        <executions>
-          <execution>
-            <id>set-system-properties</id>
-            <goals>
-              <goal>set-system-properties</goal>
-            </goals>
-            <configuration>
-              <properties>
-                <property>
-                  <name>log4j.configurationFile</name>
-                  <value>${project.baseUri}src/test/resources/log4j2-test.xml</value>
-                </property>
-              </properties>
-            </configuration>
           </execution>
         </executions>
       </plugin>
