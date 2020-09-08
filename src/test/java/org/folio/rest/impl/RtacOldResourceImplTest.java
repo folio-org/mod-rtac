@@ -6,6 +6,20 @@ import static org.folio.rtac.utils.Utils.readMockFile;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.util.stream.Stream;
+
+import org.folio.rest.RestVerticle;
+import org.folio.rest.tools.PomReader;
+import org.folio.rtac.utils.Utils;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
@@ -20,22 +34,10 @@ import io.vertx.core.logging.LoggerFactory;
 import io.vertx.junit5.Checkpoint;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
-import java.util.stream.Stream;
-import org.folio.rest.RestVerticle;
-import org.folio.rest.tools.PomReader;
-import org.folio.rtac.utils.Utils;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 @ExtendWith(VertxExtension.class)
-public class RtacResourceImplTest {
-  private final Logger logger = LoggerFactory.getLogger(RtacResourceImplTest.class);
+public class RtacOldResourceImplTest {
+  private final Logger logger = LoggerFactory.getLogger(RtacOldResourceImplTest.class);
 
   private String moduleName;
   private String moduleVersion;
