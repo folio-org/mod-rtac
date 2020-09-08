@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "Batch holdings response",
+  "properties": {
+    "records": {
+      "description": "Real Time Availability Check (RTAC) holding details",
+      "type": "array",
+      "id": "holdingsList",
+      "items": {
+        "type": "object",
+        "$ref": "rtac-holdings.json"
+      }
+    }
+  },
+  "additionalItems": false,
+  "additionalProperties": false
+}

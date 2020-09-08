@@ -4,6 +4,7 @@
   "type": "object",
   "description": "Real Time Availability Check (RTAC) holding details",
   "additionalProperties": false,
+  "javaType" : "org.folio.rest.jaxrs.model.RtacHolding",
   "properties": {
     "id": {
       "type": "string",
@@ -23,12 +24,19 @@
     },
     "dueDate": {
       "type": "string",
-      "format": "date-time",
       "description": "The date when the holding will be available"
     },
     "volume": {
       "type": "string",
       "description": "Volume details for the holding (item)"
+    },
+    "temporaryLoanType": {
+      "type": "string",
+      "description": "Name of the temporary loan type for a given item"
+    },
+    "permanentLoanType": {
+      "type": "string",
+      "description": "Name of the default loan type for a given item"
     }
   },
   "required": [

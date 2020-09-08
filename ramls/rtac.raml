@@ -8,8 +8,11 @@ documentation:
     content: This module allows 3rd party discovery services to check for FOLIO inventory availability
 
 types:
-  holdings: !include holdings.json
-  holding: !include holding.json
+  rtacHoldings: !include rtac-holdings.json
+  rtactHolding: !include rtac-holding.json
+  rtacHoldingsBatch: !include rtac-holdings-batch.json
+  inventoryHoldingsAndItems: !include inventory-hierarchy/inventory-instance-records.json
+  rtacRequest: !include rtac-request.json
 
 traits:
   language: !include raml-util/traits/language.raml
@@ -20,20 +23,21 @@ resourceTypes:
 /rtac:
   displayName: RTAC
   description: RTAC operations
-  /{id}:
-    displayName: RTAC for the specified id
-    description: Returns availability details about each item for the given instance id
-    type:
-      item-collection-get:
-        exampleItem: !include examples/holdings.sample
-        schema: holdings
-    uriParameters:
-      id:
-        description: "The UUID of a FOLIO instance"
-        type: string
-        pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
-    get:
+  /batch:
+    displayName: Batch API to get instances with items and holdings from inventory
+    post:
+      description: Retrieve holding information from inventory in a batch
+      body:
+        application/json:
+          description: List of inventory instance identifiers
+          type: rtacRequest
+          example: !include examples/rtac-request.sample
       responses:
+        200:
+          body:
+            application/json:
+              type: rtacHoldingsBatch
+
         400:
           description: "Bad request"
           body:
@@ -45,3 +49,8 @@ resourceTypes:
           body:
             text/plain:
               example: "Access Denied"
+        500:
+            description: "Internal server error"
+            body:
+              text/plain:
+                example: "Internal server error"

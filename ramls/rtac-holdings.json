@@ -3,13 +3,18 @@
   "type": "object",
   "additionalProperties": false,
   "description": "Collection of holdings",
+  "javaType" : "org.folio.rest.jaxrs.model.RtacHoldings",
   "properties": {
+    "instanceId": {
+      "type": "string",
+      "$ref": "uuid.json"
+    },
     "holdings": {
       "description": "Collection of holdings",
       "type": "array",
       "items": {
         "type": "object",
-        "$ref": "holding.json"
+        "$ref": "rtac-holding.json"
       }
     }
   },

@@ -64,12 +64,12 @@
       <groupId>org.folio</groupId>
       <artifactId>domain-models-api-interfaces</artifactId>
       <version>${raml-module-builder.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-collections4</artifactId>
-        </exclusion>
-      </exclusions>
+<!--      <exclusions>-->
+<!--        <exclusion>-->
+<!--          <groupId>org.apache.commons</groupId>-->
+<!--          <artifactId>commons-collections4</artifactId>-->
+<!--        </exclusion>-->
+<!--      </exclusions>-->
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
@@ -122,6 +122,10 @@
       <artifactId>vertx-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web-client</artifactId>
+    </dependency>
+    <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>2.2</version>
@@ -156,12 +160,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.9</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-collections4</artifactId>
-      <version>4.4</version>
+      <version>3.11</version>
     </dependency>
 
     <!-- test dependencies -->
@@ -441,28 +440,28 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <configLocation>google_checks.xml</configLocation>
-          <linkXRef>false</linkXRef>
-          <violationSeverity>warning</violationSeverity>
-          <includeTestSourceDirectory>true</includeTestSourceDirectory>
-          <sourceDirectories>
-            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-          </sourceDirectories>
-        </configuration>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
+<!--        <version>3.1.1</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <goals>-->
+<!--              <goal>check</goal>-->
+<!--            </goals>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--        <configuration>-->
+<!--          <configLocation>google_checks.xml</configLocation>-->
+<!--          <linkXRef>false</linkXRef>-->
+<!--          <violationSeverity>warning</violationSeverity>-->
+<!--          <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
+<!--          <sourceDirectories>-->
+<!--            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>-->
+<!--            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>-->
+<!--          </sourceDirectories>-->
+<!--        </configuration>-->
+<!--      </plugin>-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -498,22 +497,22 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>analyze</id>
-            <goals>
-              <goal>analyze-only</goal>
-            </goals>
-            <configuration>
-              <ignoreNonCompile>true</ignoreNonCompile>
-              <failOnWarning>true</failOnWarning>
-              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.6</ignoredDependencies>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+<!--      <plugin>-->
+<!--        <artifactId>maven-dependency-plugin</artifactId>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <id>analyze</id>-->
+<!--            <goals>-->
+<!--              <goal>analyze-only</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <ignoreNonCompile>true</ignoreNonCompile>-->
+<!--              <failOnWarning>true</failOnWarning>-->
+<!--              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.6</ignoredDependencies>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
