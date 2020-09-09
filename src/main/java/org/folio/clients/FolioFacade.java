@@ -9,7 +9,6 @@ import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
@@ -35,7 +34,7 @@ public class FolioFacade {
             .map(folioToRtacMapper::mapToRtac)
             .collect(Collectors.toList());
           logger.info("Mapping inventory instances: {}", rtacHoldingsList.size());
-          promise.complete(new RtacHoldingsBatch().withRecords(rtacHoldingsList));
+          promise.complete(new RtacHoldingsBatch().withHoldings(rtacHoldingsList));
           return promise.future();
         }
       ).onFailure(promise::fail);

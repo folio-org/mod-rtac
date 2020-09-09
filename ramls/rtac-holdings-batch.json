@@ -3,7 +3,7 @@
   "type": "object",
   "description": "Batch holdings response",
   "properties": {
-    "records": {
+    "holdings": {
       "description": "Real Time Availability Check (RTAC) holding details",
       "type": "array",
       "id": "holdingsList",

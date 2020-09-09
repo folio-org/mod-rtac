@@ -49,7 +49,7 @@ class InventoryClient extends FolioClient {
     final var httpClientRequest = buildRequest();
     final var inventoryClientRequest = httpClientRequest.handler(
       resp -> {
-        resp.endHandler(eh -> httpClient.close());
+//        resp.endHandler(eh -> httpClient.close());
         final var instances = new ArrayList<InventoryHoldingsAndItems>();
         final var i = resp.statusCode();
         if (i != 200) {
