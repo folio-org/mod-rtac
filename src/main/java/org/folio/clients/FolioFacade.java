@@ -1,16 +1,14 @@
 package org.folio.clients;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.folio.mappers.FolioToRtacMapper;
-import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
-
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.folio.mappers.FolioToRtacMapper;
+import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 
 public class FolioFacade {
 
@@ -24,19 +22,25 @@ public class FolioFacade {
     this.circulationClient = new CirculationClient(okapiHeaders);
   }
 
+  /**
+   * Returns batch info for instances items and holdings.
+   *
+   * @param instanceIds passed instances ids
+   * @return items and holdings for instances
+   */
   public Future<RtacHoldingsBatch> getItemAndHoldingInfo(List<String> instanceIds) {
     Promise<RtacHoldingsBatch> promise = Promise.promise();
 
     return inventoryClient.getItemAndHoldingInfo(instanceIds)
-      .compose(circulationClient::getLoansForItems)
-      .compose(instances -> {
-          final var rtacHoldingsList = instances.stream()
-            .map(folioToRtacMapper::mapToRtac)
-            .collect(Collectors.toList());
-          logger.info("Mapping inventory instances: {}", rtacHoldingsList.size());
-          promise.complete(new RtacHoldingsBatch().withHoldings(rtacHoldingsList));
-          return promise.future();
-        }
-      ).onFailure(promise::fail);
+        .compose(circulationClient::getLoansForItems)
+        .compose(instances -> {
+                final var rtacHoldingsList = instances.stream()
+                    .map(folioToRtacMapper::mapToRtac)
+                    .collect(Collectors.toList());
+                logger.info("Mapping inventory instances: {}", rtacHoldingsList.size());
+                promise.complete(new RtacHoldingsBatch().withHoldings(rtacHoldingsList));
+                return promise.future();
+              }
+        ).onFailure(promise::fail);
   }
 }

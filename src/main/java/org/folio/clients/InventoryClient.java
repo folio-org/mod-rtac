@@ -4,14 +4,6 @@ import static javax.ws.rs.core.HttpHeaders.ACCEPT;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
-import org.folio.rtac.rest.exceptions.HttpException;
-
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -23,6 +15,12 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.parsetools.JsonParser;
 import io.vertx.core.parsetools.impl.JsonParserImpl;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.apache.commons.collections4.CollectionUtils;
+import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
+import org.folio.rtac.rest.exceptions.HttpException;
 
 class InventoryClient extends FolioClient {
 
@@ -48,29 +46,30 @@ class InventoryClient extends FolioClient {
 
     final var httpClientRequest = buildRequest();
     final var inventoryClientRequest = httpClientRequest.handler(
-      resp -> {
-//        resp.endHandler(eh -> httpClient.close());
-        final var instances = new ArrayList<InventoryHoldingsAndItems>();
-        final var i = resp.statusCode();
-        if (i != 200) {
-          promise.fail(new HttpException(resp.statusCode(), resp.statusMessage()));
-        } else {
-          JsonParser jp = new JsonParserImpl(resp);
-          jp.objectValueMode();
-          jp.handler(e -> {
-            try {
-              var inventoryHoldingsAndItems = e.objectValue().mapTo(InventoryHoldingsAndItems.class);
-              instances.add(inventoryHoldingsAndItems);
-            } catch (Exception exception) {
-              logger.error(exception.getMessage(), exception);
-            }
-          });
-          jp.endHandler(e -> {
-            logger.info("Instances received from inventory: {}", instances.size());
-            promise.complete(instances);
-          });
+        resp -> {
+          // resp.endHandler(eh -> httpClient.close());
+          final var instances = new ArrayList<InventoryHoldingsAndItems>();
+          final var i = resp.statusCode();
+          if (i != 200) {
+            promise.fail(new HttpException(resp.statusCode(), resp.statusMessage()));
+          } else {
+            JsonParser jp = new JsonParserImpl(resp);
+            jp.objectValueMode();
+            jp.handler(e -> {
+              try {
+                var inventoryHoldingsAndItems = e.objectValue()
+                    .mapTo(InventoryHoldingsAndItems.class);
+                instances.add(inventoryHoldingsAndItems);
+              } catch (Exception exception) {
+                logger.error(exception.getMessage(), exception);
+              }
+            });
+            jp.endHandler(e -> {
+              logger.info("Instances received from inventory: {}", instances.size());
+              promise.complete(instances);
+            });
+          }
         }
-      }
 
     );
 
@@ -87,10 +86,10 @@ class InventoryClient extends FolioClient {
 
     final var httpClientRequest = httpClient.postAbs(inventoryUrl)
 
-      .putHeader(OKAPI_TOKEN_KEY, okapiToken)
-      .putHeader(OKAPI_TENANT_KEY, tenantId)
-      .putHeader(ACCEPT, APPLICATION_JSON)
-      .putHeader(CONTENT_TYPE, APPLICATION_JSON);
+        .putHeader(OKAPI_TOKEN_KEY, okapiToken)
+        .putHeader(OKAPI_TENANT_KEY, tenantId)
+        .putHeader(ACCEPT, APPLICATION_JSON)
+        .putHeader(CONTENT_TYPE, APPLICATION_JSON);
 
     httpClientRequest.setChunked(true);
     return httpClientRequest;

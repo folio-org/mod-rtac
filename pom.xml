@@ -15,7 +15,7 @@
   </licenses>
 
   <properties>
-    <aspectj.version>1.9.6</aspectj.version>
+    <aspectj.version>1.9.5</aspectj.version>
     <module_name>mod-rtac</module_name>
     <http.port>8081</http.port>
     <ramlfiles_path>${basedir}/ramls</ramlfiles_path>
@@ -64,12 +64,6 @@
       <groupId>org.folio</groupId>
       <artifactId>domain-models-api-interfaces</artifactId>
       <version>${raml-module-builder.version}</version>
-<!--      <exclusions>-->
-<!--        <exclusion>-->
-<!--          <groupId>org.apache.commons</groupId>-->
-<!--          <artifactId>commons-collections4</artifactId>-->
-<!--        </exclusion>-->
-<!--      </exclusions>-->
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
@@ -126,11 +120,6 @@
       <artifactId>vertx-web-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>2.2</version>
-    </dependency>
-    <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
       <version>2.6</version>
@@ -161,6 +150,11 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.1</version>
     </dependency>
 
     <!-- test dependencies -->
@@ -318,18 +312,18 @@
             </goals>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.9.5</version>
-          </dependency>
-          <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjtools</artifactId>
-            <version>1.9.5</version>
-          </dependency>
-        </dependencies>
+<!--        <dependencies>-->
+<!--          <dependency>-->
+<!--            <groupId>org.aspectj</groupId>-->
+<!--            <artifactId>aspectjrt</artifactId>-->
+<!--            <version>${aspectj.version}</version>-->
+<!--          </dependency>-->
+<!--          <dependency>-->
+<!--            <groupId>org.aspectj</groupId>-->
+<!--            <artifactId>aspectjtools</artifactId>-->
+<!--            <version>1.9.5</version>-->
+<!--          </dependency>-->
+<!--        </dependencies>-->
       </plugin>
 
       <plugin>
@@ -440,28 +434,29 @@
         </executions>
       </plugin>
 
-<!--      <plugin>-->
-<!--        <groupId>org.apache.maven.plugins</groupId>-->
-<!--        <artifactId>maven-checkstyle-plugin</artifactId>-->
-<!--        <version>3.1.1</version>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <goals>-->
-<!--              <goal>check</goal>-->
-<!--            </goals>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--        <configuration>-->
-<!--          <configLocation>google_checks.xml</configLocation>-->
-<!--          <linkXRef>false</linkXRef>-->
-<!--          <violationSeverity>warning</violationSeverity>-->
-<!--          <includeTestSourceDirectory>true</includeTestSourceDirectory>-->
-<!--          <sourceDirectories>-->
-<!--            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>-->
-<!--            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>-->
-<!--          </sourceDirectories>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <linkXRef>false</linkXRef>
+          <violationSeverity>warning</violationSeverity>
+          <includeTestSourceDirectory>false</includeTestSourceDirectory>
+          <sourceDirectories>
+            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
+          </sourceDirectories>
+          <excludes>${project.build.testSourceDirectory}/*</excludes>
+        </configuration>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -486,6 +481,7 @@
                 <filter>
                   <artifact>*:*</artifact>
                   <excludes>
+                    <exclude>module-info.class</exclude>
                     <exclude>**/log4j2.properties</exclude>
                     <exclude>**/log4j.properties</exclude>
                   </excludes>
@@ -497,22 +493,22 @@
         </executions>
       </plugin>
 
-<!--      <plugin>-->
-<!--        <artifactId>maven-dependency-plugin</artifactId>-->
-<!--        <executions>-->
-<!--          <execution>-->
-<!--            <id>analyze</id>-->
-<!--            <goals>-->
-<!--              <goal>analyze-only</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <ignoreNonCompile>true</ignoreNonCompile>-->
-<!--              <failOnWarning>true</failOnWarning>-->
-<!--              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.6</ignoredDependencies>-->
-<!--            </configuration>-->
-<!--          </execution>-->
-<!--        </executions>-->
-<!--      </plugin>-->
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>analyze</id>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+            <configuration>
+              <ignoreNonCompile>true</ignoreNonCompile>
+              <failOnWarning>true</failOnWarning>
+              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.6</ignoredDependencies>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
