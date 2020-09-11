@@ -4,25 +4,8 @@
   "provides": [
     {
       "id": "rtac",
-      "version": "1.4",
+      "version": "2.0",
       "handlers": [
-        {
-          "methods": ["GET"],
-          "pathPattern": "/rtac",
-          "permissionsRequired": ["rtac.holdings.collection.get"]
-        },
-        {
-          "methods": ["GET"],
-          "pathPattern": "/rtac/{id}",
-          "permissionsRequired": ["rtac.holdings.item.get"],
-          "modulePermissions": [
-            "inventory.instances.item.get",
-            "inventory-storage.holdings.collection.get",
-            "inventory.items.collection.get",
-            "circulation.loans.collection.get",
-            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post"
-          ]
-        },
         {
           "methods": ["POST"],
           "pathPattern": "/rtac/batch",
@@ -39,6 +22,10 @@
     {
       "id": "inventory-hierarchy",
       "version": "0.1"
+    },
+    {
+      "id": "circulation",
+      "version": "3.0 4.0 5.0 6.0 7.0 8.0 9.0"
     }
   ],
   "permissionSets": [
@@ -58,7 +45,7 @@
       "description": "Entire set of permissions needed to use RTAC",
       "subPermissions": [
         "rtac.holdings.collection.get",
-        "rtac.holdings.item.get"
+        "rtac.batch.post"
       ]
     }
   ],
