@@ -55,14 +55,12 @@ class CirculationClient extends FolioClient {
 
     final var httpClientRequest = buildRequest();
     final var instances = new CopyOnWriteArrayList<InventoryHoldingsAndItems>();
-    var counter = 0;
     var futures = new ArrayList<Future>();
     for (InventoryHoldingsAndItems inventoryInstance : inventoryInstances) {
       final List<Item> items = inventoryInstance.getItems();
       if (CollectionUtils.isEmpty(items)) {
         continue;
       }
-      counter +=1;
 
       for (List<Item> itemList : ListUtils.partition(items, CIRCULATION_BATCH_SIZE)) {
         String cql = buildCql(itemList);
@@ -78,9 +76,6 @@ class CirculationClient extends FolioClient {
       }
     }).onFailure(promise::fail);
 
-//    if (counter == 0) {
-//      promise.complete(inventoryInstances);
-//    }
     return promise.future();
   }
 
