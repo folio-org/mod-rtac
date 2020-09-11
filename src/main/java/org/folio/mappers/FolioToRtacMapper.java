@@ -6,7 +6,6 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
 import java.util.StringJoiner;
-
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
@@ -14,6 +13,12 @@ import org.folio.rest.jaxrs.model.RtacHoldings;
 
 public class FolioToRtacMapper {
 
+  /**
+   * RTac mapper class.
+   *
+   * @param instance items and holdings
+   * @return RTac holdings
+   */
   public RtacHoldings mapToRtac(InventoryHoldingsAndItems instance) {
     final var rtacHoldings = new RtacHoldings();
 
@@ -21,14 +26,14 @@ public class FolioToRtacMapper {
 
     for (Item item : instance.getItems()) {
       final var rtacHolding = new RtacHolding()
-        .withId(item.getId())
-        .withLocation(mapLocation(item))
-        .withCallNumber(mapCallNumber(item))
-        .withStatus(item.getStatus())
-        .withTemporaryLoanType(item.getTemporaryLoanType())
-        .withPermanentLoanType(item.getPermanentLoanType())
-        .withDueDate(item.getDueDate())
-        .withVolume(mapVolume(item));
+          .withId(item.getId())
+          .withLocation(mapLocation(item))
+          .withCallNumber(mapCallNumber(item))
+          .withStatus(item.getStatus())
+          .withTemporaryLoanType(item.getTemporaryLoanType())
+          .withPermanentLoanType(item.getPermanentLoanType())
+          .withDueDate(item.getDueDate())
+          .withVolume(mapVolume(item));
       nested.add(rtacHolding);
     }
 
@@ -41,7 +46,8 @@ public class FolioToRtacMapper {
 
   private String mapCallNumber(Item item) {
     final var callNumber = item.getCallNumber();
-    return assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(), callNumber.getSuffix());
+    return assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(),
+        callNumber.getSuffix());
   }
 
   private String assembleCallNumber(String callNumber, String prefix, String suffix) {
@@ -55,15 +61,17 @@ public class FolioToRtacMapper {
   }
 
   /**
+   * Generating rules.
+   * <p/>
    * The rules for generating "volume" are as follows:
    * |data set                     |"volume"                    |
    * |-----------------------------|----------------------------|
-   * |enumeration                  |(<enumeration>)             |
-   * |enumeration chronology       |(<enumeration> <chronology>)|
-   * |enumeration chronology volume|(<enumeration> <chronology>)|
-   * |volume                       |(<volume>)                  |
-   * |chronology volume            |(<volume>)                  |
-   * |chronology                   |(<chronology>)              |
+   * |enumeration                  |(<enumeration/>)             |
+   * |enumeration chronology       |(<enumeration/> <chronology/>)|
+   * |enumeration chronology volume|(<enumeration/> <chronology/>)|
+   * |volume                       |(<volume/>)                  |
+   * |chronology volume            |(<volume/>)                  |
+   * |chronology                   |(<chronology/>)              |
    *
    * @param item - folio inventory item
    */
@@ -71,7 +79,6 @@ public class FolioToRtacMapper {
     final String enumeration = item.getEnumeration();
     final String chronology = item.getChronology();
     final String volume = item.getVolume();
-
 
     final StringJoiner sj = new StringJoiner(" ", "(", ")").setEmptyValue("");
 
