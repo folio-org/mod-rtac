@@ -9,8 +9,14 @@
       "items": {
         "$ref": "uuid.json"
       }
+    },
+    "fullPeriodicals": {
+      "description": "if set to true, then item-level information is added to all periodicals without holdings-level information",
+      "type": "boolean",
+      "default": false
     }
   },
+  "additionalProperties": false,
   "required": [
     "instanceIds"
   ]

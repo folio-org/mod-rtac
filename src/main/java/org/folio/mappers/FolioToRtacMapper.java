@@ -5,7 +5,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.Function;
+
+import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.LegacyHolding;
@@ -13,7 +17,18 @@ import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
 public class FolioToRtacMapper {
+
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final boolean fullPeriodicals;
+  private static final List<String> periodicalNames = List.of("journal", "newspaper");
+
+  public FolioToRtacMapper(boolean fullPeriodicals) {
+    this.fullPeriodicals = fullPeriodicals;
+  }
 
   /**
    * RTac mapper class.
@@ -25,21 +40,93 @@ public class FolioToRtacMapper {
     final var rtacHoldings = new RtacHoldings();
 
     final var nested = new ArrayList<RtacHolding>();
-
-    for (Item item : instance.getItems()) {
-      final var rtacHolding = new RtacHolding()
-          .withId(item.getId())
-          .withLocation(mapLocation(item))
-          .withCallNumber(mapCallNumber(item))
-          .withStatus(item.getStatus())
-          .withTemporaryLoanType(item.getTemporaryLoanType())
-          .withPermanentLoanType(item.getPermanentLoanType())
-          .withDueDate(item.getDueDate())
-          .withVolume(mapVolume(item));
-      nested.add(rtacHolding);
+    logger.info("Rtac handling periodicals: {}", fullPeriodicals);
+    if (!fullPeriodicals && isPeriodical(instance)) {
+      logger.debug("{} is a periodical, returning holding info", instance.getInstanceId());
+      instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
+    } else {
+      logger.debug("{} is NOT a periodical, returning item info", instance.getInstanceId());
+      instance.getItems().stream().map(fromItemToRtacHolding).forEach(nested::add);
     }
 
     return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+  }
+
+  private final Function<Item, RtacHolding> fromItemToRtacHolding = item -> new RtacHolding()
+    .withId(item.getId())
+    .withLocation(mapLocation(item))
+    .withCallNumber(mapCallNumber(item))
+    .withStatus(item.getStatus())
+    .withTemporaryLoanType(item.getTemporaryLoanType())
+    .withPermanentLoanType(item.getPermanentLoanType())
+    .withDueDate(item.getDueDate())
+    .withVolume(mapVolume(item));
+
+  /**
+   * This function is populating holding-level information for periodicals.
+   * The following php script was taken as an example:
+   * function holdingsLoad($response){
+   * <p>
+   * $data = json_decode($response,true);
+   * <p>
+   * $holdings = $data['holdingsRecords'];
+   * <p>
+   * echo '<holdings>';
+   * <p>
+   * foreach ($holdings as $holding){
+   * $statement = $holding['holdingsStatements'][0]['statement'];
+   * if ($statement == null){
+   * $statement = 'Multi';
+   * };
+   * echo '
+   * <holding>
+   * <id>'.$holding['id'] .'</id>
+   * <callNumber>'.htmlspecialchars($holding['callNumber']).'</callNumber>
+   * <location>'.discoveryName($holding['permanentLocationId']).'</location>
+   * <status>'.$statement.'</status>
+   * <dueDate></dueDate>
+   * </holding>';
+   * };
+   * <p>
+   * echo '</holdings>';
+   * }
+   *
+   * @param holding - folio holding
+   * @return holding information to be returned to the caller
+   * @see <a href=https://issues.folio.org/browse/MODRTAC-37>MODRTAC-37</a>
+   */
+
+  private final Function<Holding, RtacHolding> fromHoldingToRtacHolding = holding -> new RtacHolding()
+    .withId(holding.getId())
+    .withCallNumber(mapCallNumber(holding))
+    .withLocation(mapLocation(holding))
+    .withStatus(mapHoldingStatements(holding))
+    .withDueDate(null);
+
+
+  private String mapHoldingStatements(Holding holding) {
+    final var holdingsStatements = holding.getHoldingsStatements();
+    var result = "Multi";
+    if (!holdingsStatements.isEmpty())
+      result = holdingsStatements.get(0).getStatement();
+    return result;
+  }
+
+  private String mapCallNumber(Holding holding) {
+    return holding.getCallNumber().getCallNumber();
+  }
+
+  private String mapLocation(Holding holding) {
+    return holding.getLocation().getPermanentLocation().getName();
+  }
+
+  private boolean isPeriodical(InventoryHoldingsAndItems instance) {
+    return isPeriodicalByNatureOfContent(instance) || instance.getModeOfIssuance().equals("serial");
+  }
+
+  private boolean isPeriodicalByNatureOfContent(InventoryHoldingsAndItems instance) {
+    return instance.getNatureOfContent().stream().map(String::toLowerCase).anyMatch(
+      periodicalNames::contains);
   }
 
   /**
@@ -97,12 +184,12 @@ public class FolioToRtacMapper {
    * The rules for generating "volume" are as follows:
    * |data set                     |"volume"                    |
    * |-----------------------------|----------------------------|
-   * |enumeration                  |(<enumeration/>)             |
-   * |enumeration chronology       |(<enumeration/> <chronology/>)|
-   * |enumeration chronology volume|(<enumeration/> <chronology/>)|
-   * |volume                       |(<volume/>)                  |
-   * |chronology volume            |(<volume/>)                  |
-   * |chronology                   |(<chronology/>)              |
+   * |enumeration                  |(enumeration)               |
+   * |enumeration chronology       |(enumeration chronology)    |
+   * |enumeration chronology volume|(enumeration chronology)    |
+   * |volume                       |(volume)                    |
+   * |chronology volume            |(volume)                    |
+   * |chronology                   |(chronology)                |
    *
    * @param item - folio inventory item
    */

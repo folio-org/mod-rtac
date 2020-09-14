@@ -14,6 +14,7 @@ import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 import org.folio.rtac.rest.exceptions.HttpException;
+import org.folio.rest.jaxrs.model.RtacRequest;
 
 public class FolioFacade {
 
@@ -31,14 +32,13 @@ public class FolioFacade {
   /**
    * Returns batch info for instances items and holdings.
    *
-   * @param instanceIds passed instances ids
+   * @param rtacRequest - request params
    * @return items and holdings for instances
    */
-  public Future<RtacHoldingsBatch> getItemAndHoldingInfo(List<String> instanceIds) {
+  public Future<RtacHoldingsBatch> getItemAndHoldingInfo(RtacRequest rtacRequest) {
     Promise<RtacHoldingsBatch> promise = Promise.promise();
-
-    return inventoryClient
-        .getItemAndHoldingInfo(instanceIds)
+    final var folioToRtacMapper = new FolioToRtacMapper(rtacRequest.getFullPeriodicals());
+    return inventoryClient.getItemAndHoldingInfo(rtacRequest.getInstanceIds())
         .compose(circulationClient::getLoansForItems)
         .compose(
             instances -> {
