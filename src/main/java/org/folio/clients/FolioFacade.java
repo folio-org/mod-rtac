@@ -4,18 +4,18 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.folio.mappers.FolioToRtacMapper;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
+import org.folio.rest.jaxrs.model.RtacRequest;
 
 public class FolioFacade {
 
   private final InventoryClient inventoryClient;
   private final CirculationClient circulationClient;
   private final Logger logger = LoggerFactory.getLogger(getClass());
-  private final FolioToRtacMapper folioToRtacMapper = new FolioToRtacMapper();
+
 
   public FolioFacade(Map<String, String> okapiHeaders) {
     this.inventoryClient = new InventoryClient(okapiHeaders);
@@ -25,13 +25,13 @@ public class FolioFacade {
   /**
    * Returns batch info for instances items and holdings.
    *
-   * @param instanceIds passed instances ids
+   * @param rtacRequest - request params
    * @return items and holdings for instances
    */
-  public Future<RtacHoldingsBatch> getItemAndHoldingInfo(List<String> instanceIds) {
+  public Future<RtacHoldingsBatch> getItemAndHoldingInfo(RtacRequest rtacRequest) {
     Promise<RtacHoldingsBatch> promise = Promise.promise();
-
-    return inventoryClient.getItemAndHoldingInfo(instanceIds)
+    final var folioToRtacMapper = new FolioToRtacMapper(rtacRequest.getFullPeriodicals());
+    return inventoryClient.getItemAndHoldingInfo(rtacRequest.getInstanceIds())
         .compose(circulationClient::getLoansForItems)
         .compose(instances -> {
                 final var rtacHoldingsList = instances.stream()

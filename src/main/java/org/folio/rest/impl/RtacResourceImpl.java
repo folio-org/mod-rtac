@@ -21,7 +21,7 @@ public final class RtacResourceImpl implements Rtac {
 
     final FolioFacade folioFacade = new FolioFacade(okapiHeaders);
 
-    folioFacade.getItemAndHoldingInfo(entity.getInstanceIds())
+    folioFacade.getItemAndHoldingInfo(entity)
         .onSuccess(result -> asyncResultHandler.handle(Future.succeededFuture(
             Rtac.PostRtacBatchResponse.respond200WithApplicationJson(result))))
         .onFailure(t -> {
