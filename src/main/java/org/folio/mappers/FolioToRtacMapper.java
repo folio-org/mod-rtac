@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
 
@@ -121,7 +122,7 @@ public class FolioToRtacMapper {
   }
 
   private boolean isPeriodical(InventoryHoldingsAndItems instance) {
-    return isPeriodicalByNatureOfContent(instance) || instance.getModeOfIssuance().equals("serial");
+    return isPeriodicalByNatureOfContent(instance) || Objects.equals(instance.getModeOfIssuance(), "serial");
   }
 
   private boolean isPeriodicalByNatureOfContent(InventoryHoldingsAndItems instance) {
