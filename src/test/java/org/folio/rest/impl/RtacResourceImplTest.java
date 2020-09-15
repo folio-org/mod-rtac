@@ -34,14 +34,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @ExtendWith(VertxExtension.class)
-public class RtacOldResourceImplTest {
+public class RtacResourceImplTest {
 
   static {
     System.setProperty("vertx.logger-delegate-factory-class-name",
         "io.vertx.core.logging.Log4j2LogDelegateFactory");
   }
 
-  private final Logger logger = LoggerFactory.getLogger(RtacOldResourceImplTest.class);
+  private final Logger logger = LoggerFactory.getLogger(RtacResourceImplTest.class);
   private final int okapiPort = Utils.getRandomPort();
   private final int serverPort = Utils.getRandomPort();
   private final Header tenantHeader = new Header("X-Okapi-Tenant", "rtacresourceimpltest");
