@@ -1,5 +1,6 @@
 package org.folio.rest.impl;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -132,6 +133,22 @@ class TestNew {
       testContext.completeNow();
     });
   }
+
+  @Test
+  void shouldRespondWithInternalServerError_whenErrorOccurredWhileRetrievingLoans(VertxTestContext testContext) {
+    testContext.verify(() -> {
+      String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_ID_LOAN_STORAGE_ERROR);
+      RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+      request.when()
+        .post()
+        .then()
+        .statusCode(500)
+        .contentType(ContentType.TEXT)
+        .body(is("Server error"));
+      testContext.completeNow();
+    });
+  }
+
 
   private String pojoToJson(Object pojo) {
     try {

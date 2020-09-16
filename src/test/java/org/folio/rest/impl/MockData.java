@@ -37,30 +37,42 @@ public class MockData {
   public static final String INSTANCE_ITEM_ID = "645549b1-2a73-4251-b8bb-39598f773a93";
 
   public static final String ITEM_WITHOUT_LOAN_ID = "d4567775-0832-4ded-8bf9-e35c238ef309";
-  public static final String INSTANCE_ID_WITH_NO_LOANS_ITEM = "e8c27121-dd98-4c28-a782-597ad1787c75";
+  public static final String ITEM_ID_LOAN_STORAGE_ERROR = "8ee46203-182c-42ea-916d-07448345e073";
 
-  private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE = getJsonObjectFromFile(INSTANCE_JSON_PATH);
+  public static final String INSTANCE_ID_WITH_NO_LOANS_ITEM = "e8c27121-dd98-4c28-a782-597ad1787c75";
+  public static final String INSTANCE_ID_LOAN_STORAGE_ERROR = "ab8f1ea9-742e-4cda-b4a8-73164894e6ac";
+
+  private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE;
   public static final String LOAN_JSON;
   public static final String EMPTY_LOANS_JSON;
 
-  public static final InventoryHoldingsAndItems TEST_INSTANCE_WITH_HOLDINGS_AND_ITEMS;
-  public static final InventoryHoldingsAndItems TEST_INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS;
+  public static final InventoryHoldingsAndItems INSTANCE_WITH_HOLDINGS_AND_ITEMS;
+  public static final InventoryHoldingsAndItems INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS;
+  public static final InventoryHoldingsAndItems INSTANCE_LOAN_STORAGE_ERROR;
 
   public static final RtacRequest VALID_INSTANCE_IDS_RTAC_REQUEST;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_NO_LOANS_ITEM;
+  public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_ID_LOAN_STORAGE_ERROR;
 
   static {
     LOAN_JSON = getJsonObjectFromFile(LOAN_JSON_PATH);
     EMPTY_LOANS_JSON = getJsonObjectFromFile(EMPTY_LOANS_JSON_PATH);
 
-    TEST_INSTANCE_WITH_HOLDINGS_AND_ITEMS = (InventoryHoldingsAndItems) stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+    // === inventory view responses ====
+    INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE = getJsonObjectFromFile(INSTANCE_JSON_PATH);
 
-    TEST_INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS = ((InventoryHoldingsAndItems) stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class));
-    TEST_INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS.setInstanceId(INSTANCE_ID_WITH_NO_LOANS_ITEM);
-    setItemId(TEST_INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS, ITEM_WITHOUT_LOAN_ID);
+    INSTANCE_WITH_HOLDINGS_AND_ITEMS = (InventoryHoldingsAndItems) stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+    INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS = ((InventoryHoldingsAndItems) stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class));
+    INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS.setInstanceId(INSTANCE_ID_WITH_NO_LOANS_ITEM);
+    setItemId(INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS, ITEM_WITHOUT_LOAN_ID);
 
+    INSTANCE_LOAN_STORAGE_ERROR = (InventoryHoldingsAndItems) stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+    setItemId(INSTANCE_LOAN_STORAGE_ERROR, ITEM_ID_LOAN_STORAGE_ERROR);
+
+    // === Rtac requests ====
     VALID_INSTANCE_IDS_RTAC_REQUEST = new RtacRequest().withInstanceIds(Collections.singletonList(INSTANCE_ID));
     RTAC_REQUEST_WITH_INSTANCE_NO_LOANS_ITEM = new RtacRequest().withInstanceIds(Collections.singletonList(INSTANCE_ID_WITH_NO_LOANS_ITEM));
+    RTAC_REQUEST_WITH_INSTANCE_ID_LOAN_STORAGE_ERROR = new RtacRequest().withInstanceIds(Collections.singletonList(INSTANCE_ID_LOAN_STORAGE_ERROR));
   }
 
   public static String pojoToJson(Object pojo) {
