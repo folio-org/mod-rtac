@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import java.util.Objects;
 
 import org.folio.rest.RestVerticle;
+import org.folio.rest.jaxrs.model.Holding;
+import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 import org.folio.rest.persist.PostgresClient;
@@ -83,15 +85,37 @@ class TestNew {
   }
 
   @Test
-  void shouldReturnRtacResponse_whenPostValidInstanceId(VertxTestContext testContext) {
+  void shouldReturnRtacResponse_volume(VertxTestContext testContext) {
     testContext.verify(() -> {
       String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
       RequestSpecification request = createBaseRequest(validInstanceIdsJson);
-      request.when()
+      String body = request.when()
         .post()
         .then()
         .statusCode(200)
-        .contentType(ContentType.JSON);
+        .contentType(ContentType.JSON)
+        .extract().body().asString();
+      RtacHoldingsBatch response = (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+      testContext.completeNow();
+    });
+  }
+
+  @Test
+  void shouldProperlyFormatTheHoldingValueField(VertxTestContext testContext) {
+    testContext.verify(() -> {
+      String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
+      RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+      String body = request.when()
+        .post()
+        .then()
+        .statusCode(200)
+        .contentType(ContentType.JSON)
+        .extract().body().asString();
+      RtacHoldingsBatch response = (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+      RtacHolding holding = response.getHoldings().iterator().next().getHoldings().iterator().next();
+      Item item = MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getItems().iterator().next();
+      String expectedVolume = "(" + item.getEnumeration() + " " + item.getChronology() + ")";
+      assertEquals(expectedVolume, holding.getVolume());
       testContext.completeNow();
     });
   }
@@ -149,6 +173,19 @@ class TestNew {
     });
   }
 
+  @Test
+  void testW(VertxTestContext testContext) {
+    testContext.verify(() -> {
+      String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_NON_EXISTED_INSTANCE_ID);
+      RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+      request.when()
+        .post()
+        .then()
+        .statusCode(200)
+        .contentType(ContentType.JSON);
+      testContext.completeNow();
+    });
+  }
 
   private String pojoToJson(Object pojo) {
     try {
