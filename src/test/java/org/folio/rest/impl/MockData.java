@@ -29,12 +29,14 @@ public class MockData {
   private static final String TEST_INSTANCE_JSON_PATH = "/mock-data/inventory-view/test_instance_with_holding_and_item.json";
   private static final String TEST_LOAN_JSON_PATH = "/mock-data/loan-storage/test_loan.json";
 
+  public static final String TEST_LOAN_DUE_DATE_FIELD_VALUE = "2017-01-19T12:42:21.000+0000";
+
   public static final String TEST_INSTANCE_ID = "76d5a72a-af24-4ac6-8e73-4e39604f6f59";
   public static final String TEST_INSTANCE_HOLDING_ID = "0005bb50-7c9b-48b0-86eb-178a494e25fe";
-  public static final String TEST_INSTANCE_ITEM_ID = "111549b1-2a73-4251-b8bb-39598f773a93";
+  public static final String TEST_INSTANCE_ITEM_ID = "645549b1-2a73-4251-b8bb-39598f773a93";
   private static final String TEST_INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE = getJsonObjectFromFile(TEST_INSTANCE_JSON_PATH);
 
-  public static final InventoryHoldingsAndItems TEST_INSTANCE_WITH_HOLDINGS_AND_ITEMS = stringToPojo(TEST_INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE);
+  public static final InventoryHoldingsAndItems TEST_INSTANCE_WITH_HOLDINGS_AND_ITEMS = (InventoryHoldingsAndItems) stringToPojo(TEST_INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
 
   public static final RtacRequest VALID_INSTANCE_IDS_RTAC_REQUEST = new RtacRequest().withInstanceIds(Collections.singletonList(TEST_INSTANCE_ID));
   public static final String TEST_LOAN_JSON = getJsonObjectFromFile(TEST_LOAN_JSON_PATH);
@@ -47,9 +49,9 @@ public class MockData {
     }
   }
 
-  public static InventoryHoldingsAndItems stringToPojo(String json) {
+  public static Object stringToPojo(String json, Class clazz) {
     try {
-      return objectMapper.readValue(json, InventoryHoldingsAndItems.class);
+      return objectMapper.readValue(json, clazz);
     } catch (JsonProcessingException ex) {
       throw new IllegalArgumentException("Invalid json. Cannot parse json structure." + ex);
     }

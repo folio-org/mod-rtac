@@ -1,8 +1,12 @@
 package org.folio.rest.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import org.folio.rest.RestVerticle;
+import org.folio.rest.jaxrs.model.RtacHolding;
+import org.folio.rest.jaxrs.model.RtacHoldings;
+import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 import org.folio.rest.persist.PostgresClient;
 import org.folio.rest.tools.PomReader;
 import org.folio.rest.tools.utils.NetworkUtils;
@@ -85,10 +89,28 @@ class TestNew {
         .then()
         .statusCode(200)
         .contentType(ContentType.JSON);
+      testContext.completeNow();
     });
   }
 
-
+  @Test
+  void shouldPopulateItemDataWithDueDate_whenLoanForItemExists(VertxTestContext testContext) {
+    testContext.verify(() -> {
+      String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
+      RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+      String body = request.when()
+        .post()
+        .then()
+        .statusCode(200)
+        .contentType(ContentType.JSON)
+        .extract().body().asString();
+      RtacHoldingsBatch rtacResponse = (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+      RtacHolding holding = getSingleHolding(rtacResponse);
+      assertEquals(MockData.TEST_LOAN_DUE_DATE_FIELD_VALUE, holding.getDueDate());
+      assertEquals(MockData.TEST_INSTANCE_ITEM_ID, holding.getId());
+      testContext.completeNow();
+    });
+  }
 
   private String pojoToJson(Object pojo) {
     try {
@@ -107,6 +129,10 @@ class TestNew {
       .header(contentTypeHeader)
       .body(body)
       .basePath(RTAC_PATH);
+  }
+
+  private RtacHolding getSingleHolding(RtacHoldingsBatch rtacResponse) {
+    return rtacResponse.getHoldings().iterator().next().getHoldings().iterator().next();
   }
 
 }

@@ -63,11 +63,10 @@ public class MockServer {
   }
 
   private void handleInventoryViewResponse(RoutingContext routingContext) {
-    routingContext.request().bodyHandler(body -> {
-      JsonObject jsonObject = new JsonObject(body);
-      JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
-      if (jsonArray.contains(MockData.TEST_INSTANCE_ID)) {
-        successResponse(routingContext, MockData.pojoToJson(MockData.TEST_INSTANCE_WITH_HOLDINGS_AND_ITEMS));
+    JsonObject jsonObject = routingContext.getBody().toJsonObject();
+    JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
+    if (jsonArray.contains(MockData.TEST_INSTANCE_ID)) {
+      successResponse(routingContext, MockData.pojoToJson(MockData.TEST_INSTANCE_WITH_HOLDINGS_AND_ITEMS));
 //      } else if (jsonArray.contains("1613697d-5e18-49b0-9613-08443b87cbc7")) {
 ////        successResponse(routingContext, getJsonObjectFromFile());
 ////      } else if (jsonArray.contains("2ae0635e-5534-4b7d-b28f-f0816329baa3")) {
@@ -76,16 +75,15 @@ public class MockServer {
 ////        successResponse(routingContext, getJsonObjectFromFile());
 ////      } else if (jsonArray.contains("a50aa30b-33d0-4067-89cc-67a61df8bc84")) {
 ////        successResponse(routingContext, getJsonObjectFromFile());
-      } else {
-        failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, format("there is no mock handler for request:%s", routingContext.request().uri()));
-      }
-    });
+    } else {
+      failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, format("there is no mock handler for request:%s", routingContext.request().uri()));
+    }
   }
 
   private void handleLoansResponse(RoutingContext routingContext) {
     HttpServerRequest request = routingContext.request();
     String query = request.getParam("query");
-    if (query.contains(MockData.TEST_INSTANCE_ID)) {
+    if (query.contains(MockData.TEST_INSTANCE_ITEM_ID)) {
       successResponse(routingContext, MockData.TEST_LOAN_JSON);
     } else {
       failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for request");
