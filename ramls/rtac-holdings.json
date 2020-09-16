@@ -6,6 +6,7 @@
   "javaType" : "org.folio.rest.jaxrs.model.RtacHoldings",
   "properties": {
     "instanceId": {
+      "description": "The FOLIO instance identifier",
       "type": "string",
       "$ref": "uuid.json"
     },
