@@ -73,10 +73,20 @@
         }
       ],
       "copyNumber": "1",
-      "receivingHistory": "testValue",
-      "tags": [
-        "testValue"
-      ],
+      "receivingHistory": {
+        "entries": [
+          {
+            "publicDisplay" : true,
+            "enumeration" : "testValue",
+            "chronology" : "testValue"
+          }
+        ]
+      },
+      "tags": {
+        "tagList" : [
+          "testValue"
+        ]
+      },
       "statisticalCodes": [
         {
           "id": "775b6ad4-9c35-4d29-bf78-8775a9b42226",
