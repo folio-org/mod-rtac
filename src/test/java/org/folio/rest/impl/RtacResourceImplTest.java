@@ -26,6 +26,7 @@ import org.folio.rest.RestVerticle;
 import org.folio.rest.tools.PomReader;
 import org.folio.rtac.utils.Utils;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ExtendWith(VertxExtension.class)
+@Ignore
 public class RtacResourceImplTest {
 
 
