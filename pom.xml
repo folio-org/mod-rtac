@@ -457,7 +457,6 @@
           <includeTestSourceDirectory>false</includeTestSourceDirectory>
           <sourceDirectories>
             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
           </sourceDirectories>
           <excludes>${project.build.testSourceDirectory}/*</excludes>
         </configuration>
