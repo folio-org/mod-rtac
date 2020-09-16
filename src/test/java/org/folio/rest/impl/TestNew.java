@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import java.util.Objects;
 
 import org.folio.rest.RestVerticle;
-import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
+import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 import org.folio.rest.persist.PostgresClient;
 import org.folio.rest.tools.PomReader;
@@ -140,7 +140,7 @@ class TestNew {
   }
 
   @Test
-  void shouldReturnItemDataWithoutDueDate_whenLoanForInstanceItemDoesntExist(VertxTestContext testContext) {
+  void shouldReturnItemDataWithoutDueDate_whenLoanForInstanceItemDoesNotExist(VertxTestContext testContext) {
     testContext.verify(() -> {
       String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_NO_LOANS_ITEM);
       RequestSpecification request = createBaseRequest(validInstanceIdsJson);
@@ -174,15 +174,34 @@ class TestNew {
   }
 
   @Test
-  void testW(VertxTestContext testContext) {
+  void shouldRespondWithInternalServerError_whenErrorOccurredWhileRetrievingInstances(VertxTestContext testContext) {
     testContext.verify(() -> {
-      String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_NON_EXISTED_INSTANCE_ID);
+      String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_ID_LOAN_STORAGE_ERROR);
       RequestSpecification request = createBaseRequest(validInstanceIdsJson);
       request.when()
         .post()
         .then()
+        .statusCode(500)
+        .contentType(ContentType.TEXT)
+        .body(is("Server error"));
+      testContext.completeNow();
+    });
+  }
+
+  @Test
+  void shouldReturnEmptyHoldings_whenInstanceHasNotItems(VertxTestContext testContext) {
+    testContext.verify(() -> {
+      String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_NO_ITEMS_AND_HOLDINGS);
+      RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+      String body = request.when()
+        .post()
+        .then()
         .statusCode(200)
-        .contentType(ContentType.JSON);
+        .contentType(ContentType.JSON)
+        .extract().body().asString();
+      RtacHoldingsBatch rtacResponse = (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+      RtacHoldings rtacHoldings = rtacResponse.getHoldings().iterator().next();
+      assertTrue(rtacHoldings.getHoldings().isEmpty());
       testContext.completeNow();
     });
   }

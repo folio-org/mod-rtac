@@ -300,7 +300,7 @@ public class RtacResourceImplTest {
     }
   }
 
-  //
+  // DONE
  //start
 //  @Test
 //  public final void testGetRtacById() {
@@ -315,6 +315,7 @@ public class RtacResourceImplTest {
 //    logger.info("Test done");
 //  }
 
+  //DONE
   @Test
   public final void testGetRtacByIdNoDueDate() {
     logger.info("Testing for successful RTAC by instance id");
@@ -365,6 +366,7 @@ public class RtacResourceImplTest {
     logger.info("Test done");
   }
 
+  // DONE
   @Test
   public final void testGetRtacByIdVolumeFormatting() {
     logger.info("Testing for proper volume string formatting");
@@ -412,6 +414,7 @@ public class RtacResourceImplTest {
     logger.info("Test done");
   }
 
+  //DONE
   @Test
   public final void testGetRtacByIdErrorRetrievingLoan() {
     logger.info("Testing for error when loan cannot be retrieved");
@@ -431,6 +434,7 @@ public class RtacResourceImplTest {
     logger.info("Test done");
   }
 
+  //???
   @Test
   public final void testGetRtacById404() {
     logger.info("Testing for 404 RTAC by unknown instance id");
@@ -450,6 +454,7 @@ public class RtacResourceImplTest {
     logger.info("Test done");
   }
 
+//DONE
   @Test
   public final void testGetRtacByIdNoHoldings() {
     logger.info("Testing for successful RTAC by instance id with no holdings");
@@ -476,6 +481,7 @@ public class RtacResourceImplTest {
     logger.info("Test done");
   }
 
+  //IN NEW BEHAVIOUR IS THE SAME AS testGetRtacByIdNoHoldings and done into shouldReturnEmptyHoldings_whenInstanceHasNotItems
   @Test
   public final void testGetRtacByIdNoItems() {
     logger.info("Testing for successful RTAC by instance id with no items");

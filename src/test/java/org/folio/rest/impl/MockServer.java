@@ -1,16 +1,7 @@
 package org.folio.rest.impl;
 
 import static java.lang.String.format;
-import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import org.apache.http.HttpMessage;
 import org.apache.http.HttpStatus;
 
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -31,10 +22,8 @@ public class MockServer {
 
   private static final Logger logger = LoggerFactory.getLogger(MockServer.class);
 
-
   private static final String LOANS_URI = "/loan-storage/loans";
   private static final String INVENTORY_VIEW_URI = "/inventory-hierarchy/items-and-holdings";
-  private static final String INVENTORY_VIEW = "/inventory-view/";
 
   private static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 
@@ -69,8 +58,12 @@ public class MockServer {
       successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_WITH_NO_LOANS_ITEM)) {
       successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS));
-    } else if (jsonArray.contains(MockData.INSTANCE_ID_LOAN_STORAGE_ERROR)) {
+    } else if (jsonArray.contains(MockData.NONEXISTENT_INSTANCE_ID)) {
       successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_LOAN_STORAGE_ERROR));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_INVENTORY_VIEW_ERROR)) {
+      failureResponse(routingContext, 500, INTERNAL_SERVER_ERROR);
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_NO_ITEMS_AND_HOLDINGS)) {
+      successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_WITHOUT_HOLDINGS_AND_ITEMS));
     } else {
       failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, format("there is no mock handler for request:%s", routingContext.request().uri()));
     }
@@ -103,23 +96,4 @@ public class MockServer {
       .putHeader(HttpHeaders.CONTENT_TYPE, "text/plain")
       .end(body);
   }
-
-  private String getJsonObjectFromFile(String path) {
-    try {
-      logger.debug("Loading file " + path);
-      URL resource = MockServer.class.getResource(path);
-      if (resource == null) {
-        return null;
-      }
-      File file = new File(resource.getFile());
-      byte[] encoded = Files.readAllBytes(Paths.get(file.getPath()));
-      return new String(encoded, StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      logger.error("Unexpected error", e);
-      fail(e.getMessage());
-    }
-    return null;
-  }
-
-
 }
