@@ -1,5 +1,7 @@
 package org.folio.rest.impl;
 
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+
 import org.folio.rest.RestVerticle;
 import org.folio.rest.persist.PostgresClient;
 import org.folio.rest.tools.PomReader;
@@ -7,6 +9,7 @@ import org.folio.rest.tools.utils.NetworkUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,6 +28,7 @@ import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 
 @ExtendWith(VertxExtension.class)
+@TestInstance(PER_CLASS)
 class TestNew {
 
   private static final Logger logger = LoggerFactory.getLogger(TestNew.class);
@@ -83,6 +87,8 @@ class TestNew {
         .contentType(ContentType.JSON);
     });
   }
+
+
 
   private String pojoToJson(Object pojo) {
     try {
