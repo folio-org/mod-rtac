@@ -70,7 +70,6 @@ class InventoryClient extends FolioClient {
             });
           }
         }
-
     );
 
     final var payload = createPayload(instanceIds);
