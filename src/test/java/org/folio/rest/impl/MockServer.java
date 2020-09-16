@@ -1,7 +1,6 @@
 package org.folio.rest.impl;
 
 import static java.lang.String.format;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
@@ -10,11 +9,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 import org.apache.http.HttpStatus;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
@@ -65,16 +61,10 @@ public class MockServer {
   private void handleInventoryViewResponse(RoutingContext routingContext) {
     JsonObject jsonObject = routingContext.getBody().toJsonObject();
     JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
-    if (jsonArray.contains(MockData.TEST_INSTANCE_ID)) {
+    if (jsonArray.contains(MockData.INSTANCE_ID)) {
       successResponse(routingContext, MockData.pojoToJson(MockData.TEST_INSTANCE_WITH_HOLDINGS_AND_ITEMS));
-//      } else if (jsonArray.contains("1613697d-5e18-49b0-9613-08443b87cbc7")) {
-////        successResponse(routingContext, getJsonObjectFromFile());
-////      } else if (jsonArray.contains("2ae0635e-5534-4b7d-b28f-f0816329baa3")) {
-////        successResponse(routingContext, getJsonObjectFromFile());
-////      } else if (jsonArray.contains("0085f8ed-80ba-435b-8734-d3262aa4fc07")) {
-////        successResponse(routingContext, getJsonObjectFromFile());
-////      } else if (jsonArray.contains("a50aa30b-33d0-4067-89cc-67a61df8bc84")) {
-////        successResponse(routingContext, getJsonObjectFromFile());
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_WITH_NO_LOANS_ITEM)) {
+      successResponse(routingContext, MockData.pojoToJson(MockData.TEST_INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS));
     } else {
       failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, format("there is no mock handler for request:%s", routingContext.request().uri()));
     }
@@ -83,8 +73,10 @@ public class MockServer {
   private void handleLoansResponse(RoutingContext routingContext) {
     HttpServerRequest request = routingContext.request();
     String query = request.getParam("query");
-    if (query.contains(MockData.TEST_INSTANCE_ITEM_ID)) {
-      successResponse(routingContext, MockData.TEST_LOAN_JSON);
+    if (query.contains(MockData.INSTANCE_ITEM_ID)) {
+      successResponse(routingContext, MockData.LOAN_JSON);
+    } else if (query.contains(MockData.ITEM_WITHOUT_LOAN_ID)) {
+      successResponse(routingContext, MockData.EMPTY_LOANS_JSON);
     } else {
       failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for request");
     }

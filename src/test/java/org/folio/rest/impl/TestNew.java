@@ -1,11 +1,13 @@
 package org.folio.rest.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+
+import java.util.Objects;
 
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.RtacHolding;
-import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 import org.folio.rest.persist.PostgresClient;
 import org.folio.rest.tools.PomReader;
@@ -106,8 +108,27 @@ class TestNew {
         .extract().body().asString();
       RtacHoldingsBatch rtacResponse = (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
       RtacHolding holding = getSingleHolding(rtacResponse);
-      assertEquals(MockData.TEST_LOAN_DUE_DATE_FIELD_VALUE, holding.getDueDate());
-      assertEquals(MockData.TEST_INSTANCE_ITEM_ID, holding.getId());
+      assertEquals(MockData.LOAN_DUE_DATE_FIELD_VALUE, holding.getDueDate());
+      assertEquals(MockData.INSTANCE_ITEM_ID, holding.getId());
+      testContext.completeNow();
+    });
+  }
+
+  @Test
+  void shouldReturnItemDataWithoutDueDate_whenLoanForInstanceItemDoesntExist(VertxTestContext testContext) {
+    testContext.verify(() -> {
+      String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_NO_LOANS_ITEM);
+      RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+      String body = request.when()
+        .post()
+        .then()
+        .statusCode(200)
+        .contentType(ContentType.JSON)
+        .extract().body().asString();
+      RtacHoldingsBatch rtacResponse = (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+      RtacHolding holding = getSingleHolding(rtacResponse);
+      assertTrue(Objects.isNull(holding.getDueDate()));
+      assertEquals(MockData.ITEM_WITHOUT_LOAN_ID, holding.getId());
       testContext.completeNow();
     });
   }
