@@ -4,22 +4,22 @@ import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
-
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.LegacyHolding;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
+import org.folio.rest.jaxrs.model.LegacyHolding;
+import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
-
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 public class FolioToRtacMapper {
 
@@ -53,15 +53,17 @@ public class FolioToRtacMapper {
     return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
   }
 
-  private final Function<Item, RtacHolding> fromItemToRtacHolding = item -> new RtacHolding()
-    .withId(item.getId())
-    .withLocation(mapLocation(item))
-    .withCallNumber(mapCallNumber(item))
-    .withStatus(item.getStatus())
-    .withTemporaryLoanType(item.getTemporaryLoanType())
-    .withPermanentLoanType(item.getPermanentLoanType())
-    .withDueDate(item.getDueDate())
-    .withVolume(mapVolume(item));
+  private final Function<Item, RtacHolding> fromItemToRtacHolding =
+      item ->
+          new RtacHolding()
+              .withId(item.getId())
+              .withLocation(mapLocation(item))
+              .withCallNumber(mapCallNumber(item))
+              .withStatus(item.getStatus())
+              .withTemporaryLoanType(item.getTemporaryLoanType())
+              .withPermanentLoanType(item.getPermanentLoanType())
+              .withDueDate(item.getDueDate())
+              .withVolume(mapVolume(item));
 
   /**
    * This function is populating holding-level information for periodicals.
@@ -102,20 +104,27 @@ public class FolioToRtacMapper {
     .withCallNumber(mapCallNumber(holding))
     .withLocation(mapLocation(holding))
     .withStatus(mapHoldingStatements(holding))
-    .withDueDate(null);
-
+    .withDueDate("");
 
   private String mapHoldingStatements(Holding holding) {
     final var holdingsStatements = holding.getHoldingsStatements();
     var result = "Multi";
-    if (!holdingsStatements.isEmpty())
+    if (!holdingsStatements.isEmpty()) {
       result = holdingsStatements.get(0).getStatement();
+    }
     return result;
   }
 
   private String mapCallNumber(Holding holding) {
     return holding.getCallNumber().getCallNumber();
   }
+
+  private String mapCallNumber(Item item) {
+    final var callNumber = item.getCallNumber();
+    return assembleCallNumber(
+      callNumber.getCallNumber(), callNumber.getPrefix(), callNumber.getSuffix());
+  }
+
 
   private String mapLocation(Holding holding) {
     return holding.getLocation().getPermanentLocation().getName();
@@ -128,6 +137,16 @@ public class FolioToRtacMapper {
   private boolean isPeriodicalByNatureOfContent(InventoryHoldingsAndItems instance) {
     return instance.getNatureOfContent().stream().map(String::toLowerCase).anyMatch(
       periodicalNames::contains);
+  }
+
+  private String mapLocation(Item item) {
+    return item.getLocation().getLocation().getName();
+  }
+
+  private String mapCallNumber(Item item) {
+    final var callNumber = item.getCallNumber();
+    return assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(),
+      callNumber.getSuffix());
   }
 
   /**
@@ -145,30 +164,19 @@ public class FolioToRtacMapper {
 
     for (Item item : instance.getItems()) {
       final var rtacHolding =
-          new LegacyHolding()
-              .withId(item.getId())
-              .withLocation(mapLocation(item))
-              .withCallNumber(mapCallNumber(item))
-              .withStatus(item.getStatus())
-              .withDueDate(item.getDueDate())
-              .withVolume(mapVolume(item));
+        new LegacyHolding()
+          .withId(item.getId())
+          .withLocation(mapLocation(item))
+          .withCallNumber(mapCallNumber(item))
+          .withStatus(item.getStatus())
+          .withDueDate(item.getDueDate())
+          .withVolume(mapVolume(item));
 
       nested.add(rtacHolding);
     }
 
     return rtacHoldings.withHoldings(nested);
   }
-
-  private String mapLocation(Item item) {
-    return item.getLocation().getLocation().getName();
-  }
-
-  private String mapCallNumber(Item item) {
-    final var callNumber = item.getCallNumber();
-    return assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(),
-        callNumber.getSuffix());
-  }
-
   private String assembleCallNumber(String callNumber, String prefix, String suffix) {
     if (isNotEmpty(prefix)) {
       callNumber = prefix + " " + callNumber;
