@@ -29,23 +29,21 @@ public class MockData {
   private static final String INSTANCE_JSON_PATH = "/mock-data/inventory-view/test_instance_with_holding_and_item.json";
   private static final String LOAN_JSON_PATH = "/mock-data/loan-storage/test_loan.json";
   private static final String EMPTY_LOANS_JSON_PATH = "/mock-data/loan-storage/empty_loans.json";
+  private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE;
 
   public static final String LOAN_DUE_DATE_FIELD_VALUE = "2017-01-19T12:42:21.000+0000";
 
   public static final String INSTANCE_ID = "76d5a72a-af24-4ac6-8e73-4e39604f6f59";
-  public static final String INSTANCE_HOLDING_ID = "0005bb50-7c9b-48b0-86eb-178a494e25fe";
   public static final String INSTANCE_ITEM_ID = "645549b1-2a73-4251-b8bb-39598f773a93";
 
   public static final String ITEM_WITHOUT_LOAN_ID = "d4567775-0832-4ded-8bf9-e35c238ef309";
   public static final String ITEM_ID_LOAN_STORAGE_ERROR = "8ee46203-182c-42ea-916d-07448345e073";
 
   public static final String INSTANCE_ID_WITH_NO_LOANS_ITEM = "e8c27121-dd98-4c28-a782-597ad1787c75";
-  public static final String INSTANCE_ID_LOAN_STORAGE_ERROR = "ab8f1ea9-742e-4cda-b4a8-73164894e6ac";
   public static final String INSTANCE_ID_INVENTORY_VIEW_ERROR = "a705e5dd-46c6-46c9-a0d8-70400a27b7c4";
   public static final String NONEXISTENT_INSTANCE_ID = "207dda4d-06dd-4822-856e-63ca5b6c7f1a";
   public static final String INSTANCE_ID_NO_ITEMS_AND_HOLDINGS = "4ed2a3b3-2fb4-414c-aa6f-a265685ca5a6";
 
-  private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE;
   public static final String LOAN_JSON;
   public static final String EMPTY_LOANS_JSON;
 

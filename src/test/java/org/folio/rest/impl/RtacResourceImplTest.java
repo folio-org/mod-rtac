@@ -45,6 +45,7 @@ class RtacResourceImplTest {
   private final int okapiPort = NetworkUtils.nextFreePort();
   private final int mockPort = NetworkUtils.nextFreePort();
 
+  private static final String SERVER_ERROR = "Server error";
   private final String RTAC_PATH = "/rtac/batch";
   private final String TEST_TENANT_ID = "test_tenant";
   private final String TEST_USER_ID = "30fde4be-2d1a-4546-8d6c-b468caca2720";
@@ -74,7 +75,7 @@ class RtacResourceImplTest {
 
     vertx.deployVerticle(RestVerticle.class.getName(), deploymentOptions, testContext.succeeding(v -> {
         new MockServer(mockPort, vertx).start(testContext);
-        testContext.completeNow(); //it also is called into start(testContext) method above
+        testContext.completeNow();
       }
     ));
   }
@@ -85,17 +86,15 @@ class RtacResourceImplTest {
   }
 
   @Test
-  void shouldReturnRtacResponse_volume(VertxTestContext testContext) {
+  void shouldReturnRtacResponse_whenPostValidInstanceIds(VertxTestContext testContext) {
     testContext.verify(() -> {
       String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
       RequestSpecification request = createBaseRequest(validInstanceIdsJson);
-      String body = request.when()
+      request.when()
         .post()
         .then()
         .statusCode(200)
-        .contentType(ContentType.JSON)
-        .extract().body().asString();
-      RtacHoldingsBatch response = (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+        .contentType(ContentType.JSON);
       testContext.completeNow();
     });
   }
@@ -168,7 +167,7 @@ class RtacResourceImplTest {
         .then()
         .statusCode(500)
         .contentType(ContentType.TEXT)
-        .body(is("Server error"));
+        .body(is(SERVER_ERROR));
       testContext.completeNow();
     });
   }
