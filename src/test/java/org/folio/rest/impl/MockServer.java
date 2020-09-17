@@ -2,8 +2,6 @@ package org.folio.rest.impl;
 
 import static java.lang.String.format;
 
-import org.apache.http.HttpStatus;
-
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
@@ -17,6 +15,7 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.junit5.VertxTestContext;
+import org.apache.http.HttpStatus;
 
 public class MockServer {
 
@@ -35,12 +34,17 @@ public class MockServer {
     this.vertx = vertx;
   }
 
-  public void start(VertxTestContext context) {
+  void start(VertxTestContext context) {
     HttpServer server = vertx.createHttpServer();
-    server.requestHandler(defineRoutes()).listen(port, context.succeeding(result -> {
-      logger.info("The mock server has started. port:{}", port);
-      context.completeNow();
-    }));
+    server
+        .requestHandler(defineRoutes())
+        .listen(
+            port,
+            context.succeeding(
+                result -> {
+                  logger.info("The mock server has started. port:{}", port);
+                  context.completeNow();
+                }));
   }
 
   private Router defineRoutes() {
@@ -55,17 +59,23 @@ public class MockServer {
     JsonObject jsonObject = routingContext.getBody().toJsonObject();
     JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
     if (jsonArray.contains(MockData.INSTANCE_ID)) {
-      successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS));
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_WITH_NO_LOANS_ITEM)) {
-      successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS));
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS));
     } else if (jsonArray.contains(MockData.NONEXISTENT_INSTANCE_ID)) {
       successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_LOAN_STORAGE_ERROR));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_INVENTORY_VIEW_ERROR)) {
       failureResponse(routingContext, 500, INTERNAL_SERVER_ERROR);
     } else if (jsonArray.contains(MockData.INSTANCE_ID_NO_ITEMS_AND_HOLDINGS)) {
-      successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_WITHOUT_HOLDINGS_AND_ITEMS));
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITHOUT_HOLDINGS_AND_ITEMS));
     } else {
-      failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, format("there is no mock handler for request:%s", routingContext.request().uri()));
+      failureResponse(
+          routingContext,
+          HttpStatus.SC_BAD_REQUEST,
+          format("there is no mock handler for request:%s", routingContext.request().uri()));
     }
   }
 
@@ -79,21 +89,19 @@ public class MockServer {
     } else if (query.contains(MockData.ITEM_ID_LOAN_STORAGE_ERROR)) {
       failureResponse(routingContext, 500, INTERNAL_SERVER_ERROR);
     } else {
-      failureResponse(routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for request");
+      failureResponse(
+          routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for request");
     }
   }
 
   private void successResponse(RoutingContext ctx, String body) {
     ctx.response()
-      .setStatusCode(200)
-      .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
-      .end(body);
+        .setStatusCode(200)
+        .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
+        .end(body);
   }
 
   private void failureResponse(RoutingContext ctx, int code, String body) {
-    ctx.response()
-      .setStatusCode(code)
-      .putHeader(HttpHeaders.CONTENT_TYPE, "text/plain")
-      .end(body);
+    ctx.response().setStatusCode(code).putHeader(HttpHeaders.CONTENT_TYPE, "text/plain").end(body);
   }
 }

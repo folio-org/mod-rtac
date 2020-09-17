@@ -484,11 +484,11 @@
           <configLocation>google_checks.xml</configLocation>
           <linkXRef>false</linkXRef>
           <violationSeverity>warning</violationSeverity>
-          <includeTestSourceDirectory>false</includeTestSourceDirectory>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <sourceDirectories>
             <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
+            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
           </sourceDirectories>
-          <excludes>${project.build.testSourceDirectory}/*</excludes>
         </configuration>
       </plugin>
 
