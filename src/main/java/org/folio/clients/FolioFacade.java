@@ -3,7 +3,6 @@ package org.folio.clients;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +20,6 @@ public class FolioFacade {
   private final InventoryClient inventoryClient;
   private final CirculationClient circulationClient;
   private final Logger logger = LogManager.getLogger(getClass());
-  private final FolioToRtacMapper folioToRtacMapper = new FolioToRtacMapper();
   private final ErrorMapper errorMapper = new ErrorMapper();
 
   public FolioFacade(Map<String, String> okapiHeaders) {
@@ -42,7 +40,7 @@ public class FolioFacade {
         .compose(circulationClient::getLoansForItems)
         .compose(
             instances -> {
-              var notFoundInstances = new ArrayList<>(instanceIds);
+              var notFoundInstances = new ArrayList<>(rtacRequest.getInstanceIds());
               final var rtacHoldingsList = new ArrayList<RtacHoldings>();
               for (InventoryHoldingsAndItems instance : instances) {
                 RtacHoldings rtacHoldings = folioToRtacMapper.mapToRtac(instance);
