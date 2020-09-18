@@ -461,6 +461,10 @@
             <configuration>
               <properties>
                 <property>
+                  <name>log4j.configurationFile</name>
+                  <value>${project.baseUri}src/main/resources/log4j2.xml</value>
+                </property>
+                <property>
                   <name>vertx.logger-delegate-factory-class-name</name>
                   <value>io.vertx.core.logging.Log4j2LogDelegateFactory</value>
                 </property>
