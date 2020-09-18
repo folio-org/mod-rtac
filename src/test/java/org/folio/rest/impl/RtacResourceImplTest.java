@@ -42,7 +42,7 @@ class RtacResourceImplTest {
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
 
-  private static final String SERVER_ERROR = "Server error";
+  private static final String SERVER_ERROR = "Internal Server Error";
   private static final String RTAC_PATH = "/rtac/batch";
   private static final String TEST_TENANT_ID = "test_tenant";
   private static final String TEST_USER_ID = "30fde4be-2d1a-4546-8d6c-b468caca2720";
@@ -208,7 +208,7 @@ class RtacResourceImplTest {
               .then()
               .statusCode(500)
               .contentType(ContentType.TEXT)
-              .body(is("Server error"));
+              .body(is(SERVER_ERROR));
           testContext.completeNow();
         });
   }

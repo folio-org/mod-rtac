@@ -50,7 +50,7 @@ class CirculationClient extends FolioClient {
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
 
     if (CollectionUtils.isEmpty(inventoryInstances)) {
-      promise.fail("Inventory instances is empty");
+      promise.fail(new HttpException(404, "Could not find inventory instances"));
       return promise.future();
     }
 

@@ -4,10 +4,13 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import org.folio.mappers.ErrorMapper;
 import org.folio.mappers.FolioToRtacMapper;
+import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
+import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 
 public class FolioFacade {
@@ -16,6 +19,7 @@ public class FolioFacade {
   private final CirculationClient circulationClient;
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final FolioToRtacMapper folioToRtacMapper = new FolioToRtacMapper();
+  private final ErrorMapper errorMapper = new ErrorMapper();
 
   public FolioFacade(Map<String, String> okapiHeaders) {
     this.inventoryClient = new InventoryClient(okapiHeaders);
@@ -31,16 +35,32 @@ public class FolioFacade {
   public Future<RtacHoldingsBatch> getItemAndHoldingInfo(List<String> instanceIds) {
     Promise<RtacHoldingsBatch> promise = Promise.promise();
 
-    return inventoryClient.getItemAndHoldingInfo(instanceIds)
+    return inventoryClient
+        .getItemAndHoldingInfo(instanceIds)
         .compose(circulationClient::getLoansForItems)
-        .compose(instances -> {
-                final var rtacHoldingsList = instances.stream()
-                    .map(folioToRtacMapper::mapToRtac)
-                    .collect(Collectors.toList());
-                logger.info("Mapping inventory instances: {}", rtacHoldingsList.size());
-                promise.complete(new RtacHoldingsBatch().withHoldings(rtacHoldingsList));
-                return promise.future();
+        .compose(
+            instances -> {
+              var notFoundInstances = new ArrayList<>(instanceIds);
+              final var rtacHoldingsList = new ArrayList<RtacHoldings>();
+              for (InventoryHoldingsAndItems instance : instances) {
+                RtacHoldings rtacHoldings = folioToRtacMapper.mapToRtac(instance);
+                rtacHoldingsList.add(rtacHoldings);
+                notFoundInstances.remove(instance.getInstanceId());
               }
-        ).onFailure(promise::fail);
+              logger.info("Mapping inventory instances: {}", rtacHoldingsList.size());
+              final var result = new RtacHoldingsBatch();
+              if (!notFoundInstances.isEmpty()) {
+                final var errors = errorMapper.mapNotFoundInstances(notFoundInstances);
+                logger.info("Mapping errors: {}", errors.size());
+                logger.debug("Errors: {}", errors.toString());
+                result.withErrors(errors);
+              } else {
+                result.withErrors(null);
+              }
+
+              promise.complete(result.withHoldings(rtacHoldingsList));
+              return promise.future();
+            })
+        .onFailure(promise::fail);
   }
 }
