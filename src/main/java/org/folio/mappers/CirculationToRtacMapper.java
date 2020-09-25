@@ -2,16 +2,16 @@ package org.folio.mappers;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.folio.rest.jaxrs.model.Item;
 
 public class CirculationToRtacMapper {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LogManager.getLogger(getClass());
 
   /**
    * RTac mapper.

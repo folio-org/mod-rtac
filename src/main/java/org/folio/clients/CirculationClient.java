@@ -12,8 +12,6 @@ import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.WebClient;
 import java.util.ArrayList;
@@ -23,6 +21,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.folio.mappers.CirculationToRtacMapper;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
@@ -37,7 +37,7 @@ class CirculationClient extends FolioClient {
   private static final String URI = "/loan-storage/loans";
 
   private static final WebClient webClient = WebClient.create(Vertx.vertx());
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LogManager.getLogger(getClass());
 
   CirculationClient(Map<String, String> okapiHeaders) {
     super(okapiHeaders);

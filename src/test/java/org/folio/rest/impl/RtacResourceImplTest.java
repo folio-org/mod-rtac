@@ -15,8 +15,6 @@ import io.restassured.specification.RequestSpecification;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import java.util.List;
@@ -44,8 +42,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 @TestInstance(PER_CLASS)
 class RtacResourceImplTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(RtacResourceImplTest.class);
-
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
 
@@ -64,7 +60,6 @@ class RtacResourceImplTest {
     String moduleName = PomReader.INSTANCE.getModuleName().replaceAll("_", "-");
     String moduleVersion = PomReader.INSTANCE.getVersion();
     String moduleId = moduleName + "-" + moduleVersion;
-    logger.info("Test setup starting for " + moduleId);
 
     RestAssured.baseURI = "http://localhost:" + okapiPort;
     RestAssured.port = okapiPort;
@@ -266,7 +261,6 @@ class RtacResourceImplTest {
   @ParameterizedTest
   @MethodSource("rtacFailureCodes")
   final void testGetRtacWithErrors(String codeString, int expectedCode) {
-    logger.info("Testing retrieving RTAC with a {} error", codeString);
 
     final var rtacRequest = new RtacRequest();
     rtacRequest.setInstanceIds(List.of(codeString));
@@ -286,8 +280,6 @@ class RtacResourceImplTest {
         .assertThat()
         .contentType(ContentType.TEXT);
 
-    // Test done
-    logger.info("Complete - Testing retrieving RTAC with a {} error", codeString);
   }
 
   static Stream<Arguments> rtacFailureCodes() {

@@ -2,11 +2,11 @@ package org.folio.clients;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.folio.mappers.ErrorMapper;
 import org.folio.mappers.FolioToRtacMapper;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
@@ -17,7 +17,7 @@ public class FolioFacade {
 
   private final InventoryClient inventoryClient;
   private final CirculationClient circulationClient;
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LogManager.getLogger(getClass());
   private final FolioToRtacMapper folioToRtacMapper = new FolioToRtacMapper();
   private final ErrorMapper errorMapper = new ErrorMapper();
 

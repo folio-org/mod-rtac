@@ -9,8 +9,6 @@ import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
@@ -19,7 +17,6 @@ import org.apache.http.HttpStatus;
 
 public class MockServer {
 
-  private static final Logger logger = LoggerFactory.getLogger(MockServer.class);
 
   private static final String LOANS_URI = "/loan-storage/loans";
   private static final String INVENTORY_VIEW_URI = "/inventory-hierarchy/items-and-holdings";
@@ -42,7 +39,6 @@ public class MockServer {
             port,
             context.succeeding(
                 result -> {
-                  logger.info("The mock server has started. port:{}", port);
                   context.completeNow();
                 }));
   }

@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -17,8 +15,6 @@ import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.RtacRequest;
 
 public class MockData {
-
-  private static final Logger logger = LoggerFactory.getLogger(MockData.class);
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -119,7 +115,6 @@ public class MockData {
 
   private static String getJsonObjectFromFile(String path) {
     try {
-      logger.debug("Loading file " + path);
       URL resource = MockServer.class.getResource(path);
       if (resource == null) {
         return null;
@@ -128,7 +123,6 @@ public class MockData {
       byte[] encoded = Files.readAllBytes(Paths.get(file.getPath()));
       return new String(encoded, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      logger.error("Unexpected error", e);
       fail(e.getMessage());
     }
     return null;

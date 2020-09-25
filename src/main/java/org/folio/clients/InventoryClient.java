@@ -11,14 +11,14 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientRequest;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.core.parsetools.JsonParser;
 import io.vertx.core.parsetools.impl.JsonParserImpl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rtac.rest.exceptions.HttpException;
 
@@ -29,7 +29,7 @@ class InventoryClient extends FolioClient {
   private static final String OKAPI_TENANT_KEY = "X-Okapi-Tenant";
   private static final HttpClient httpClient = Vertx.vertx().createHttpClient();
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LogManager.getLogger(getClass());
 
   InventoryClient(Map<String, String> okapiHeaders) {
     super(okapiHeaders);

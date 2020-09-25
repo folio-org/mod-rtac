@@ -4,9 +4,9 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.folio.clients.FolioFacade;
 import org.folio.rest.jaxrs.model.RtacRequest;
 import org.folio.rest.jaxrs.resource.Rtac;
@@ -14,7 +14,7 @@ import org.folio.rtac.rest.exceptions.HttpException;
 
 public final class RtacResourceImpl implements Rtac {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LogManager.getLogger(getClass());
 
   @Override
   public void postRtacBatch(
