@@ -35,10 +35,9 @@ public final class RtacResourceImpl implements Rtac {
         .onFailure(t -> asyncResultHandler.handle(handleError(t)));
   }
 
-  private Future<javax.ws.rs.core.Response> handleError(Throwable throwable) {
+  private Future<javax.ws.rs.core.Response> handleError(Throwable t) {
     final Future<javax.ws.rs.core.Response> result;
-    logger.error(throwable.getMessage(), throwable);
-    final Throwable t = throwable.getCause();
+    logger.error(t.getMessage(), t);
     if (t instanceof HttpException) {
       final int code = ((HttpException) t).getCode();
       final String message = t.getMessage();
@@ -66,7 +65,7 @@ public final class RtacResourceImpl implements Rtac {
     } else {
       result =
           Future.succeededFuture(
-              Rtac.PostRtacBatchResponse.respond500WithTextPlain(throwable.getMessage()));
+              Rtac.PostRtacBatchResponse.respond500WithTextPlain(t.getMessage()));
     }
 
     return result;

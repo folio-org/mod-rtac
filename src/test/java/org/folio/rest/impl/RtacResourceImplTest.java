@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.http.Header;
+import io.restassured.http.Headers;
 import io.restassured.specification.RequestSpecification;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
@@ -18,12 +19,15 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
+import org.folio.rest.jaxrs.model.RtacRequest;
 import org.folio.rest.persist.PostgresClient;
 import org.folio.rest.tools.PomReader;
 import org.folio.rest.tools.utils.NetworkUtils;
@@ -32,6 +36,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @ExtendWith(VertxExtension.class)
 @TestInstance(PER_CLASS)
@@ -112,8 +119,7 @@ class RtacResourceImplTest {
                   .extract()
                   .body()
                   .asString();
-          RtacHoldingsBatch response =
-              (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHoldingsBatch response = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           RtacHolding holding =
               response.getHoldings().iterator().next().getHoldings().iterator().next();
           Item item = MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getItems().iterator().next();
@@ -139,8 +145,7 @@ class RtacResourceImplTest {
                   .extract()
                   .body()
                   .asString();
-          RtacHoldingsBatch rtacResponse =
-              (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           RtacHolding holding = getSingleHolding(rtacResponse);
           assertEquals(MockData.LOAN_DUE_DATE_FIELD_VALUE, holding.getDueDate());
           assertEquals(MockData.INSTANCE_ITEM_ID, holding.getId());
@@ -166,8 +171,7 @@ class RtacResourceImplTest {
                   .extract()
                   .body()
                   .asString();
-          RtacHoldingsBatch rtacResponse =
-              (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           RtacHolding holding = getSingleHolding(rtacResponse);
           assertTrue(Objects.isNull(holding.getDueDate()));
           assertEquals(MockData.ITEM_WITHOUT_LOAN_ID, holding.getId());
@@ -230,8 +234,7 @@ class RtacResourceImplTest {
                   .extract()
                   .body()
                   .asString();
-          RtacHoldingsBatch rtacResponse =
-              (RtacHoldingsBatch) MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           RtacHoldings rtacHoldings = rtacResponse.getHoldings().iterator().next();
           assertTrue(rtacHoldings.getHoldings().isEmpty());
           testContext.completeNow();
@@ -258,5 +261,42 @@ class RtacResourceImplTest {
 
   private RtacHolding getSingleHolding(RtacHoldingsBatch rtacResponse) {
     return rtacResponse.getHoldings().iterator().next().getHoldings().iterator().next();
+  }
+
+  @ParameterizedTest
+  @MethodSource("rtacFailureCodes")
+  final void testGetRtacWithErrors(String codeString, int expectedCode) {
+    logger.info("Testing retrieving RTAC with a {} error", codeString);
+
+    final var rtacRequest = new RtacRequest();
+    rtacRequest.setInstanceIds(List.of(codeString));
+    RequestSpecification request = createBaseRequest(pojoToJson(rtacRequest));
+
+    request
+        .headers(new Headers(okapiTenantHeader, okapiUrlHeader, contentTypeHeader))
+        .when()
+        .post()
+        .then()
+        .log()
+        .all()
+        .and()
+        .assertThat()
+        .statusCode(expectedCode)
+        .and()
+        .assertThat()
+        .contentType(ContentType.TEXT);
+
+    // Test done
+    logger.info("Complete - Testing retrieving RTAC with a {} error", codeString);
+  }
+
+  static Stream<Arguments> rtacFailureCodes() {
+    return Stream.of(
+        // Even though we receive a 400, we need to return a 500 since there is nothing the client
+        // can do to correct the 400. We'd have to correct it in the code.
+        Arguments.of("400", 500),
+        Arguments.of("403", 403),
+        Arguments.of("404", 404),
+        Arguments.of("500", 500));
   }
 }

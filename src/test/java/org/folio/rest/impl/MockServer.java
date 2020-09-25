@@ -58,7 +58,15 @@ public class MockServer {
   private void handleInventoryViewResponse(RoutingContext routingContext) {
     JsonObject jsonObject = routingContext.getBody().toJsonObject();
     JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
-    if (jsonArray.contains(MockData.INSTANCE_ID)) {
+    final var first = jsonArray.getString(0);
+    if (first.length() == 3) {
+      final var statusCode = Integer.parseInt(first);
+      routingContext
+          .response()
+          .setStatusCode(statusCode)
+          .putHeader("content-type", "text/plain")
+          .end("Internal Server Error");
+    } else if (jsonArray.contains(MockData.INSTANCE_ID)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_WITH_NO_LOANS_ITEM)) {
