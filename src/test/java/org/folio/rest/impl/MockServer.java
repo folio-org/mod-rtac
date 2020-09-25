@@ -75,6 +75,8 @@ public class MockServer {
     } else if (jsonArray.contains(MockData.INSTANCE_ID_NO_ITEMS_AND_HOLDINGS)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITHOUT_HOLDINGS_AND_ITEMS));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_NO_FULL_PERIODICALS)) {
+      successResponse(routingContext, MockData.pojoToJson(MockData.INSTANCE_NO_FULL_PERIODICALS));
     } else {
       failureResponse(
           routingContext,
