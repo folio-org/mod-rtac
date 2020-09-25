@@ -4,13 +4,13 @@ import static org.apache.commons.lang3.StringUtils.defaultIfEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
@@ -23,7 +23,7 @@ import org.folio.rest.jaxrs.model.RtacHoldings;
 
 public class FolioToRtacMapper {
 
-  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final Logger logger = LogManager.getLogger(getClass());
   private final boolean fullPeriodicals;
   private static final List<String> periodicalNames = List.of("journal", "newspaper");
 
