@@ -36,7 +36,7 @@ class CirculationClient extends FolioClient {
 
   private static final String URI = "/loan-storage/loans";
 
-  private static final WebClient webClient = WebClient.create(Vertx.vertx());
+  private static final WebClient webClient = WebClient.create(Vertx.currentContext().owner());
   private final Logger logger = LogManager.getLogger(getClass());
 
   CirculationClient(Map<String, String> okapiHeaders) {

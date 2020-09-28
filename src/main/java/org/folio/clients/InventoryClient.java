@@ -27,7 +27,7 @@ class InventoryClient extends FolioClient {
   private static final String VIEW_URI = "/inventory-hierarchy/items-and-holdings";
   private static final String OKAPI_TOKEN_KEY = "X-Okapi-Token";
   private static final String OKAPI_TENANT_KEY = "X-Okapi-Tenant";
-  private static final HttpClient httpClient = Vertx.vertx().createHttpClient();
+  private static final HttpClient httpClient = Vertx.currentContext().owner().createHttpClient();
 
   private final Logger logger = LogManager.getLogger(getClass());
 
