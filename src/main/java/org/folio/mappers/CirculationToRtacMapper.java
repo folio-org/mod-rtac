@@ -17,24 +17,28 @@ public class CirculationToRtacMapper {
    * RTac mapper.
    *
    * @param loansObj loan's representation in json
-   * @param items items  representation in json
+   * @param items items representation in json
    * @return list of item domain objects
    */
   public List<Item> mapToRtac(JsonObject loansObj, List<Item> items) {
-    var totalRecords = loansObj.getValue("totalRecords");
-    logger
-        .info("Open loans received from circulation: {}", totalRecords == null ? 0 : totalRecords);
-    final JsonArray loans = loansObj.getJsonArray("loans");
     var updatedItems = new ArrayList<Item>();
     try {
+      var totalRecords = loansObj.getValue("totalRecords");
+      logger.info(
+          "Open loans received from circulation: {}", totalRecords == null ? 0 : totalRecords);
+      final JsonArray loans = loansObj.getJsonArray("loans");
       for (Item item : items) {
-        final Optional<JsonObject> loan = loans.stream()
-            .map(a -> (JsonObject) a)
-            .filter(a -> a.getString("itemId").equals(item.getId())).findFirst();
-        loan.ifPresentOrElse(l -> {
-          final String dueDateString = l.getString("dueDate");
-          updatedItems.add(item.withDueDate(dueDateString));
-        }, () -> updatedItems.add(item));
+        final Optional<JsonObject> loan =
+            loans.stream()
+                .map(a -> (JsonObject) a)
+                .filter(a -> a.getString("itemId").equals(item.getId()))
+                .findFirst();
+        loan.ifPresentOrElse(
+            l -> {
+              final String dueDateString = l.getString("dueDate");
+              updatedItems.add(item.withDueDate(dueDateString));
+            },
+            () -> updatedItems.add(item));
       }
     } catch (Exception e) {
       logger.error(e.getMessage(), e);
@@ -42,5 +46,4 @@ public class CirculationToRtacMapper {
     }
     return updatedItems;
   }
-
 }
