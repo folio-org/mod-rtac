@@ -98,6 +98,7 @@ class CirculationClient extends FolioClient {
             if (i != 200) {
               promise.fail(new HttpException(httpResponse.statusCode(),
                   httpResponse.statusMessage()));
+              return;
             } else {
               final JsonObject loans = httpResponse.bodyAsJsonObject();
               final InventoryHoldingsAndItems updatedItems =
@@ -107,7 +108,7 @@ class CirculationClient extends FolioClient {
               result.add(updatedItems);
             }
           }
-          promise.complete(result);
+          promise.tryComplete(result);
         }
     );
     return promise.future();
