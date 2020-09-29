@@ -107,7 +107,7 @@ class CirculationClient extends FolioClient {
               result.add(updatedItems);
             }
           }
-          promise.complete(result);
+          promise.tryComplete(result);
         }
     );
     return promise.future();
