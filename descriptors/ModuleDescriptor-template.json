@@ -11,7 +11,7 @@
           "pathPattern": "/rtac/batch",
           "permissionsRequired": ["rtac.batch.post"],
           "modulePermissions": [
-            "circulation.loans.collection.get",
+            "circulation-storage.loans.collection.get",
             "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post"
           ]
         }
