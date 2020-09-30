@@ -98,13 +98,14 @@ public class FolioToRtacMapper {
    * @return holding information to be returned to the caller
    * @see <a href=https://issues.folio.org/browse/MODRTAC-37>MODRTAC-37</a>
    */
-
-  private final Function<Holding, RtacHolding> fromHoldingToRtacHolding = holding -> new RtacHolding()
-    .withId(holding.getId())
-    .withCallNumber(mapCallNumber(holding))
-    .withLocation(mapLocation(holding))
-    .withStatus(mapHoldingStatements(holding))
-    .withDueDate("");
+  private final Function<Holding, RtacHolding> fromHoldingToRtacHolding =
+      holding ->
+          new RtacHolding()
+              .withId(holding.getId())
+              .withCallNumber(mapCallNumber(holding))
+              .withLocation(mapLocation(holding))
+              .withStatus(mapHoldingStatements(holding))
+              .withDueDate("");
 
   private String mapHoldingStatements(Holding holding) {
     final var holdingsStatements = holding.getHoldingsStatements();
@@ -121,8 +122,8 @@ public class FolioToRtacMapper {
 
   private String mapCallNumber(Item item) {
     final var callNumber = item.getCallNumber();
-    return assembleCallNumber(
-      callNumber.getCallNumber(), callNumber.getPrefix(), callNumber.getSuffix());
+    return assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(),
+      callNumber.getSuffix());
   }
 
 
@@ -130,23 +131,19 @@ public class FolioToRtacMapper {
     return holding.getLocation().getPermanentLocation().getName();
   }
 
-  private boolean isPeriodical(InventoryHoldingsAndItems instance) {
-    return isPeriodicalByNatureOfContent(instance) || Objects.equals(instance.getModeOfIssuance(), "serial");
-  }
-
-  private boolean isPeriodicalByNatureOfContent(InventoryHoldingsAndItems instance) {
-    return instance.getNatureOfContent().stream().map(String::toLowerCase).anyMatch(
-      periodicalNames::contains);
-  }
-
   private String mapLocation(Item item) {
     return item.getLocation().getLocation().getName();
   }
 
-  private String mapCallNumber(Item item) {
-    final var callNumber = item.getCallNumber();
-    return assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(),
-      callNumber.getSuffix());
+  private boolean isPeriodical(InventoryHoldingsAndItems instance) {
+    return isPeriodicalByNatureOfContent(instance)
+        || Objects.equals(instance.getModeOfIssuance(), "serial");
+  }
+
+  private boolean isPeriodicalByNatureOfContent(InventoryHoldingsAndItems instance) {
+    return instance.getNatureOfContent().stream()
+        .map(String::toLowerCase)
+        .anyMatch(periodicalNames::contains);
   }
 
   /**
@@ -177,6 +174,7 @@ public class FolioToRtacMapper {
 
     return rtacHoldings.withHoldings(nested);
   }
+
   private String assembleCallNumber(String callNumber, String prefix, String suffix) {
     if (isNotEmpty(prefix)) {
       callNumber = prefix + " " + callNumber;

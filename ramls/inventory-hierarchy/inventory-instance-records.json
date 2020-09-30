@@ -38,17 +38,6 @@
             "description": "Indicate if record should not be displayed in a discovery system",
             "type": "boolean"
           },
-          "holdingsType": {
-            "description": "Name of the holdings type",
-            "type": "string"
-          },
-          "formerIds": {
-            "type": "array",
-            "description": "Identifiers of previously assigned ID(s) to the holdings record",
-            "items": {
-              "type": "string"
-            }
-          },
           "location": {
             "description": "Holdings record effective location",
             "type": "object",
@@ -149,65 +138,6 @@
               "callNumber"
             ]
           },
-          "shelvingTitle": {
-            "description": "Indicates the shelving form of title",
-            "type": "string"
-          },
-          "acquisitionFormat": {
-            "description": "Format of holdings record acquisition",
-            "type": "string"
-          },
-          "acquisitionMethod": {
-            "description": "Method of holdings record acquisition",
-            "type": "string"
-          },
-          "receiptStatus": {
-            "description": "Receipt status (e.g. pending, awaiting receipt, partially received, fully received, receipt not required, and cancelled)",
-            "type": "string"
-          },
-          "electronicAccess": {
-            "description": "Aggregated electronic access from holdings",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "uri": {
-                  "description": "Electronic access URI",
-                  "type": "string"
-                },
-                "name":
-                {
-                  "description": "Electronic access name",
-                  "type": "string"
-                },
-                "linkText": {
-                  "description": "Electronic access link text",
-                  "type": "string"
-                },
-                "publicNote": {
-                  "description": "Electronic access public note",
-                  "type": "string"
-                },
-                "relationshipId": {
-                  "description": "Electronic access relationship id",
-                  "type": "string",
-                  "$ref": "../uuid.json"
-                },
-                "materialsSpecification": {
-                  "description": "Electronic access materials specification",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "uri",
-                "name",
-                "linkText",
-                "publicNote",
-                "relationshipId",
-                "materialsSpecification"
-              ]
-            }
-          },
           "notes": {
             "description": "Notes about action, copy, binding etc.",
             "type": "array",
@@ -228,18 +158,6 @@
                 "note"
               ]
             }
-          },
-          "illPolicy": {
-            "description": "Name of the ILL policy",
-            "type": "string"
-          },
-          "retentionPolicy": {
-            "description": "Records information regarding how long we have agreed to keep something",
-            "type": "string"
-          },
-          "digitizationPolicy": {
-            "description": "Records information regarding digitization aspects",
-            "type": "string"
           },
           "holdingsStatements": {
             "description": "Notes about action, copy, binding etc.",
@@ -309,95 +227,6 @@
           "copyNumber": {
             "description": "Piece ID (usually barcode) for systems that do not use holdings record",
             "type": "string"
-          },
-          "numberOfItems": {
-            "description": "Amount of items of holdings record",
-            "type": "string"
-          },
-          "receivingHistory": {
-            "description": "Receiving history of holdings record",
-            "type": "object",
-            "properties": {
-              "entries": {
-                "description": "Entries of receiving history",
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "publicDisplay": {
-                      "description": "Defines if the receiving history should be visible to the public",
-                      "type": "boolean"
-                    },
-                    "enumeration": {
-                      "description": "This is the volume/issue number (e.g. v.71:no.6-2)",
-                      "type": "string"
-                    },
-                    "chronology": {
-                      "description": "Repeated element from Receiving history - Enumeration AND Receiving history - Chronology",
-                      "type": "string"
-                    }
-                  },
-                  "required": [
-                    "publicDisplay",
-                    "enumeration",
-                    "chronology"
-                  ]
-                }
-              }
-            }
-          },
-          "tags": {
-            "description": "Arbitrary tags associated with this holding",
-            "type": "object",
-            "properties": {
-              "tagList": {
-                "description": "List of tags",
-                "type": "array",
-                "items": {
-                  "important": {
-                    "description": "Indicate if tag is important",
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "statisticalCodes": {
-            "description": "Holdings record statistical codes",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "description": "Unique ID of the statistical code",
-                  "type": "string",
-                  "$ref": "../uuid.json"
-                },
-                "code": {
-                  "description": "Statistical code, a distinct label",
-                  "type": "string"
-                },
-                "name": {
-                  "description": "Name or description of a statistical code",
-                  "type": "string"
-                },
-                "statisticalCodeType": {
-                  "description": "Name of a statistical code type",
-                  "type": "string"
-                },
-                "source": {
-                  "description": "Label indicating where the statistical code type entry originates from, i.e. 'folio' or 'local'",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "id",
-                "code",
-                "name",
-                "statisticalCodeType",
-                "source"
-              ]
-            }
           }
         }
       },
