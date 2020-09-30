@@ -1,6 +1,7 @@
 package org.folio.rest.impl;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
@@ -61,9 +62,6 @@ class RtacResourceImplTest {
   @BeforeAll
   void setUpOnce(Vertx vertx, VertxTestContext testContext) throws Exception {
     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-    String moduleName = PomReader.INSTANCE.getModuleName().replaceAll("_", "-");
-    String moduleVersion = PomReader.INSTANCE.getVersion();
-    String moduleId = moduleName + "-" + moduleVersion;
 
     RestAssured.baseURI = "http://localhost:" + okapiPort;
     RestAssured.port = okapiPort;
