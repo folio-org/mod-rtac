@@ -17,8 +17,12 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.stream.Stream;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Item;
@@ -45,6 +49,8 @@ class RtacResourceImplTest {
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
 
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
   private static final String SERVER_ERROR = "Internal Server Error";
   private static final String RTAC_PATH = "/rtac/batch";
   private static final String TEST_TENANT_ID = "test_tenant";
@@ -57,6 +63,7 @@ class RtacResourceImplTest {
 
   @BeforeAll
   void setUpOnce(Vertx vertx, VertxTestContext testContext) throws Exception {
+    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     String moduleName = PomReader.INSTANCE.getModuleName().replaceAll("_", "-");
     String moduleVersion = PomReader.INSTANCE.getVersion();
     String moduleId = moduleName + "-" + moduleVersion;
@@ -142,7 +149,8 @@ class RtacResourceImplTest {
                   .asString();
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           RtacHolding holding = getSingleHolding(rtacResponse);
-          assertEquals(MockData.LOAN_DUE_DATE_FIELD_VALUE, holding.getDueDate());
+          final var expected = dateFormat.parse(MockData.LOAN_DUE_DATE_FIELD_VALUE);
+          assertEquals(expected, holding.getDueDate());
           assertEquals(MockData.INSTANCE_ITEM_ID, holding.getId());
           testContext.completeNow();
         });
