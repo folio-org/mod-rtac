@@ -3,6 +3,8 @@ package org.folio.clients;
 import static javax.ws.rs.core.HttpHeaders.ACCEPT;
 import static javax.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
+import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -24,12 +26,10 @@ import org.folio.rtac.rest.exceptions.HttpException;
 
 class InventoryClient extends FolioClient {
 
-  private static final String VIEW_URI = "/inventory-hierarchy/items-and-holdings";
-  private static final String OKAPI_TOKEN_KEY = "X-Okapi-Token";
-  private static final String OKAPI_TENANT_KEY = "X-Okapi-Tenant";
-  private static final HttpClient httpClient = Vertx.currentContext().owner().createHttpClient();
+  private static final Logger logger = LogManager.getLogger();
 
-  private final Logger logger = LogManager.getLogger(getClass());
+  private static final String VIEW_URI = "/inventory-hierarchy/items-and-holdings";
+  private static final HttpClient httpClient = Vertx.currentContext().owner().createHttpClient();
 
   InventoryClient(Map<String, String> okapiHeaders) {
     super(okapiHeaders);
@@ -84,12 +84,10 @@ class InventoryClient extends FolioClient {
     logger.info("Sending request to {}", inventoryUrl);
 
     final var httpClientRequest = httpClient.postAbs(inventoryUrl)
-
-        .putHeader(OKAPI_TOKEN_KEY, okapiToken)
-        .putHeader(OKAPI_TENANT_KEY, tenantId)
+        .putHeader(OKAPI_HEADER_TOKEN, okapiToken)
+        .putHeader(OKAPI_HEADER_TENANT, tenantId)
         .putHeader(ACCEPT, APPLICATION_JSON)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
-
     httpClientRequest.setChunked(true);
     return httpClientRequest;
   }

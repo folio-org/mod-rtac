@@ -14,7 +14,7 @@ import org.folio.rtac.rest.exceptions.HttpException;
 
 public final class RtacResourceImpl implements Rtac {
 
-  private final Logger logger = LogManager.getLogger(getClass());
+  private static final Logger logger = LogManager.getLogger();
 
   @Override
   public void postRtacBatch(

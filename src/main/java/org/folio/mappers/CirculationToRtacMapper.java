@@ -11,7 +11,7 @@ import org.folio.rest.jaxrs.model.Item;
 
 public class CirculationToRtacMapper {
 
-  private final Logger logger = LogManager.getLogger(getClass());
+  private static final Logger logger = LogManager.getLogger();
 
   /**
    * RTac mapper.
