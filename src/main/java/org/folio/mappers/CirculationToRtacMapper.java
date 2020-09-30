@@ -1,5 +1,7 @@
 package org.folio.mappers;
 
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,21 +9,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TimeZone;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.rest.jaxrs.model.Item;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-
 public class CirculationToRtacMapper {
 
   private static final Logger logger = LogManager.getLogger();
-  private final SimpleDateFormat dateFormat;
 
-  public CirculationToRtacMapper() {
-    dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+  static {
     dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
   }
 
