@@ -4,11 +4,26 @@
   "provides": [
     {
       "id": "rtac",
-      "version": "2.0",
+      "version": "1.5",
+      "handlers": [
+        {
+          "methods": ["GET"],
+          "pathPattern": "/rtac/{id}",
+          "permissionsRequired": ["rtac.holdings.item.get"],
+          "modulePermissions": [
+            "circulation-storage.loans.collection.get",
+            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rtac-batch",
+      "version": "1.0",
       "handlers": [
         {
           "methods": ["POST"],
-          "pathPattern": "/rtac/batch",
+          "pathPattern": "/rtac-batch",
           "permissionsRequired": ["rtac.batch.post"],
           "modulePermissions": [
             "circulation-storage.loans.collection.get",

@@ -42,7 +42,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 @ExtendWith(VertxExtension.class)
 @TestInstance(PER_CLASS)
-class RtacResourceImplTest {
+class RtacBatchResourceImplTest {
 
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
@@ -50,7 +50,7 @@ class RtacResourceImplTest {
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
   private static final String SERVER_ERROR = "Internal Server Error";
-  private static final String RTAC_PATH = "/rtac/batch";
+  private static final String RTAC_PATH = "/rtac-batch";
   private static final String TEST_TENANT_ID = "test_tenant";
   private static final String TEST_USER_ID = "30fde4be-2d1a-4546-8d6c-b468caca2720";
   private static final Header okapiTenantHeader = new Header("X-Okapi-Tenant", TEST_TENANT_ID);

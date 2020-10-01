@@ -10,8 +10,10 @@ import org.apache.logging.log4j.Logger;
 import org.folio.mappers.ErrorMapper;
 import org.folio.mappers.FolioToRtacMapper;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
+import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
+import org.folio.rtac.rest.exceptions.HttpException;
 
 public class FolioFacade {
 
@@ -52,13 +54,41 @@ public class FolioFacade {
               if (!notFoundInstances.isEmpty()) {
                 final var errors = errorMapper.mapNotFoundInstances(notFoundInstances);
                 logger.info("Mapping errors: {}", errors.size());
-                logger.debug("Errors: {}", errors.toString());
+                logger.debug("Errors: {}", errors);
                 result.withErrors(errors);
               } else {
                 result.withErrors(null);
               }
-
               promise.complete(result.withHoldings(rtacHoldingsList));
+              return promise.future();
+            })
+        .onFailure(promise::fail);
+  }
+
+  /**
+   * Returns RTAC for the specified id.
+   *
+   * @param instanceId passed instances id
+   * @return items and holdings for instances
+   * @deprecated this will be removed soon, use {@link FolioFacade#getItemAndHoldingInfo(List)}
+   */
+  @Deprecated(since = "1.6.0")
+  public Future<LegacyHoldings> getItemAndHoldingInfo(String instanceId) {
+    Promise<LegacyHoldings> promise = Promise.promise();
+
+    return inventoryClient
+        .getItemAndHoldingInfo(List.of(instanceId))
+        .compose(circulationClient::getLoansForItems)
+        .compose(
+            instances -> {
+              logger.info("Mapping inventory instances: {}", instances.size());
+              final var first = instances.stream().findFirst();
+              first.ifPresentOrElse(
+                  i -> {
+                    var holdings = folioToRtacMapper.mapToLegacy(i);
+                    promise.complete(holdings);
+                  },
+                  () -> promise.fail(new HttpException(404, "Not Found")));
               return promise.future();
             })
         .onFailure(promise::fail);

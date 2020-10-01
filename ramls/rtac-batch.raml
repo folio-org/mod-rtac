@@ -1,0 +1,61 @@
+#%RAML 1.0
+title: Real Time Availability Check
+baseUri: https://github.com/folio-org/mod-rtac
+version: v1.0
+
+documentation:
+  - title: Real Time Availability Checker Integration
+    content: This module allows 3rd party discovery services to check for FOLIO inventory availability
+
+types:
+  rtacHoldings: !include rtac-holdings.json
+  rtactHolding: !include rtac-holding.json
+  rtacHoldingsBatch: !include rtac-holdings-batch.json
+  inventoryHoldingsAndItems: !include inventory-hierarchy/inventory-instance-records.json
+  rtacRequest: !include rtac-request.json
+  errors: !include raml-util/schemas/errors.schema
+
+traits:
+  language: !include raml-util/traits/language.raml
+  validate: !include raml-util/traits/validation.raml
+
+resourceTypes:
+  item-collection-get: !include raml-util/rtypes/item-collection-get.raml
+
+/rtac-batch:
+  displayName: RTAC Batch API
+  description: Batch API to get instances with items and holdings from inventory
+  post:
+    description: Retrieve holding information from inventory in a batch
+    is: [validate]
+    body:
+      application/json:
+        description: List of inventory instance identifiers
+        type: rtacRequest
+        example: !include examples/rtac-request.sample
+    responses:
+      200:
+        body:
+          application/json:
+            type: rtacHoldingsBatch
+      400:
+        description: "Bad request"
+        body:
+          text/plain:
+            example: |
+              "unable to process request -- constraint violation"
+      403:
+        description: "Access Denied"
+        body:
+          text/plain:
+            example: "Access Denied"
+      404:
+        description: "Not Found"
+        body:
+          text/plain:
+            example: "Not Found"
+      500:
+          description: "Internal server error"
+          body:
+            text/plain:
+              example: "Internal server error"

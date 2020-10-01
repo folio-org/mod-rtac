@@ -1,46 +1,39 @@
 #%RAML 1.0
 title: Real Time Availability Check
 baseUri: https://github.com/folio-org/mod-rtac
-version: v2.0
+version: v1.5
 
 documentation:
-  - title: Real Time Availability Checker Integration
+  - title: DEPRECATED Real Time Availability Checker Integration
     content: This module allows 3rd party discovery services to check for FOLIO inventory availability
 
 types:
-  rtacHoldings: !include rtac-holdings.json
-  rtactHolding: !include rtac-holding.json
-  rtacHoldingsBatch: !include rtac-holdings-batch.json
-  inventoryHoldingsAndItems: !include inventory-hierarchy/inventory-instance-records.json
-  rtacRequest: !include rtac-request.json
-  errors: !include raml-util/schemas/errors.schema
+  legacyHoldings: !include deprecated/holdings.json
+  legacyHolding: !include deprecated/holding.json
 
 traits:
   language: !include raml-util/traits/language.raml
-  validate: !include raml-util/traits/validation.raml
 
 resourceTypes:
   item-collection-get: !include raml-util/rtypes/item-collection-get.raml
 
 /rtac:
-  displayName: RTAC
-  description: RTAC operations
-  /batch:
-    displayName: Batch API to get instances with items and holdings from inventory
-    post:
-      description: Retrieve holding information from inventory in a batch
-      is: [validate]
-      body:
-        application/json:
-          description: List of inventory instance identifiers
-          type: rtacRequest
-          example: !include examples/rtac-request.sample
+  displayName: DEPRECATED RTAC
+  description: DEPRECATED RTAC operations
+  /{id}:
+    displayName: RTAC for the specified id
+    description: Returns availability details about each item for the given instance id
+    type:
+      item-collection-get:
+        exampleItem: !include examples/holdings.sample
+        schema: legacyHoldings
+    uriParameters:
+      id:
+        description: "The UUID of a FOLIO instance"
+        type: string
+        pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
+    get:
       responses:
-        200:
-          body:
-            application/json:
-              type: rtacHoldingsBatch
-
         400:
           description: "Bad request"
           body:
@@ -52,13 +45,3 @@ resourceTypes:
           body:
             text/plain:
               example: "Access Denied"
-        404:
-          description: "Not Found"
-          body:
-            text/plain:
-              example: "Not Found"
-        500:
-            description: "Internal server error"
-            body:
-              text/plain:
-                example: "Internal server error"

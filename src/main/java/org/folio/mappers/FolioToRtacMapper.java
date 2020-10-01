@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.StringJoiner;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
+import org.folio.rest.jaxrs.model.LegacyHolding;
+import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 
@@ -38,6 +40,34 @@ public class FolioToRtacMapper {
     }
 
     return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+  }
+
+  /**
+   * RTac mapper class.
+   *
+   * @param instance items and holdings
+   * @return Holdings
+   */
+  @Deprecated(since = "1.6.0")
+  public LegacyHoldings mapToLegacy(InventoryHoldingsAndItems instance) {
+    final var rtacHoldings = new LegacyHoldings();
+
+    final var nested = new ArrayList<LegacyHolding>();
+
+    for (Item item : instance.getItems()) {
+      final var rtacHolding =
+          new LegacyHolding()
+              .withId(item.getId())
+              .withLocation(mapLocation(item))
+              .withCallNumber(mapCallNumber(item))
+              .withStatus(item.getStatus())
+              .withDueDate(item.getDueDate())
+              .withVolume(mapVolume(item));
+
+      nested.add(rtacHolding);
+    }
+
+    return rtacHoldings.withHoldings(nested);
   }
 
   private String mapLocation(Item item) {

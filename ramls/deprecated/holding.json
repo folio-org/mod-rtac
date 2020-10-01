@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "RTAC Holding Schema",
+  "type": "object",
+  "description": "Real Time Availability Check (RTAC) holding details",
+  "javaType" : "org.folio.rest.jaxrs.model.LegacyHolding",
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The FOLIO id of the holding (item)"
+    },
+    "location": {
+      "type": "string",
+      "description": "The location of the holding"
+    },
+    "callNumber": {
+      "type": "string",
+      "description": "The call number of the holding"
+    },
+    "status": {
+      "type": "string",
+      "description": "The availability status of the holding"
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date when the holding will be available"
+    },
+    "volume": {
+      "type": "string",
+      "description": "Volume details for the holding (item)"
+    }
+  },
+  "required": [
+    "id",
+    "location",
+    "callNumber",
+    "status"
+  ]
+}
