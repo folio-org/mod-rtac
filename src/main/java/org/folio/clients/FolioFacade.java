@@ -3,6 +3,7 @@ package org.folio.clients;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,14 +13,15 @@ import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
-import org.folio.rtac.rest.exceptions.HttpException;
 import org.folio.rest.jaxrs.model.RtacRequest;
+import org.folio.rtac.rest.exceptions.HttpException;
 
 public class FolioFacade {
 
+  private static final Logger logger = LogManager.getLogger();
+
   private final InventoryClient inventoryClient;
   private final CirculationClient circulationClient;
-  private final Logger logger = LogManager.getLogger(getClass());
   private final ErrorMapper errorMapper = new ErrorMapper();
 
   public FolioFacade(Map<String, String> okapiHeaders) {
@@ -68,11 +70,12 @@ public class FolioFacade {
    *
    * @param instanceId passed instances id
    * @return items and holdings for instances
-   * @deprecated this will be removed soon, use {@link FolioFacade#getItemAndHoldingInfo(List)}
+   * @deprecated will be removed soon, use {@link FolioFacade#getItemAndHoldingInfo(RtacRequest)}
    */
   @Deprecated(since = "1.6.0")
   public Future<LegacyHoldings> getItemAndHoldingInfo(String instanceId) {
     Promise<LegacyHoldings> promise = Promise.promise();
+    final var folioToRtacMapper = new FolioToRtacMapper(false);
 
     return inventoryClient
         .getItemAndHoldingInfo(List.of(instanceId))

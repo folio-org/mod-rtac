@@ -16,8 +16,6 @@ import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.LegacyHolding;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
-import org.folio.rest.jaxrs.model.LegacyHolding;
-import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 
@@ -69,13 +67,9 @@ public class FolioToRtacMapper {
    * This function is populating holding-level information for periodicals.
    * The following php script was taken as an example:
    * function holdingsLoad($response){
-   * <p>
    * $data = json_decode($response,true);
-   * <p>
    * $holdings = $data['holdingsRecords'];
-   * <p>
    * echo '<holdings>';
-   * <p>
    * foreach ($holdings as $holding){
    * $statement = $holding['holdingsStatements'][0]['statement'];
    * if ($statement == null){
@@ -90,7 +84,6 @@ public class FolioToRtacMapper {
    * <dueDate></dueDate>
    * </holding>';
    * };
-   * <p>
    * echo '</holdings>';
    * }
    *
@@ -105,7 +98,7 @@ public class FolioToRtacMapper {
               .withCallNumber(mapCallNumber(holding))
               .withLocation(mapLocation(holding))
               .withStatus(mapHoldingStatements(holding))
-              .withDueDate("");
+              .withDueDate(null);
 
   private String mapHoldingStatements(Holding holding) {
     final var holdingsStatements = holding.getHoldingsStatements();
@@ -122,10 +115,9 @@ public class FolioToRtacMapper {
 
   private String mapCallNumber(Item item) {
     final var callNumber = item.getCallNumber();
-    return assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(),
-      callNumber.getSuffix());
+    return assembleCallNumber(
+      callNumber.getCallNumber(), callNumber.getPrefix(), callNumber.getSuffix());
   }
-
 
   private String mapLocation(Holding holding) {
     return holding.getLocation().getPermanentLocation().getName();
@@ -161,13 +153,13 @@ public class FolioToRtacMapper {
 
     for (Item item : instance.getItems()) {
       final var rtacHolding =
-        new LegacyHolding()
-          .withId(item.getId())
-          .withLocation(mapLocation(item))
-          .withCallNumber(mapCallNumber(item))
-          .withStatus(item.getStatus())
-          .withDueDate(item.getDueDate())
-          .withVolume(mapVolume(item));
+          new LegacyHolding()
+              .withId(item.getId())
+              .withLocation(mapLocation(item))
+              .withCallNumber(mapCallNumber(item))
+              .withStatus(item.getStatus())
+              .withDueDate(item.getDueDate())
+              .withVolume(mapVolume(item));
 
       nested.add(rtacHolding);
     }

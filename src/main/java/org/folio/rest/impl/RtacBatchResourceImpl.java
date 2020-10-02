@@ -29,7 +29,7 @@ public final class RtacBatchResourceImpl implements RtacBatch {
     final FolioFacade folioFacade = new FolioFacade(okapiHeaders);
 
     folioFacade
-        .getItemAndHoldingInfo(entity.getInstanceIds())
+        .getItemAndHoldingInfo(entity)
         .onSuccess(
             result ->
                 asyncResultHandler.handle(
