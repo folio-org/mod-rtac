@@ -47,6 +47,7 @@ public class FolioToRtacMapper {
    *
    * @param instance items and holdings
    * @return Holdings
+   * @deprecated this will be removed soon.
    */
   @Deprecated(since = "1.6.0")
   public LegacyHoldings mapToLegacy(InventoryHoldingsAndItems instance) {
