@@ -1,5 +1,6 @@
 package org.folio.rest.impl;
 
+import static org.folio.rest.impl.MockData.INSTANCE_ID;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -87,6 +88,26 @@ class RtacBatchResourceImplTest {
   @AfterAll
   void afterAll(Vertx vertx, VertxTestContext testContext) {
     vertx.close(testContext.succeeding(v -> testContext.completeNow()));
+  }
+
+  @Test
+  void shouldReturnRtacResponse_whenLegacyApiIsCalledWIthCalidId(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          RequestSpecification request =
+              RestAssured.given()
+                  .header(okapiTenantHeader)
+                  .header(okapiUrlHeader)
+                  .header(okapiUserHeader)
+                  .header(contentTypeHeader);
+          request
+              .when()
+              .get("/rtac/" + INSTANCE_ID)
+              .then()
+              .statusCode(200)
+              .contentType(ContentType.JSON);
+          testContext.completeNow();
+        });
   }
 
   @Test
