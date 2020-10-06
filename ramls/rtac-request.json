@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Define format of request data with instances ids",
+  "type": "object",
+  "properties": {
+    "instanceIds": {
+      "description": "Inventory instances identifiers",
+      "type": "array",
+      "items": {
+        "$ref": "uuid.json"
+      }
+    }
+  },
+  "required": [
+    "instanceIds"
+  ]
+}

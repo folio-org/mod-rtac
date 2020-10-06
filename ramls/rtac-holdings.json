@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "description": "Collection of holdings",
+  "javaType" : "org.folio.rest.jaxrs.model.RtacHoldings",
+  "properties": {
+    "instanceId": {
+      "description": "The FOLIO instance identifier",
+      "type": "string",
+      "$ref": "uuid.json"
+    },
+    "holdings": {
+      "description": "Collection of holdings",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "rtac-holding.json"
+      }
+    }
+  },
+  "required": [
+    "holdings"
+  ]
+}

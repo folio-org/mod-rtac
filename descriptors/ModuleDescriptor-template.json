@@ -4,22 +4,30 @@
   "provides": [
     {
       "id": "rtac",
-      "version": "1.4",
+      "version": "1.5",
       "handlers": [
-        {
-          "methods": ["GET"],
-          "pathPattern": "/rtac",
-          "permissionsRequired": ["rtac.holdings.collection.get"]
-        },
         {
           "methods": ["GET"],
           "pathPattern": "/rtac/{id}",
           "permissionsRequired": ["rtac.holdings.item.get"],
           "modulePermissions": [
-            "inventory.instances.item.get",
-            "inventory-storage.holdings.collection.get",
-            "inventory.items.collection.get",
-            "circulation.loans.collection.get"
+            "circulation-storage.loans.collection.get",
+            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rtac-batch",
+      "version": "1.0",
+      "handlers": [
+        {
+          "methods": ["POST"],
+          "pathPattern": "/rtac-batch",
+          "permissionsRequired": ["rtac.batch.post"],
+          "modulePermissions": [
+            "circulation-storage.loans.collection.get",
+            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post"
           ]
         }
       ]
@@ -27,36 +35,26 @@
   ],
   "requires": [
     {
-      "id": "inventory",
-      "version": "8.0 9.0 10.0"
+      "id": "inventory-hierarchy",
+      "version": "0.1"
     },
     {
-      "id": "holdings-storage",
-      "version": "1.2 2.0 3.0 4.0"
-    },
-    {
-      "id": "circulation",
-      "version": "3.0 4.0 5.0 6.0 7.0 8.0 9.0"
+      "id": "loan-storage",
+      "version": "6.0 7.0 7.1"
     }
   ],
   "permissionSets": [
     {
-      "permissionName": "rtac.holdings.collection.get",
-      "displayName": "RTAC - get holding collection",
-      "description": "Get holding collection"
-    },
-    {
-      "permissionName": "rtac.holdings.item.get",
-      "displayName": "RTAC - get individual holding",
-      "description": "Get individual holding"
+      "permissionName": "rtac.batch.post",
+      "displayName": "RTAC - get batch holding collection",
+      "description": "Get batch holding collection"
     },
     {
       "permissionName": "rtac.all",
       "displayName": "RTAC - all permissions",
       "description": "Entire set of permissions needed to use RTAC",
       "subPermissions": [
-        "rtac.holdings.collection.get",
-        "rtac.holdings.item.get"
+        "rtac.batch.post"
       ]
     }
   ],

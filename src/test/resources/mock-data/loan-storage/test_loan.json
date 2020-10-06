@@ -1,0 +1,21 @@
+{
+  "loans": [
+    {
+      "id": "3fd2d7aa-a6fe-4794-9d34-837a6bd31a8b",
+      "userId": "ab579dc3-219b-4f5b-8068-ab1c7a55c402",
+      "itemId": "645549b1-2a73-4251-b8bb-39598f773a93",
+      "status": {
+        "name": "Open"
+      },
+      "loanDate": "2017-01-05T12:42:21Z",
+      "dueDate": "2017-01-19T12:42:21.000+0000",
+      "action": "holdrequested",
+      "itemStatus": "Checked out",
+      "metadata": {
+        "createdDate": "2020-09-16T10:08:36.789+0000",
+        "updatedDate": "2020-09-16T10:08:36.789+0000"
+      }
+    }
+  ],
+  "totalRecords": 1
+}

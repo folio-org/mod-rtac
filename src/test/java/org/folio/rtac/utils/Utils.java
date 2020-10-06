@@ -12,9 +12,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * Test utils class.
- * 
- * @author mreno
  *
+ * @author mreno
  */
 public final class Utils {
   private static final Logger logger = LogManager.getLogger("okapi");
@@ -24,8 +23,7 @@ public final class Utils {
   }
 
   /**
-   * Returns a random ephemeral port that has a high probability of not being
-   * in use.
+   * Returns a random ephemeral port that has a high probability of not being in use.
    *
    * @return a random port number.
    */
@@ -48,7 +46,7 @@ public final class Utils {
 
   /**
    * Read in a JSON mock file.
-   * 
+   *
    * @param path file location
    * @return the file contents as a string
    */
@@ -70,7 +68,7 @@ public final class Utils {
 
   /**
    * Encodes a query parameter.
-   * 
+   *
    * @param value the query parameter key or value
    * @return the encoded result
    */
@@ -82,5 +80,4 @@ public final class Utils {
       throw new IllegalStateException(e);
     }
   }
-
 }
