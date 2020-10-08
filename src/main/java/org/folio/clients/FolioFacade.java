@@ -5,6 +5,9 @@ import io.vertx.core.Promise;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.mappers.ErrorMapper;
@@ -38,13 +41,24 @@ public class FolioFacade {
   public Future<RtacHoldingsBatch> getItemAndHoldingInfo(RtacRequest rtacRequest) {
     Promise<RtacHoldingsBatch> promise = Promise.promise();
     final var folioToRtacMapper = new FolioToRtacMapper(rtacRequest.getFullPeriodicals());
-    return inventoryClient.getItemAndHoldingInfo(rtacRequest.getInstanceIds())
+
+    final var validUuids =
+        rtacRequest.getInstanceIds().stream()
+            .filter(this::validateUuid)
+            .collect(Collectors.toList());
+
+    return inventoryClient
+        .getItemAndHoldingInfo(validUuids)
         .compose(circulationClient::getLoansForItems)
         .compose(
             instances -> {
               var notFoundInstances = new ArrayList<>(rtacRequest.getInstanceIds());
               final var rtacHoldingsList = new ArrayList<RtacHoldings>();
               for (InventoryHoldingsAndItems instance : instances) {
+                if (CollectionUtils.isEmpty(instance.getHoldings())) {
+                  notFoundInstances.remove(instance.getInstanceId());
+                  continue;
+                }
                 RtacHoldings rtacHoldings = folioToRtacMapper.mapToRtac(instance);
                 rtacHoldingsList.add(rtacHoldings);
                 notFoundInstances.remove(instance.getInstanceId());
@@ -93,5 +107,14 @@ public class FolioFacade {
               return promise.future();
             })
         .onFailure(promise::fail);
+  }
+
+  private boolean validateUuid(String uuid) {
+    try {
+      UUID.fromString(uuid);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
