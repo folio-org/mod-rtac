@@ -17,7 +17,6 @@ import org.apache.http.HttpStatus;
 
 public class MockServer {
 
-
   private static final String LOANS_URI = "/loan-storage/loans";
   private static final String INVENTORY_VIEW_URI = "/inventory-hierarchy/items-and-holdings";
 
@@ -54,14 +53,16 @@ public class MockServer {
   private void handleInventoryViewResponse(RoutingContext routingContext) {
     JsonObject jsonObject = routingContext.getBody().toJsonObject();
     JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
-    final var first = jsonArray.getString(0);
-    if (first.length() == 3) {
-      final var statusCode = Integer.parseInt(first);
-      routingContext
-          .response()
-          .setStatusCode(statusCode)
-          .putHeader("content-type", "text/plain")
-          .end("Internal Server Error");
+    var first = jsonArray.getString(0);
+
+    if (first.equals(MockData.UUID_400)) {
+      failureResponse(routingContext, 400, "Internal Server error");
+    } else if (first.equals(MockData.UUID_403)) {
+      failureResponse(routingContext, 403, "Internal Server error");
+    } else if (first.equals(MockData.UUID_404)) {
+      failureResponse(routingContext, 404, "Internal Server error");
+    } else if (first.equals(MockData.UUID_500)) {
+      failureResponse(routingContext, 500, "Internal Server error");
     } else if (jsonArray.contains(MockData.INSTANCE_ID)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS));

@@ -47,6 +47,10 @@ public class FolioFacade {
             .filter(this::validateUuid)
             .collect(Collectors.toList());
 
+    if (CollectionUtils.isEmpty(validUuids)) {
+      promise.fail(new HttpException(404, "Could not find inventory instances"));
+    }
+
     return inventoryClient
         .getItemAndHoldingInfo(validUuids)
         .compose(circulationClient::getLoansForItems)

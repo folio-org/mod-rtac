@@ -1,6 +1,10 @@
 package org.folio.rest.impl;
 
 import static org.folio.rest.impl.MockData.INSTANCE_ID;
+import static org.folio.rest.impl.MockData.UUID_400;
+import static org.folio.rest.impl.MockData.UUID_403;
+import static org.folio.rest.impl.MockData.UUID_404;
+import static org.folio.rest.impl.MockData.UUID_500;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -237,7 +241,7 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
-  void shouldReturnEmptyHoldings_whenInstanceHasNotItems(VertxTestContext testContext) {
+  void shouldSkipInstance_whenInstanceHasNoHoldings(VertxTestContext testContext) {
     testContext.verify(
         () -> {
           String validInstanceIdsJson =
@@ -254,8 +258,7 @@ class RtacBatchResourceImplTest {
                   .body()
                   .asString();
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
-          RtacHoldings rtacHoldings = rtacResponse.getHoldings().iterator().next();
-          assertTrue(rtacHoldings.getHoldings().isEmpty());
+          assertTrue(rtacResponse.getHoldings().isEmpty());
           testContext.completeNow();
         });
   }
@@ -310,9 +313,9 @@ class RtacBatchResourceImplTest {
     return Stream.of(
         // Even though we receive a 400, we need to return a 500 since there is nothing the client
         // can do to correct the 400. We'd have to correct it in the code.
-        Arguments.of("400", 500),
-        Arguments.of("403", 403),
-        Arguments.of("404", 404),
-        Arguments.of("500", 500));
+        Arguments.of(UUID_400, 500),
+        Arguments.of(UUID_403, 403),
+        Arguments.of(UUID_404, 404),
+        Arguments.of(UUID_500, 500));
   }
 }

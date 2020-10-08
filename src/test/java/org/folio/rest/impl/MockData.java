@@ -42,6 +42,11 @@ public class MockData {
   public static final String INSTANCE_ID_NO_FULL_PERIODICALS =
       "4ed2a3b3-2fb4-414c-aa6f-a265685ca5a7";
 
+  public static final String UUID_400 = "c031f1d4-09b0-11eb-adc1-0242ac120002";
+  public static final String UUID_500 = "c031f1d4-09b0-11eb-adc1-0242ac120003";
+  public static final String UUID_403 = "c031f1d4-09b0-11eb-adc1-0242ac120004";
+  public static final String UUID_404 = "c031f1d4-09b0-11eb-adc1-0242ac120005";
+
   public static final String LOAN_JSON;
   public static final String EMPTY_LOANS_JSON;
 
@@ -83,10 +88,10 @@ public class MockData {
     setItemId(INSTANCE_LOAN_STORAGE_ERROR, ITEM_ID_LOAN_STORAGE_ERROR);
 
     INSTANCE_NO_FULL_PERIODICALS =
-      MockData.stringToPojo(
-        INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class)
-        .withModeOfIssuance("serial")
-        .withInstanceId(INSTANCE_ID_NO_FULL_PERIODICALS);
+        MockData.stringToPojo(
+                INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class)
+            .withModeOfIssuance("serial")
+            .withInstanceId(INSTANCE_ID_NO_FULL_PERIODICALS);
 
     // === Rtac requests ====
     VALID_INSTANCE_IDS_RTAC_REQUEST =
@@ -120,6 +125,10 @@ public class MockData {
     } catch (JsonProcessingException ex) {
       throw new IllegalArgumentException("Invalid json. Cannot parse json structure." + ex);
     }
+  }
+
+  public static InventoryHoldingsAndItems createInventoryHoldingsAndItems() {
+    return stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
   }
 
   private static String getJsonObjectFromFile(String path) {
