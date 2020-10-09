@@ -42,11 +42,13 @@ public class FolioFacade {
     Promise<RtacHoldingsBatch> promise = Promise.promise();
     final var folioToRtacMapper = new FolioToRtacMapper(rtacRequest.getFullPeriodicals());
 
+    System.out.println("rtacRequest = " + rtacRequest.getInstanceIds());
     final var validUuids =
         rtacRequest.getInstanceIds().stream()
             .filter(this::validateUuid)
             .collect(Collectors.toList());
 
+    System.out.println("validUuids = " + validUuids);
     if (CollectionUtils.isEmpty(validUuids)) {
       promise.fail(new HttpException(404, "Could not find inventory instances"));
     }

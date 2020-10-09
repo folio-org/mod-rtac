@@ -29,6 +29,8 @@ public final class RtacBatchResourceImpl implements RtacBatch {
         entity.getFullPeriodicals(),
         entity.getInstanceIds());
 
+    System.out.println("!!!!!NEW CODE!!!!");
+
     final FolioFacade folioFacade = new FolioFacade(okapiHeaders);
 
     folioFacade
