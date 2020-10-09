@@ -24,12 +24,15 @@ public final class RtacBatchResourceImpl implements RtacBatch {
       Handler<AsyncResult<Response>> asyncResultHandler,
       Context vertxContext) {
 
-    logger.info("Batch API called: {}", entity);
+    logger.info(
+        "Batch API called:\n fullPeriodicals: {}\n instanceIds: {}",
+        entity.getFullPeriodicals(),
+        entity.getInstanceIds());
 
     final FolioFacade folioFacade = new FolioFacade(okapiHeaders);
 
     folioFacade
-        .getItemAndHoldingInfo(entity.getInstanceIds())
+        .getItemAndHoldingInfo(entity)
         .onSuccess(
             result ->
                 asyncResultHandler.handle(

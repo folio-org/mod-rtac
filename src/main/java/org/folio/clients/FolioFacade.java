@@ -5,6 +5,9 @@ import io.vertx.core.Promise;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.mappers.ErrorMapper;
@@ -13,14 +16,15 @@ import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
+import org.folio.rest.jaxrs.model.RtacRequest;
 import org.folio.rtac.rest.exceptions.HttpException;
 
 public class FolioFacade {
 
+  private static final Logger logger = LogManager.getLogger();
+
   private final InventoryClient inventoryClient;
   private final CirculationClient circulationClient;
-  private final Logger logger = LogManager.getLogger(getClass());
-  private final FolioToRtacMapper folioToRtacMapper = new FolioToRtacMapper();
   private final ErrorMapper errorMapper = new ErrorMapper();
 
   public FolioFacade(Map<String, String> okapiHeaders) {
@@ -31,20 +35,34 @@ public class FolioFacade {
   /**
    * Returns batch info for instances items and holdings.
    *
-   * @param instanceIds passed instances ids
+   * @param rtacRequest - request params
    * @return items and holdings for instances
    */
-  public Future<RtacHoldingsBatch> getItemAndHoldingInfo(List<String> instanceIds) {
+  public Future<RtacHoldingsBatch> getItemAndHoldingInfo(RtacRequest rtacRequest) {
     Promise<RtacHoldingsBatch> promise = Promise.promise();
+    final var folioToRtacMapper = new FolioToRtacMapper(rtacRequest.getFullPeriodicals());
+
+    final var validUuids =
+        rtacRequest.getInstanceIds().stream()
+            .filter(this::validateUuid)
+            .collect(Collectors.toList());
+
+    if (CollectionUtils.isEmpty(validUuids)) {
+      promise.fail(new HttpException(404, "Could not find inventory instances"));
+    }
 
     return inventoryClient
-        .getItemAndHoldingInfo(instanceIds)
+        .getItemAndHoldingInfo(validUuids)
         .compose(circulationClient::getLoansForItems)
         .compose(
             instances -> {
-              var notFoundInstances = new ArrayList<>(instanceIds);
+              var notFoundInstances = new ArrayList<>(rtacRequest.getInstanceIds());
               final var rtacHoldingsList = new ArrayList<RtacHoldings>();
               for (InventoryHoldingsAndItems instance : instances) {
+                if (CollectionUtils.isEmpty(instance.getHoldings())) {
+                  notFoundInstances.remove(instance.getInstanceId());
+                  continue;
+                }
                 RtacHoldings rtacHoldings = folioToRtacMapper.mapToRtac(instance);
                 rtacHoldingsList.add(rtacHoldings);
                 notFoundInstances.remove(instance.getInstanceId());
@@ -70,11 +88,12 @@ public class FolioFacade {
    *
    * @param instanceId passed instances id
    * @return items and holdings for instances
-   * @deprecated this will be removed soon, use {@link FolioFacade#getItemAndHoldingInfo(List)}
+   * @deprecated will be removed soon, use {@link FolioFacade#getItemAndHoldingInfo(RtacRequest)}
    */
   @Deprecated(since = "1.6.0")
   public Future<LegacyHoldings> getItemAndHoldingInfo(String instanceId) {
     Promise<LegacyHoldings> promise = Promise.promise();
+    final var folioToRtacMapper = new FolioToRtacMapper(false);
 
     return inventoryClient
         .getItemAndHoldingInfo(List.of(instanceId))
@@ -92,5 +111,14 @@ public class FolioFacade {
               return promise.future();
             })
         .onFailure(promise::fail);
+  }
+
+  private boolean validateUuid(String uuid) {
+    try {
+      UUID.fromString(uuid);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }
