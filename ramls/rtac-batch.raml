@@ -24,7 +24,7 @@ resourceTypes:
 
 /rtac-batch:
   displayName: RTAC Batch API
-  description: Batch API to get instances with items and holdings from inventory
+  description: Batch API to get instances with items and holdings from inventory. The expectation is that the **mode of issuance "serial"** and **nature of content "journal" and "newspaper"** are present in the target system. The module uses these values to qualify an instance as a periodical.
   post:
     description: Retrieve holding information from inventory in a batch
     is: [validate]
