@@ -45,6 +45,11 @@
   ],
   "permissionSets": [
     {
+      "permissionName": "rtac.holdings.item.get",
+      "displayName": "Legacy RTAC - Get individual holding",
+      "description": "Legacy RTAC - Get individual holding"
+    },
+    {
       "permissionName": "rtac.batch.post",
       "displayName": "RTAC - get batch holding collection",
       "description": "Get batch holding collection"
