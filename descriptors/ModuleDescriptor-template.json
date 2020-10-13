@@ -54,7 +54,8 @@
       "displayName": "RTAC - all permissions",
       "description": "Entire set of permissions needed to use RTAC",
       "subPermissions": [
-        "rtac.batch.post"
+        "rtac.batch.post",
+        "rtac.holdings.item.get"
       ]
     }
   ],
