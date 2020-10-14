@@ -1,3 +1,9 @@
+## 2.0.0 2020-10-14
+ * [MODRTAC-34](https://issues.folio.org/browse/MODRTAC-34): REST batching support
+ * [MODRTAC-38](https://issues.folio.org/browse/MODRTAC-38): For 1 User Rtac takes ~15 seconds to get holdings record with open loans
+ * [MODRTAC-41](https://issues.folio.org/browse/MODRTAC-41): Update to java 11
+ * [MODRTAC-37](https://issues.folio.org/browse/MODRTAC-47): Better handle periodicals in response
+ 
 ## 1.5.0 2020-06-12
  * [MODRTAC-33](https://issues.folio.org/browse/MODRTAC-33): Upgrade RMB to 30.0.2
 
