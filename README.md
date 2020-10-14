@@ -11,6 +11,8 @@ Microservice to allow 3rd party discovery services to determine the availability
 
 ## Additional information
 
+The expectation is that the **mode of issuance "serial"** and **nature of content "journal" and "newspaper"** are present in the target system. The module uses these values to qualify an instance as a periodical.
+
 ### Issue tracker
 
 See project [MODRTAC](https://issues.folio.org/browse/MODRTAC)
