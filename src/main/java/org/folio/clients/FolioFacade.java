@@ -48,12 +48,13 @@ public class FolioFacade {
             .collect(Collectors.toList());
 
     if (CollectionUtils.isEmpty(validUuids)) {
-      promise.fail(new HttpException(404, "Could not find inventory instances"));
+      promise.fail(new HttpException(404, "Could not find instances"));
+      return promise.future();
     }
 
     return inventoryClient
         .getItemAndHoldingInfo(validUuids)
-        .compose(circulationClient::getLoansForItems)
+        .compose(circulationClient::updateInstanceItemsWithLoansDueDate)
         .compose(
             instances -> {
               var notFoundInstances = new ArrayList<>(rtacRequest.getInstanceIds());
@@ -95,10 +96,15 @@ public class FolioFacade {
     Promise<LegacyHoldings> promise = Promise.promise();
     final var folioToRtacMapper = new FolioToRtacMapper(false);
 
-    return inventoryClient
+    if (!validateUuid(instanceId)) {
+      promise.fail(new HttpException(404, "Could not find instance"));
+      return promise.future();
+    }
+
+    inventoryClient
         .getItemAndHoldingInfo(List.of(instanceId))
-        .compose(circulationClient::getLoansForItems)
-        .compose(
+        .compose(circulationClient::updateInstanceItemsWithLoansDueDate)
+        .onSuccess(
             instances -> {
               logger.info("Mapping inventory instances: {}", instances.size());
               final var first = instances.stream().findFirst();
@@ -108,9 +114,9 @@ public class FolioFacade {
                     promise.complete(holdings);
                   },
                   () -> promise.fail(new HttpException(404, "Not Found")));
-              return promise.future();
             })
         .onFailure(promise::fail);
+    return promise.future();
   }
 
   private boolean validateUuid(String uuid) {

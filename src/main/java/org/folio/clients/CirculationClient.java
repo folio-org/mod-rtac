@@ -33,9 +33,7 @@ class CirculationClient extends FolioClient {
   private static final int CIRCULATION_BATCH_SIZE = 50;
   private static final CirculationToRtacMapper circulationToRtacMapper =
       new CirculationToRtacMapper();
-
   private static final String URI = "/loan-storage/loans";
-
   private static final WebClient webClient = WebClient.create(Vertx.currentContext().owner());
   private final Logger logger = LogManager.getLogger(getClass());
 
@@ -43,10 +41,10 @@ class CirculationClient extends FolioClient {
     super(okapiHeaders);
   }
 
-  Future<List<InventoryHoldingsAndItems>> getLoansForItems(
+  Future<List<InventoryHoldingsAndItems>> updateInstanceItemsWithLoansDueDate(
       List<InventoryHoldingsAndItems> inventoryInstances) {
 
-    logger.info("Getting loan from circulation");
+    logger.info("Getting loans for instance items from circulation");
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
 
     if (CollectionUtils.isEmpty(inventoryInstances)) {
@@ -55,63 +53,84 @@ class CirculationClient extends FolioClient {
     }
 
     final var httpClientRequest = buildRequest();
-    final var instances = new CopyOnWriteArrayList<InventoryHoldingsAndItems>();
-    var futures = new ArrayList<Future>();
-    for (InventoryHoldingsAndItems inventoryInstance : inventoryInstances) {
-      final List<Item> items = inventoryInstance.getItems();
-      if (CollectionUtils.isEmpty(items)) {
-        instances.add(inventoryInstance);
-        continue;
-      }
+    List<Future> futures =
+        inventoryInstances.stream()
+            .filter(updatedInstance -> CollectionUtils.isNotEmpty(updatedInstance.getItems()))
+            .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
+            .collect(Collectors.toCollection(ArrayList::new));
 
-      for (List<Item> itemList : ListUtils.partition(items, CIRCULATION_BATCH_SIZE)) {
-        String cql = buildCql(itemList);
-        logger.debug("?query={}", cql);
-        futures.add(queryForLoans(httpClientRequest.copy(), inventoryInstance, cql)
-            .onSuccess(instances::addAll));
-      }
-    }
-    CompositeFuture.all(futures).onSuccess(r -> {
-      if (instances.isEmpty()) {
-        promise.complete(inventoryInstances);
-      } else {
-        promise.complete(instances);
-      }
-    }).onFailure(promise::fail);
+    CompositeFuture.all(futures)
+        .onSuccess(updatedInstances -> promise.complete(updatedInstances.result().list()))
+        .onFailure(promise::fail);
 
     return promise.future();
   }
 
-  private Future<List<InventoryHoldingsAndItems>> queryForLoans(
-      HttpRequest<Buffer> httpClientRequest, InventoryHoldingsAndItems inventoryInstance,
-      String cql) {
+  private Future<InventoryHoldingsAndItems> processInstance(
+      InventoryHoldingsAndItems inventoryInstance, HttpRequest<Buffer> httpClientRequest) {
 
-    Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
-    var result = new ArrayList<InventoryHoldingsAndItems>();
+    Promise<InventoryHoldingsAndItems> promise = Promise.promise();
+    final var items = inventoryInstance.getItems();
+    if (CollectionUtils.isEmpty(items)) {
+      return Future.succeededFuture(inventoryInstance);
+    }
 
-    httpClientRequest.addQueryParam("query", cql).send(ar -> {
-          final var httpResponse = ar.result();
-          if (ar.failed()) {
-            promise.fail(new HttpException(httpResponse.statusCode(),
-                httpResponse.statusMessage()));
-          } else {
-            final var i = httpResponse.statusCode();
-            if (i != 200) {
-              promise.fail(new HttpException(httpResponse.statusCode(),
-                  httpResponse.statusMessage()));
-              return;
-            } else {
-              final JsonObject loans = httpResponse.bodyAsJsonObject();
-              final InventoryHoldingsAndItems updatedItems =
-                  inventoryInstance
-                      .withItems(
-                          circulationToRtacMapper.mapToRtac(loans, inventoryInstance.getItems()));
-              result.add(updatedItems);
-            }
-          }
-          promise.tryComplete(result);
-        }
-    );
+    getLoansForInstanceItems(httpClientRequest, items)
+        .onSuccess(
+            loanList -> {
+              final var itemsWithDueDate =
+                  circulationToRtacMapper.updateItemsWithLoanDueDate(loanList, items);
+              promise.complete(inventoryInstance.withItems(itemsWithDueDate));
+            })
+        .onFailure(
+            t -> {
+              logger.warn(t.getMessage(), t);
+              promise.complete(inventoryInstance);
+            });
+
+    return promise.future();
+  }
+
+  private Future<List<JsonObject>> getLoansForInstanceItems(
+      HttpRequest<Buffer> httpClientRequest, List<Item> items) {
+
+    Promise<List<JsonObject>> promise = Promise.promise();
+    List<JsonObject> loans = new CopyOnWriteArrayList<>();
+    var loansFutures = new ArrayList<Future>();
+    for (List<Item> itemList : ListUtils.partition(items, CIRCULATION_BATCH_SIZE)) {
+      String cql = buildCql(itemList);
+      logger.debug("?query={}", cql);
+      loansFutures.add(queryForLoans(httpClientRequest.copy(), cql).onSuccess(loans::add));
+    }
+
+    CompositeFuture.all(loansFutures)
+        .onSuccess(r -> promise.complete(loans))
+        .onFailure(promise::fail);
+
+    return promise.future();
+  }
+
+  private Future<JsonObject> queryForLoans(HttpRequest<Buffer> httpClientRequest, String cql) {
+    Promise<JsonObject> promise = Promise.promise();
+    httpClientRequest
+        .addQueryParam("query", cql)
+        .send(
+            ar -> {
+              final var httpResponse = ar.result();
+              if (ar.failed()) {
+                promise.fail(
+                    new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
+              } else {
+                final var i = httpResponse.statusCode();
+                if (i != 200) {
+                  promise.fail(
+                      new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
+                  return;
+                } else {
+                  promise.complete(httpResponse.bodyAsJsonObject());
+                }
+              }
+            });
     return promise.future();
   }
 
@@ -120,21 +139,22 @@ class CirculationClient extends FolioClient {
     logger.info("Sending request to {}", url);
 
     final var httpClientRequest = webClient.getAbs(url);
-
     httpClientRequest
         .putHeader(OKAPI_HEADER_TOKEN, okapiToken)
         .putHeader(OKAPI_HEADER_TENANT, tenantId)
         .putHeader(ACCEPT, APPLICATION_JSON)
-        .putHeader(CONTENT_TYPE, APPLICATION_JSON).addQueryParam("limit", "10000");
+        .putHeader(CONTENT_TYPE, APPLICATION_JSON)
+        .addQueryParam("limit", "10000");
 
     return httpClientRequest;
   }
 
   private String buildCql(List<Item> items) {
     final StringBuilder cql = new StringBuilder();
-    final String query = items.stream()
-        .map(i -> "itemId==" + i.getId())
-        .collect(Collectors.joining(" or ", "(", ")"));
+    final String query =
+        items.stream()
+            .map(i -> "itemId==" + i.getId())
+            .collect(Collectors.joining(" or ", "(", ")"));
     cql.append(query);
     cql.append("and status.name==open");
 

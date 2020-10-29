@@ -203,31 +203,12 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
-  void shouldRespondWithInternalServerError_whenErrorOccurredWhileRetrievingLoans(
-      VertxTestContext testContext) {
-    testContext.verify(
-        () -> {
-          String validInstanceIdsJson =
-              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_ID_LOAN_STORAGE_ERROR);
-          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
-          request
-              .when()
-              .post()
-              .then()
-              .statusCode(500)
-              .contentType(ContentType.TEXT)
-              .body(is(SERVER_ERROR));
-          testContext.completeNow();
-        });
-  }
-
-  @Test
   void shouldRespondWithInternalServerError_whenErrorOccurredWhileRetrievingInstances(
       VertxTestContext testContext) {
     testContext.verify(
         () -> {
           String validInstanceIdsJson =
-              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_ID_LOAN_STORAGE_ERROR);
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_ID_INVENTORY_VIEW_ERROR);
           RequestSpecification request = createBaseRequest(validInstanceIdsJson);
           request
               .when()
