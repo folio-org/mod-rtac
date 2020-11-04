@@ -1,3 +1,6 @@
+## 2.0.1 2020-11-04
+ * [MODRTAC-48](https://issues.folio.org/browse/MODRTAC-48): Issues in batch API when querying an instance with more than 50 holdings
+
 ## 2.0.0 2020-10-14
  * [MODRTAC-34](https://issues.folio.org/browse/MODRTAC-34): REST batching support
  * [MODRTAC-38](https://issues.folio.org/browse/MODRTAC-38): For 1 User Rtac takes ~15 seconds to get holdings record with open loans
