@@ -37,9 +37,6 @@ class InventoryClient extends FolioClient {
     super(okapiHeaders);
   }
 
-  
-
-
   Future<List<InventoryHoldingsAndItems>> getItemAndHoldingInfo(List<String> instanceIds) {
     logger.info("Getting item and holding information from inventory");
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
@@ -50,11 +47,7 @@ class InventoryClient extends FolioClient {
     }
 
     String inventoryUrl = String.format("%s%s", okapiUrl, VIEW_URI);
-
-    logger.info("url: " + inventoryUrl);
-
     HttpRequest<Buffer> request = webClient.requestAbs(HttpMethod.POST, inventoryUrl);
-
     request.putHeader(OKAPI_HEADER_TOKEN, okapiToken)
         .putHeader(OKAPI_HEADER_TENANT, tenantId)
         .putHeader(ACCEPT, APPLICATION_JSON)
