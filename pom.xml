@@ -467,7 +467,7 @@
               <properties>
                 <property>
                   <name>log4j.configurationFile</name>
-                  <value>${project.baseUri}src/main/resources/log4j2.xml</value>
+                  <value>${project.baseUri}src/main/resources/log4j2-test.xml</value>
                 </property>
                 <property>
                   <name>vertx.logger-delegate-factory-class-name</name>
@@ -521,7 +521,7 @@
                   </manifestEntries>
                 </transformer>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.IncludeResourceTransformer">
-                  <file>log4j2-test.xml</file>
+                  <file>log4j2.xml</file>
                 </transformer>
               </transformers>
               <filters>
