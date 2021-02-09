@@ -54,17 +54,17 @@ class InventoryClient extends FolioClient {
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
     
     final var instances = new ArrayList<InventoryHoldingsAndItems>();
-    JsonParser jp = JsonParser.newParser();
-    jp.objectValueMode();
-    jp.exceptionHandler(err -> {
+    JsonParser parser = JsonParser.newParser();
+    parser.objectValueMode();
+    parser.exceptionHandler(err -> {
       logger.error(err.getMessage(), err);
     });
-    jp.handler(e -> {
+    parser.handler(e -> {
       var inventoryHoldingsAndItems = e.objectValue()
           .mapTo(InventoryHoldingsAndItems.class);
       instances.add(inventoryHoldingsAndItems);
     });
-    jp.endHandler(e -> {
+    parser.endHandler(e -> {
       logger.info("Instances received from inventory: {}", instances.size());
       promise.complete(instances);
     });
@@ -77,8 +77,8 @@ class InventoryClient extends FolioClient {
           if (resp.statusCode() != 200) {
             promise.fail(new HttpException(resp.statusCode(), resp.statusMessage()));
           } else {
-            jp.handle(resp.bodyAsBuffer());
-            jp.end();
+            parser.handle(resp.bodyAsBuffer());
+            parser.end();
           }
         });
 
