@@ -1,3 +1,4 @@
+
 package org.folio.clients;
 
 import static javax.ws.rs.core.HttpHeaders.ACCEPT;
@@ -9,12 +10,13 @@ import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpClient;
-import io.vertx.core.http.HttpClientRequest;
+import io.vertx.core.buffer.Buffer;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.parsetools.JsonParser;
-import io.vertx.core.parsetools.impl.JsonParserImpl;
+import io.vertx.ext.web.client.HttpRequest;
+import io.vertx.ext.web.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ class InventoryClient extends FolioClient {
   private static final Logger logger = LogManager.getLogger();
 
   private static final String VIEW_URI = "/inventory-hierarchy/items-and-holdings";
-  private static final HttpClient httpClient = Vertx.currentContext().owner().createHttpClient();
+  private static final WebClient webClient = WebClient.create(Vertx.currentContext().owner());
 
   InventoryClient(Map<String, String> okapiHeaders) {
     super(okapiHeaders);
@@ -44,52 +46,43 @@ class InventoryClient extends FolioClient {
       return promise.future();
     }
 
-    final var httpClientRequest = buildRequest();
-    final var inventoryClientRequest = httpClientRequest.handler(
-        resp -> {
-          // resp.endHandler(eh -> httpClient.close());
-          final var instances = new ArrayList<InventoryHoldingsAndItems>();
-          final var i = resp.statusCode();
-          if (i != 200) {
-            promise.fail(new HttpException(resp.statusCode(), resp.statusMessage()));
-          } else {
-            JsonParser jp = new JsonParserImpl(resp);
-            jp.objectValueMode();
-            jp.handler(e -> {
-              try {
-                var inventoryHoldingsAndItems = e.objectValue()
-                    .mapTo(InventoryHoldingsAndItems.class);
-                instances.add(inventoryHoldingsAndItems);
-              } catch (Exception exception) {
-                logger.error(exception.getMessage(), exception);
-              }
-            });
-            jp.endHandler(e -> {
-              logger.info("Instances received from inventory: {}", instances.size());
-              promise.complete(instances);
-            });
-          }
-        }
-    );
-
-    final var payload = createPayload(instanceIds);
-    inventoryClientRequest.exceptionHandler(promise::fail);
-    inventoryClientRequest.end(payload.toBuffer());
-
-    return promise.future();
-  }
-
-  private HttpClientRequest buildRequest() {
-    var inventoryUrl = String.format("%s%s", okapiUrl, VIEW_URI);
-    logger.info("Sending request to {}", inventoryUrl);
-
-    final var httpClientRequest = httpClient.postAbs(inventoryUrl)
-        .putHeader(OKAPI_HEADER_TOKEN, okapiToken)
+    String inventoryUrl = String.format("%s%s", okapiUrl, VIEW_URI);
+    HttpRequest<Buffer> request = webClient.requestAbs(HttpMethod.POST, inventoryUrl);
+    request.putHeader(OKAPI_HEADER_TOKEN, okapiToken)
         .putHeader(OKAPI_HEADER_TENANT, tenantId)
         .putHeader(ACCEPT, APPLICATION_JSON)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
-    httpClientRequest.setChunked(true);
-    return httpClientRequest;
+    
+    final var instances = new ArrayList<InventoryHoldingsAndItems>();
+    JsonParser parser = JsonParser.newParser();
+    parser.objectValueMode();
+    parser.exceptionHandler(err -> {
+      logger.error(err.getMessage(), err);
+    });
+    parser.handler(e -> {
+      var inventoryHoldingsAndItems = e.objectValue()
+          .mapTo(InventoryHoldingsAndItems.class);
+      instances.add(inventoryHoldingsAndItems);
+    });
+    parser.endHandler(e -> {
+      logger.info("Instances received from inventory: {}", instances.size());
+      promise.complete(instances);
+    });
+
+    request.sendBuffer(createPayload(instanceIds).toBuffer())
+        .onFailure(err -> {
+          promise.fail(err);
+        })
+        .onSuccess(resp -> {
+          if (resp.statusCode() != 200) {
+            promise.fail(new HttpException(resp.statusCode(), resp.statusMessage()));
+          } else {
+            parser.handle(resp.bodyAsBuffer());
+            parser.end();
+          }
+        });
+
+    return promise.future();
   }
 
   private JsonObject createPayload(List<String> instanceIds) {

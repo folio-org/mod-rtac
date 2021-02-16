@@ -30,11 +30,8 @@ import java.util.stream.Stream;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
-import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 import org.folio.rest.jaxrs.model.RtacRequest;
-import org.folio.rest.persist.PostgresClient;
-import org.folio.rest.tools.PomReader;
 import org.folio.rest.tools.utils.NetworkUtils;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,9 +68,6 @@ class RtacBatchResourceImplTest {
     RestAssured.baseURI = "http://localhost:" + okapiPort;
     RestAssured.port = okapiPort;
     RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-
-    PostgresClient client = PostgresClient.getInstance(vertx);
-    client.startEmbeddedPostgres();
 
     JsonObject dpConfig = new JsonObject();
     dpConfig.put("http.port", okapiPort);
