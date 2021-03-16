@@ -1,6 +1,8 @@
-## 2.1.0 IN-PROGRESS
+## 2.1.0 2021-03-16
 
-* [MODRTAC-54] (https://issues.folio.org/browse/MODRTAC-54): Upgrade to RAML Module Builder 32.x 
+* Upgrades to RAML Module Builder 32.1.0 ([MODRTAC-54](https://issues.folio.org/browse/MODRTAC-54))
+* Upgrades to vert.x 4.0.0 ([MODRTAC-54](https://issues.folio.org/browse/MODRTAC-54))
+
 
 ## 2.0.1 2020-11-04
  * [MODRTAC-48](https://issues.folio.org/browse/MODRTAC-48): Issues in batch API when querying an instance with more than 50 holdings
