@@ -81,22 +81,6 @@
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
-      <artifactId>domain-models-interface-extensions</artifactId>
-      <version>32.1.0</version>
-      <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.hamcrest</groupId>
-          <artifactId>hamcrest-all</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.folio</groupId>
       <artifactId>domain-models-api-aspects</artifactId>
       <version>${raml-module-builder.version}</version>
       <exclusions>
