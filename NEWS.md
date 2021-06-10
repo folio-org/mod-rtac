@@ -1,3 +1,9 @@
+## 3.0.0 IN PROGRESS
+
+* embed_postgres command line option is no longer supported (MODRTAC-58)
+* Upgrades to RAML-Module-Builder 33.0.0 (MODRTAC-58)
+* Upgrades to Vert.x 4.1.0.CR1 (MODRTAC-58)
+
 ## 2.1.0 2021-03-16
 
 * Upgrades to RAML Module Builder 32.1.0 ([MODRTAC-54](https://issues.folio.org/browse/MODRTAC-54))
