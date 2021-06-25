@@ -41,13 +41,14 @@ public class FolioToRtacMapper {
     final var nested = new ArrayList<RtacHolding>();
     logger.info("Rtac handling periodicals: {}", fullPeriodicals);
     final var periodical = isPeriodical(instance);
-    if (!fullPeriodicals && periodical) {
-      logger.debug("{} is a periodical, returning holding info", instance.getInstanceId());
-      instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
-    } else {
-      logger.debug(
-          "{} is a periodical: {}, returning item info", instance.getInstanceId(), periodical);
+
+    if (fullPeriodicals && periodical && instance.getItems().size() > 0) {
+      logger.info("{} is a periodical: {}, returning item info", 
+          instance.getInstanceId(), periodical);
       instance.getItems().stream().map(fromItemToRtacHolding).forEach(nested::add);
+    } else if (instance.getHoldings().size() > 0) {
+      logger.info("Returning holding info for item {}", instance.getInstanceId());
+      instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
     }
 
     return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
