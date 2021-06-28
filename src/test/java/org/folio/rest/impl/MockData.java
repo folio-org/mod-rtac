@@ -67,7 +67,6 @@ public class MockData {
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_NO_ITEMS_AND_HOLDINGS;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_HOLDINGS_NO_ITEMS;
 
-
   static {
     LOAN_JSON = getJsonObjectFromFile(LOAN_JSON_PATH);
     EMPTY_LOANS_JSON = getJsonObjectFromFile(EMPTY_LOANS_JSON_PATH);
