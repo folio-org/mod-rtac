@@ -41,6 +41,8 @@ public class MockData {
       "4ed2a3b3-2fb4-414c-aa6f-a265685ca5a6";
   public static final String INSTANCE_ID_NO_FULL_PERIODICALS =
       "4ed2a3b3-2fb4-414c-aa6f-a265685ca5a7";
+  public static final String INSTANCE_ID_HOLDINGS_NO_ITEMS =
+      "3af1a3b3-2fb4-414c-aa6f-a265699ca5b6";
 
   public static final String UUID_400 = "c031f1d4-09b0-11eb-adc1-0242ac120002";
   public static final String UUID_500 = "c031f1d4-09b0-11eb-adc1-0242ac120003";
@@ -54,6 +56,7 @@ public class MockData {
   public static final InventoryHoldingsAndItems INSTANCE_WITHOUT_HOLDINGS_AND_ITEMS;
   public static final InventoryHoldingsAndItems INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS;
   public static final InventoryHoldingsAndItems INSTANCE_LOAN_STORAGE_ERROR;
+  public static final InventoryHoldingsAndItems INSTANCE_WITH_HOLDINGS_NO_ITEMS;
   public static final InventoryHoldingsAndItems INSTANCE_NO_FULL_PERIODICALS;
 
   public static final RtacRequest VALID_INSTANCE_IDS_RTAC_REQUEST;
@@ -62,6 +65,8 @@ public class MockData {
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_ID_INVENTORY_VIEW_ERROR;
   public static final RtacRequest RTAC_REQUEST_WITH_NON_EXISTED_INSTANCE_ID;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_NO_ITEMS_AND_HOLDINGS;
+  public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_HOLDINGS_NO_ITEMS;
+
 
   static {
     LOAN_JSON = getJsonObjectFromFile(LOAN_JSON_PATH);
@@ -69,6 +74,12 @@ public class MockData {
 
     // === inventory view responses ====
     INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE = getJsonObjectFromFile(INSTANCE_JSON_PATH);
+
+    INSTANCE_WITH_HOLDINGS_NO_ITEMS = 
+      stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+    INSTANCE_WITH_HOLDINGS_NO_ITEMS.setInstanceId(INSTANCE_ID_HOLDINGS_NO_ITEMS);
+    INSTANCE_WITH_HOLDINGS_NO_ITEMS.withModeOfIssuance("serial");
+    INSTANCE_WITH_HOLDINGS_NO_ITEMS.setItems(Collections.emptyList());
 
     INSTANCE_WITHOUT_HOLDINGS_AND_ITEMS =
         stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
@@ -78,6 +89,7 @@ public class MockData {
 
     INSTANCE_WITH_HOLDINGS_AND_ITEMS =
         stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+
     INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS =
         stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
     INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS.setInstanceId(INSTANCE_ID_WITH_NO_LOANS_ITEM);
@@ -109,6 +121,9 @@ public class MockData {
     RTAC_REQUEST_WITH_INSTANCE_NO_ITEMS_AND_HOLDINGS =
         new RtacRequest()
             .withInstanceIds(Collections.singletonList(INSTANCE_ID_NO_ITEMS_AND_HOLDINGS));
+    RTAC_REQUEST_WITH_INSTANCE_HOLDINGS_NO_ITEMS = 
+        new RtacRequest()
+            .withInstanceIds(Collections.singletonList(INSTANCE_ID_HOLDINGS_NO_ITEMS));
   }
 
   static String pojoToJson(Object pojo) {
