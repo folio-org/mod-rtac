@@ -7,6 +7,7 @@ import static org.folio.rest.impl.MockData.UUID_404;
 import static org.folio.rest.impl.MockData.UUID_500;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
@@ -42,13 +45,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+
 @ExtendWith(VertxExtension.class)
 @TestInstance(PER_CLASS)
 class RtacBatchResourceImplTest {
 
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
-
+  private static final Logger logger = LogManager.getLogger(RtacBatchResourceImplTest.class);
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
   private static final String SERVER_ERROR = "Internal Server Error";
@@ -161,6 +165,7 @@ class RtacBatchResourceImplTest {
                   .extract()
                   .body()
                   .asString();
+          logger.info("body is: " + body);
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           RtacHolding holding = getSingleHolding(rtacResponse);
           final var expected = dateFormat.parse(MockData.LOAN_DUE_DATE_FIELD_VALUE);
@@ -236,6 +241,30 @@ class RtacBatchResourceImplTest {
           assertTrue(rtacResponse.getHoldings().isEmpty());
           testContext.completeNow();
         });
+  }
+
+  @Test
+  void shouldProvideHoldingDataForPeriodicalsWithNoItemsWhenFullPeriodicalsFalse(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_HOLDINGS_NO_ITEMS);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          assertFalse(rtacResponse.getHoldings().isEmpty());
+          testContext.completeNow();
+      });
   }
 
   private String pojoToJson(Object pojo) {
