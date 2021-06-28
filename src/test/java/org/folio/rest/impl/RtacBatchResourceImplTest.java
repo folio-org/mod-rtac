@@ -28,8 +28,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
@@ -52,7 +50,6 @@ class RtacBatchResourceImplTest {
 
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
-  private static final Logger logger = LogManager.getLogger(RtacBatchResourceImplTest.class);
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
   private static final String SERVER_ERROR = "Internal Server Error";
@@ -165,7 +162,6 @@ class RtacBatchResourceImplTest {
                   .extract()
                   .body()
                   .asString();
-          logger.info("body is: " + body);
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           RtacHolding holding = getSingleHolding(rtacResponse);
           final var expected = dateFormat.parse(MockData.LOAN_DUE_DATE_FIELD_VALUE);
