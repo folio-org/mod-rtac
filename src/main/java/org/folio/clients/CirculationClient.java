@@ -58,6 +58,11 @@ class CirculationClient extends FolioClient {
             .filter(updatedInstance -> CollectionUtils.isNotEmpty(updatedInstance.getItems()))
             .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
             .collect(Collectors.toCollection(ArrayList::new));
+            
+    if (futures.size() == 0) {
+      promise.complete(inventoryInstances);
+      return promise.future();
+    }
 
     CompositeFuture.all(futures)
         .onSuccess(updatedInstances -> promise.complete(updatedInstances.result().list()))

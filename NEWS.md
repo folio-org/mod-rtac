@@ -1,3 +1,7 @@
+## 3.1.0 IN-PROGRESS
+
+* rtac-batch endpoint now correctly returns data for instances with holdings but no items (MODRTAC-56)
+
 ## 3.0.0 2021-06-17
 
 * `embed_postgres` command line option is no longer supported (MODRTAC-58)

@@ -37,20 +37,30 @@ public class FolioToRtacMapper {
    */
   public RtacHoldings mapToRtac(InventoryHoldingsAndItems instance) {
     final var rtacHoldings = new RtacHoldings();
-
     final var nested = new ArrayList<RtacHolding>();
     logger.info("Rtac handling periodicals: {}", fullPeriodicals);
     final var periodical = isPeriodical(instance);
-    if (!fullPeriodicals && periodical) {
-      logger.debug("{} is a periodical, returning holding info", instance.getInstanceId());
-      instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
-    } else {
-      logger.debug(
-          "{} is a periodical: {}, returning item info", instance.getInstanceId(), periodical);
-      instance.getItems().stream().map(fromItemToRtacHolding).forEach(nested::add);
-    }
 
-    return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+    if (instance.getItems().size() == 0 && instance.getHoldings().size() == 0) {
+      logger.info("{} has no items or holdings, skipping item/holdings mapping", 
+          instance.getInstanceId());
+      return rtacHoldings.withInstanceId(instance.getInstanceId());
+    } else if (instance.getItems().size() == 0 && instance.getHoldings().size() > 0) {
+      logger.info("{} has no items, mapping holdings data.", instance.getInstanceId());
+      instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
+      return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+    } else if ((!periodical) || periodical && fullPeriodicals) {
+      logger.info("{} is a periodical with full item data requested,", 
+          instance.getInstanceId());  
+      logger.info("or a non-periodical. Mapping all holdings and item data.");
+      instance.getItems().stream().map(fromItemToRtacHolding).forEach(nested::add);
+      return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+    } else {
+      logger.info("{} is a periodical with full item data not requested,", 
+          instance.getInstanceId());
+      instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
+      return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+    }
   }
 
   private final Function<Item, RtacHolding> fromItemToRtacHolding =
