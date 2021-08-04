@@ -9,7 +9,6 @@ import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.JsonArray;
@@ -27,14 +26,14 @@ import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rtac.rest.exceptions.HttpException;
 
 class InventoryClient extends FolioClient {
-
   private static final Logger logger = LogManager.getLogger();
 
   private static final String VIEW_URI = "/inventory-hierarchy/items-and-holdings";
-  private static final WebClient webClient = WebClient.create(Vertx.currentContext().owner());
+  private final WebClient webClient;
 
-  InventoryClient(Map<String, String> okapiHeaders) {
+  InventoryClient(Map<String, String> okapiHeaders, WebClient webClient) {
     super(okapiHeaders);
+    this.webClient = webClient;
   }
 
   Future<List<InventoryHoldingsAndItems>> getItemAndHoldingInfo(List<String> instanceIds) {
@@ -52,7 +51,7 @@ class InventoryClient extends FolioClient {
         .putHeader(OKAPI_HEADER_TENANT, tenantId)
         .putHeader(ACCEPT, APPLICATION_JSON)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
-    
+
     final var instances = new ArrayList<InventoryHoldingsAndItems>();
     JsonParser parser = JsonParser.newParser();
     parser.objectValueMode();
