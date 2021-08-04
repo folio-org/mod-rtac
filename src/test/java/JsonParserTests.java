@@ -3,15 +3,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.concurrent.CompletableFuture;
-
-import org.junit.jupiter.api.Test;
-
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.parsetools.JsonParser;
+import java.util.concurrent.CompletableFuture;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 
 public class JsonParserTests {
   @Test
