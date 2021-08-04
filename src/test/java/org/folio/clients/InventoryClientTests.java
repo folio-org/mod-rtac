@@ -11,24 +11,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
-
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.SneakyThrows;
+import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class InventoryClientTests {
   private final WireMockServer fakeWebServer = new WireMockServer();
@@ -51,20 +48,20 @@ public class InventoryClientTests {
     final var instanceId = UUID.randomUUID().toString();
 
     fakeWebServer.stubFor(hierarchyApiEndpointFor(instanceId).willReturn(ok()
-      .withBody(dummyJsonResponseBody(instanceId))
-      .withHeader("Content-Type", "application/json")));
+        .withBody(dummyJsonResponseBody(instanceId))
+        .withHeader("Content-Type", "application/json")));
 
     final var client = new InventoryClient(Headers.toMap(fakeWebServer.baseUrl()),
-      WebClient.create(Vertx.vertx()));
+        WebClient.create(Vertx.vertx()));
 
     final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId));
 
     final var itemsAndHoldings = futureResult.toCompletionStage()
-      .toCompletableFuture().get(1, SECONDS);
+        .toCompletableFuture().get(1, SECONDS);
 
     final var fetchedInstanceIds = itemsAndHoldings.stream()
-      .map(InventoryHoldingsAndItems::getInstanceId)
-      .collect(Collectors.toList());
+        .map(InventoryHoldingsAndItems::getInstanceId)
+        .collect(Collectors.toList());
 
     assertThat(fetchedInstanceIds, contains(instanceId));
   }
@@ -75,22 +72,21 @@ public class InventoryClientTests {
     final var instanceId = UUID.randomUUID().toString();
 
     fakeWebServer.stubFor(hierarchyApiEndpointFor(instanceId).willReturn(ok()
-      .withHeader("Content-Type", "application/json")));
+        .withHeader("Content-Type", "application/json")));
 
     final var client = new InventoryClient(Headers.toMap(fakeWebServer.baseUrl()),
-      WebClient.create(Vertx.vertx()));
+        WebClient.create(Vertx.vertx()));
 
     final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId));
 
     final var itemsAndHoldings = futureResult.toCompletionStage()
-      .toCompletableFuture().get(1, SECONDS);
+        .toCompletableFuture().get(1, SECONDS);
 
     assertThat(itemsAndHoldings, is(empty()));
   }
 
   private MappingBuilder hierarchyApiEndpointFor(String instanceId) {
-    return matchingFolioHeaders(
-      post(urlPathEqualTo("/inventory-hierarchy/items-and-holdings")))
+    return matchingFolioHeaders(post(urlPathEqualTo("/inventory-hierarchy/items-and-holdings")))
       .withHeader("Content-Type", equalTo("application/json"))
       .withRequestBody(equalToJson(
         dummyJsonRequestBody(List.of(instanceId)).encodePrettily()));
@@ -110,7 +106,8 @@ public class InventoryClientTests {
   }
 
   private String dummyJsonResponseBody(String expectedInstanceId) {
-    // Even though the API can respond with multiple records, it includes them a concatenated JSON objects rather than within an array
+    // Even though the API can respond with multiple records,
+    // it includes them a concatenated JSON objects rather than within an array
     return new JsonObject()
       .put("instanceId", expectedInstanceId)
       .encodePrettily();
@@ -118,9 +115,9 @@ public class InventoryClientTests {
 
   private static class Headers {
     private static final String tenantId = "test-tenant";
-    private static final String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkaWt1X2FkbWluIiwidXNlcl9pZCI6ImFhMjZjYjg4LTc2YjEtNTQ1OS1hMjM1LWZjYTRmZDI3MGMyMyIsImlhdCI6MTU3NjAxMzY3MiwidGVuYW50IjoiZGlrdSJ9.oGCb0gDIdkXGlCiECvJHgQMXD3QKKW2vTh7PPCrpds8";
-
-
+    // Cannot be a representative token because it fails checkstyle
+    private static final String token = "fake-token";
+    
     static Map<String, String> toMap(String okapiUrl) {
       return Map.of(
         "X-Okapi-Url", okapiUrl,
