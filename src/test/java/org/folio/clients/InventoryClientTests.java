@@ -1,25 +1,22 @@
 package org.folio.clients;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.created;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
-import static org.hamcrest.CoreMatchers.containsString;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,14 +47,10 @@ public class InventoryClientTests {
 
   @Test
   @SneakyThrows
-  public void mapInstancesInReceivedResponse() {
+  public void mapInstancesReceivedFromHierarchyApi() {
     final var instanceId = UUID.randomUUID().toString();
 
-    final var postEndpoint = matchingFolioHeaders(post(urlPathEqualTo("/inventory-hierarchy/items-and-holdings")))
-      .withHeader("Content-Type", equalTo("application/json"))
-      .withRequestBody(equalToJson(dummyJsonRequestBody(List.of(instanceId)).encodePrettily()));
-
-    fakeWebServer.stubFor(postEndpoint.willReturn(ok()
+    fakeWebServer.stubFor(hierarchyApiEndpointFor(instanceId).willReturn(ok()
       .withBody(dummyJsonResponseBody(instanceId))
       .withHeader("Content-Type", "application/json")));
 
@@ -67,13 +60,40 @@ public class InventoryClientTests {
     final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId));
 
     final var itemsAndHoldings = futureResult.toCompletionStage()
-      .toCompletableFuture().get(1, TimeUnit.SECONDS);
+      .toCompletableFuture().get(1, SECONDS);
 
     final var fetchedInstanceIds = itemsAndHoldings.stream()
       .map(InventoryHoldingsAndItems::getInstanceId)
       .collect(Collectors.toList());
 
     assertThat(fetchedInstanceIds, contains(instanceId));
+  }
+
+  @Test
+  @SneakyThrows
+  public void returnNoInstancesWhenHierarchyApiResponseBodyIsEmpty() {
+    final var instanceId = UUID.randomUUID().toString();
+
+    fakeWebServer.stubFor(hierarchyApiEndpointFor(instanceId).willReturn(ok()
+      .withHeader("Content-Type", "application/json")));
+
+    final var client = new InventoryClient(Headers.toMap(fakeWebServer.baseUrl()),
+      WebClient.create(Vertx.vertx()));
+
+    final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId));
+
+    final var itemsAndHoldings = futureResult.toCompletionStage()
+      .toCompletableFuture().get(1, SECONDS);
+
+    assertThat(itemsAndHoldings, is(empty()));
+  }
+
+  private MappingBuilder hierarchyApiEndpointFor(String instanceId) {
+    return matchingFolioHeaders(
+      post(urlPathEqualTo("/inventory-hierarchy/items-and-holdings")))
+      .withHeader("Content-Type", equalTo("application/json"))
+      .withRequestBody(equalToJson(
+        dummyJsonRequestBody(List.of(instanceId)).encodePrettily()));
   }
 
   private MappingBuilder matchingFolioHeaders(MappingBuilder mappingBuilder) {
