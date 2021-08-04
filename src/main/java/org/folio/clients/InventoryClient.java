@@ -76,7 +76,15 @@ class InventoryClient extends FolioClient {
           if (resp.statusCode() != 200) {
             promise.fail(new HttpException(resp.statusCode(), resp.statusMessage()));
           } else {
-            parser.handle(resp.bodyAsBuffer());
+            final var buffer = resp.bodyAsBuffer();
+
+            // If the response is empty then the buffer will be null
+            // passing a null buffer to the JSON parser causes a null pointer exception
+            if (buffer == null) {
+              promise.complete(List.of());
+            }
+
+            parser.handle(buffer);
             parser.end();
           }
         });
