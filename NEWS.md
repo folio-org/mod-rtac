@@ -1,3 +1,7 @@
+## 3.0.2 IN-PROGRESS
+
+* Provides error when only instance is not found in inventory (MODRTAC-64)
+
 ## 3.0.0 2021-06-17
 
 * rtac-batch endpoint now correctly returns data for instances with holdings but no items (MODRTAC-56)
