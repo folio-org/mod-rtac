@@ -1,4 +1,4 @@
-## 3.0.2 IN-PROGRESS
+## 3.0.2 2021-08-05
 
 * Provides error when only instance is not found in inventory (MODRTAC-64)
 
