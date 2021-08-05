@@ -2,6 +2,8 @@ package org.folio.clients;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
+import io.vertx.ext.web.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,15 +22,15 @@ import org.folio.rest.jaxrs.model.RtacRequest;
 import org.folio.rtac.rest.exceptions.HttpException;
 
 public class FolioFacade {
-
   private static final Logger logger = LogManager.getLogger();
+  private static final WebClient webClient = WebClient.create(Vertx.currentContext().owner());
 
   private final InventoryClient inventoryClient;
   private final CirculationClient circulationClient;
   private final ErrorMapper errorMapper = new ErrorMapper();
 
   public FolioFacade(Map<String, String> okapiHeaders) {
-    this.inventoryClient = new InventoryClient(okapiHeaders);
+    this.inventoryClient = new InventoryClient(okapiHeaders, webClient);
     this.circulationClient = new CirculationClient(okapiHeaders);
   }
 
