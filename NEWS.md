@@ -1,4 +1,4 @@
-## 3.1.0 IN-PROGRESS
+## 3.1.0 2021-10-05
 
 * rtac-batch endpoint now correctly returns data for instances with holdings but no items (MODRTAC-56)
 
