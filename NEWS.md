@@ -1,3 +1,7 @@
+## 3.2.0 IN-PROGRESS
+
+* Upgrade to Log4J 2.16.0. (CVE-2021-44228) (MODRTAC-81)
+
 ## 3.1.0 2021-10-05
 
 * rtac-batch endpoint now correctly returns data for instances with holdings but no items (MODRTAC-56)
