@@ -1,3 +1,7 @@
+## 3.0.3 IN-PROGRESS
+
+* Upgrade to Log4J 2.16.0. (CVE-2021-44228) (MODRTAC-83)
+
 ## 3.0.2 2021-08-05
 
 * Provides error when only instance is not found in inventory (MODRTAC-64)
