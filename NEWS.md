@@ -1,4 +1,4 @@
-## 3.0.3 IN-PROGRESS
+## 3.0.3 2021-12-17
 
 * Upgrade to Log4J 2.16.0. (CVE-2021-44228) (MODRTAC-83)
 
