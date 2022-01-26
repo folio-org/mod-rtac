@@ -20,10 +20,10 @@
     <http.port>8081</http.port>
     <ramlfiles_path>${basedir}/ramls</ramlfiles_path>
     <ramlfiles_util_path>${ramlfiles_path}/raml-util</ramlfiles_util_path>
-    <raml-module-builder.version>33.0.0</raml-module-builder.version>
+    <raml-module-builder.version>33.2.4</raml-module-builder.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <log4j.version>2.16.0</log4j.version>
-    <vertx.version>4.1.0.CR1</vertx.version>
+    <vertx.version>4.1.4</vertx.version>
   </properties>
 
   <repositories>
