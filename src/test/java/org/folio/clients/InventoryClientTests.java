@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.empty;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.core.Options;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -28,7 +29,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class InventoryClientTests {
-  private final WireMockServer fakeWebServer = new WireMockServer();
+  private final WireMockServer fakeWebServer = 
+      new WireMockServer(Options.DYNAMIC_PORT);
 
   @BeforeEach
   @SneakyThrows
