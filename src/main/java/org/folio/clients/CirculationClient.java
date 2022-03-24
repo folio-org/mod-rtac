@@ -71,14 +71,10 @@ class CirculationClient extends FolioClient {
 
     CompositeFuture.all(futures)
         .onSuccess(updatedInstances -> {
-          if (instancesNoItems.size() > 0) {
-            List<InventoryHoldingsAndItems> combinedList = new ArrayList<>();
-            combinedList.addAll(updatedInstances.result().list());
-            combinedList.addAll(instancesNoItems);
-            promise.complete(combinedList);
-          } else {  
-            promise.complete(updatedInstances.result().list());
-          }
+          List<InventoryHoldingsAndItems> combinedList = new ArrayList<>();
+          combinedList.addAll(updatedInstances.result().list());
+          combinedList.addAll(instancesNoItems);
+          promise.complete(combinedList);
         })
         .onFailure(promise::fail);
 
