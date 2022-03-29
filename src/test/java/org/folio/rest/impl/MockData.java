@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.RtacRequest;
@@ -66,6 +67,7 @@ public class MockData {
   public static final RtacRequest RTAC_REQUEST_WITH_NON_EXISTED_INSTANCE_ID;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_NO_ITEMS_AND_HOLDINGS;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_HOLDINGS_NO_ITEMS;
+  public static final RtacRequest RTAC_REQUEST_MIXED_INSTANCES_WITH_ITEMS_AND_NO_ITEMS;
 
   static {
     LOAN_JSON = getJsonObjectFromFile(LOAN_JSON_PATH);
@@ -105,6 +107,9 @@ public class MockData {
             .withInstanceId(INSTANCE_ID_NO_FULL_PERIODICALS);
 
     // === Rtac requests ====
+    RTAC_REQUEST_MIXED_INSTANCES_WITH_ITEMS_AND_NO_ITEMS =
+        new RtacRequest().withInstanceIds(
+          Arrays.asList(INSTANCE_ID_HOLDINGS_NO_ITEMS, INSTANCE_ID_WITH_NO_LOANS_ITEM));
     VALID_INSTANCE_IDS_RTAC_REQUEST =
         new RtacRequest().withInstanceIds(Collections.singletonList(INSTANCE_ID));
     RTAC_REQUEST_WITH_INSTANCE_NO_LOANS_ITEM =

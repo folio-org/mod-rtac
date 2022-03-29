@@ -24,6 +24,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.VertxExtension;
 import io.vertx.junit5.VertxTestContext;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -44,10 +45,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 
+
 @ExtendWith(VertxExtension.class)
 @TestInstance(PER_CLASS)
 class RtacBatchResourceImplTest {
-
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -236,6 +237,35 @@ class RtacBatchResourceImplTest {
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           assertTrue(rtacResponse.getHoldings().isEmpty());
           testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldProvideHoldingsData_whenInstancesWithAndWithoutItemsRequested(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson =
+              pojoToJson(MockData.RTAC_REQUEST_MIXED_INSTANCES_WITH_ITEMS_AND_NO_ITEMS);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .extract()
+                .body()
+                .asString();
+          
+            RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+            assertTrue(rtacResponse.getErrors().isEmpty());
+            rtacResponse
+              .getHoldings()
+              .stream()
+              .forEach(holding -> assertFalse(holding.getHoldings().isEmpty()));
+            testContext.completeNow();
         });
   }
 
