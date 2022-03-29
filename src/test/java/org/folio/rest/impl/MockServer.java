@@ -63,11 +63,12 @@ public class MockServer {
       failureResponse(routingContext, 404, "Internal Server error");
     } else if (first.equals(MockData.UUID_500)) {
       failureResponse(routingContext, 500, "Internal Server error");
-    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_NO_ITEMS) && 
-        jsonArray.contains(MockData.INSTANCE_ID_WITH_NO_LOANS_ITEM)) {
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_NO_ITEMS) 
+        && jsonArray.contains(MockData.INSTANCE_ID_WITH_NO_LOANS_ITEM)) {
 
-      String multipleResponse = MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS) +
-        MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_NO_ITEMS);
+      String multipleResponse = 
+          MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS) 
+          + MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_NO_ITEMS);
       successResponse(routingContext, multipleResponse);
     } else if (jsonArray.contains(MockData.INSTANCE_ID)) {
       successResponse(
