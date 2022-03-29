@@ -57,11 +57,6 @@ class CirculationClient extends FolioClient {
         inventoryInstances.stream()
             .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
             .collect(Collectors.toCollection(ArrayList::new));
-            
-    if (futures.size() == 0) {
-      promise.complete(inventoryInstances);
-      return promise.future();
-    }
 
     CompositeFuture.all(futures)
         .onSuccess(updatedInstances -> {
@@ -78,15 +73,11 @@ class CirculationClient extends FolioClient {
     Promise<InventoryHoldingsAndItems> promise = Promise.promise();
 
     if (CollectionUtils.isEmpty(inventoryInstance.getItems())) {
-      logger.info("instanceId: " + inventoryInstance.getInstanceId());
       promise.complete(inventoryInstance);
       return promise.future();
     }
 
     final var items = inventoryInstance.getItems();
-    if (CollectionUtils.isEmpty(items)) {
-      return Future.succeededFuture(inventoryInstance);
-    }
 
     getLoansForInstanceItems(httpClientRequest, items)
         .onSuccess(
