@@ -1,3 +1,7 @@
+## 3.3.0 IN-PROGRESS
+
+* requests containing records with and without items now return holdings data for all records (MODRTAC-89)
+
 ## 3.2.0 2022-02-22
 
 * Upgrade to Log4J 2.16.0. (CVE-2021-44228) (MODRTAC-81)
