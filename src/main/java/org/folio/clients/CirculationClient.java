@@ -72,11 +72,6 @@ class CirculationClient extends FolioClient {
 
     Promise<InventoryHoldingsAndItems> promise = Promise.promise();
 
-    if (CollectionUtils.isEmpty(inventoryInstance.getItems())) {
-      promise.complete(inventoryInstance);
-      return promise.future();
-    }
-
     final var items = inventoryInstance.getItems();
 
     getLoansForInstanceItems(httpClientRequest, items)
