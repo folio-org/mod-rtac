@@ -74,7 +74,7 @@ class CirculationClient extends FolioClient {
 
   private Future<InventoryHoldingsAndItems> processInstance(
       InventoryHoldingsAndItems inventoryInstance, HttpRequest<Buffer> httpClientRequest) {
-    
+
     Promise<InventoryHoldingsAndItems> promise = Promise.promise();
 
     if (CollectionUtils.isEmpty(inventoryInstance.getItems())) {
