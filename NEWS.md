@@ -1,4 +1,4 @@
-## 3.3.0 IN-PROGRESS
+## 3.2.1 2022-03-31
 
 * requests containing records with and without items now return holdings data for all records (MODRTAC-89)
 
