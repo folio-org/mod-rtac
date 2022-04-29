@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.rest.jaxrs.model.Holding;
+import org.folio.rest.jaxrs.model.HoldingsStatement;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.LegacyHolding;
@@ -113,12 +116,24 @@ public class FolioToRtacMapper {
               .withDueDate(null);
 
   private String mapHoldingStatements(Holding holding) {
-    final var holdingsStatements = holding.getHoldingsStatements();
-    var result = "Multi";
-    if (!holdingsStatements.isEmpty()) {
-      result = holdingsStatements.get(0).getStatement();
+    ArrayList<HoldingsStatement> statements = new ArrayList<>();
+    statements.addAll(holding.getHoldingsStatements());
+    statements.addAll(holding.getHoldingsStatementsForIndexes());
+    statements.addAll(holding.getHoldingsStatementsForSupplements());
+
+    String result = statements.stream()
+      .map(statement -> statementToString(statement))
+      .collect(Collectors.joining( " -- " ));
+    if (result.isEmpty()) {
+      result = "Multi";
     }
     return result;
+  }
+
+  private String statementToString(HoldingsStatement statement) {
+    String comment = statement.getStatement() != null ? statement.getStatement() : "";
+    String note = statement.getNote() != null ? statement.getNote() : "";
+    return comment + " ; " + note;
   }
 
   private String mapCallNumber(Holding holding) {

@@ -166,62 +166,27 @@
             "additionalProperties": false,
             "items": {
               "type": "object",
-              "properties": {
-                "statement": {
-                  "description": "Name of the holdings note type",
-                  "type": "string"
-                },
-                "note": {
-                  "description": "Text content of the note",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "statement",
-                "note"
-              ]
+              "$ref":"rtac-holdings-statement.json"
             }
           },
           "holdingsStatementsForIndexes": {
             "description": "Holdings record indexes statements",
             "type": "array",
+            "additionalItems": false,
+            "additionalProperties": false,
             "items": {
               "type": "object",
-              "properties": {
-                "statement": {
-                  "description": "Textual description of the holdings of indexes",
-                  "type": "string"
-                },
-                "note": {
-                  "description": "Note attached to a holdings statement",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "statement",
-                "note"
-              ]
+              "$ref":"rtac-holdings-statement.json"
             }
           },
           "holdingsStatementsForSupplements": {
             "description": "Holdings record supplements statements",
             "type": "array",
+            "additionalItems": false,
+            "additionalProperties": false,
             "items": {
               "type": "object",
-              "properties": {
-                "statement": {
-                  "description": "Textual description of the holdings of supplementary material",
-                  "type": "string"
-                },
-                "note": {
-                  "description": "Note attached to a holdings statement",
-                  "type": "string"
-                }
-              },
-              "required": [
-                "statement",
-                "note"
-              ]
+              "$ref":"rtac-holdings-statement.json"
             }
           },
           "copyNumber": {
