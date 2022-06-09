@@ -15,7 +15,6 @@
   </licenses>
 
   <properties>
-    <aspectj.version>1.9.7</aspectj.version>
     <module_name>mod-rtac</module_name>
     <http.port>8081</http.port>
     <ramlfiles_path>${basedir}/ramls</ramlfiles_path>
@@ -128,10 +127,9 @@
       <version>3.1.0</version>
     </dependency>
     <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>${aspectj.version}</version>
-      <scope>runtime</scope>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -293,6 +291,7 @@
           <verbose>true</verbose>
           <showWeaveInfo>false</showWeaveInfo>
           <complianceLevel>11</complianceLevel>
+          <aspectDirectory>src/main/java/org/folio/rest/annotations</aspectDirectory>
           <XaddSerialVersionUID>true</XaddSerialVersionUID>
           <showWeaveInfo>true</showWeaveInfo>
           <aspectLibraries>
@@ -309,8 +308,19 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.9.6</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.9.6</version>
+          </dependency>
+        </dependencies>
       </plugin>
-
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
@@ -521,10 +531,7 @@
             <configuration>
               <ignoreNonCompile>true</ignoreNonCompile>
               <failOnWarning>true</failOnWarning>
-              <ignoredDependencies>
-                <ignoredDependency>jakarta.ws.rs:jakarta.ws.rs-api</ignoredDependency>
-                <ignoredDependency>javax.ws.rs:javax.ws.rs-api</ignoredDependency>
-              </ignoredDependencies>
+              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api,javax.ws.rs:javax.ws.rs-api</ignoredDependencies>
             </configuration>
           </execution>
         </executions>
