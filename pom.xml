@@ -521,8 +521,10 @@
             <configuration>
               <ignoreNonCompile>true</ignoreNonCompile>
               <failOnWarning>true</failOnWarning>
-              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api</ignoredDependencies>
-              <ignoredDependencies>javax.ws.rs:javax.ws.rs-api</ignoredDependencies>
+              <ignoredDependencies>
+                <ignoredDependency>jakarta.ws.rs:jakarta.ws.rs-api</ignoredDependency>
+                <ignoredDependency>javax.ws.rs:javax.ws.rs-api</ignoredDependency>
+              </ignoredDependencies>
             </configuration>
           </execution>
         </executions>
