@@ -123,10 +123,9 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.0.1</version>
-      <scope>runtime</scope>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.aspectj</groupId>
@@ -218,11 +217,6 @@
       <groupId>io.vertx</groupId>
       <artifactId>vertx-web</artifactId>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.1.1</version>
     </dependency>
   </dependencies>
 
