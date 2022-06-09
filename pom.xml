@@ -521,7 +521,8 @@
             <configuration>
               <ignoreNonCompile>true</ignoreNonCompile>
               <failOnWarning>true</failOnWarning>
-              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.6</ignoredDependencies>
+              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api</ignoredDependencies>
+              <ignoredDependencies>javax.ws.rs:javax.ws.rs-api</ignoredDependencies>
             </configuration>
           </execution>
         </executions>
