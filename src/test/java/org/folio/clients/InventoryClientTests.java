@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.SneakyThrows;
+import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -119,13 +120,12 @@ public class InventoryClientTests {
     private static final String tenantId = "test-tenant";
     // Cannot be a representative token because it fails checkstyle
     private static final String token = "fake-token";
-    
+
     static Map<String, String> toMap(String okapiUrl) {
-      return Map.of(
+      return new CaseInsensitiveMap<>(Map.of(
         "X-Okapi-Url", okapiUrl,
-        // RMB defines lower case definitions for these headers
         "x-okapi-tenant", Headers.tenantId,
-        "x-okapi-token", Headers.token);
+        "x-okapi-token", Headers.token));
     }
   }
 }

@@ -15,12 +15,11 @@
   </licenses>
 
   <properties>
-    <aspectj.version>1.9.6</aspectj.version>
     <module_name>mod-rtac</module_name>
     <http.port>8081</http.port>
     <ramlfiles_path>${basedir}/ramls</ramlfiles_path>
     <ramlfiles_util_path>${ramlfiles_path}/raml-util</ramlfiles_util_path>
-    <raml-module-builder.version>33.2.10</raml-module-builder.version>
+    <raml-module-builder.version>34.0.0</raml-module-builder.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -125,14 +124,12 @@
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.0.1</version>
-      <scope>runtime</scope>
+      <version>2.1.1</version>
     </dependency>
     <dependency>
-      <groupId>org.aspectj</groupId>
-      <artifactId>aspectjrt</artifactId>
-      <version>${aspectj.version}</version>
-      <scope>runtime</scope>
+      <groupId>jakarta.ws.rs</groupId>
+      <artifactId>jakarta.ws.rs-api</artifactId>
+      <version>3.1.0</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -294,6 +291,7 @@
           <verbose>true</verbose>
           <showWeaveInfo>false</showWeaveInfo>
           <complianceLevel>11</complianceLevel>
+          <aspectDirectory>src/main/java/org/folio/rest/annotations</aspectDirectory>
           <XaddSerialVersionUID>true</XaddSerialVersionUID>
           <showWeaveInfo>true</showWeaveInfo>
           <aspectLibraries>
@@ -310,8 +308,19 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.9.6</version>
+          </dependency>
+          <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.9.6</version>
+          </dependency>
+        </dependencies>
       </plugin>
-
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.1.0</version>
@@ -434,7 +443,7 @@
               <properties>
                 <property>
                   <name>log4j.configurationFile</name>
-                  <value>${project.baseUri}src/main/resources/log4j2-test.xml</value>
+                  <value>${project.baseUri}src/main/resources/log4j2.xml</value>
                 </property>
                 <property>
                   <name>vertx.logger-delegate-factory-class-name</name>
@@ -445,6 +454,7 @@
           </execution>
         </executions>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -521,7 +531,7 @@
             <configuration>
               <ignoreNonCompile>true</ignoreNonCompile>
               <failOnWarning>true</failOnWarning>
-              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api:jar:2.1.6</ignoredDependencies>
+              <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api,javax.ws.rs:javax.ws.rs-api</ignoredDependencies>
             </configuration>
           </execution>
         </executions>
