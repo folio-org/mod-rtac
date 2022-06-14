@@ -1,21 +1,21 @@
-## 3.3.0 IN-PROGRESS
+## 3.3.0 2022-06-14
 
-* requests containing records with and without items now return holdings data for all records (MODRTAC-89)
+* requests containing records with and without items now return holdings data for all records ([MODRTAC-89](https://issues.folio.org/browse/MODRTAC-89))
 
 ## 3.2.0 2022-02-22
 
-* Upgrade to Log4J 2.16.0. (CVE-2021-44228) (MODRTAC-81)
-* Upgrade to RMB 33.2.4 (MODRTAC-86)
+* Upgrade to Log4J 2.16.0. (CVE-2021-44228) ([MODRTAC-81](https://issues.folio.org/browse/MODRTAC-81))
+* Upgrade to RMB 33.2.4 ([MODRTAC-86](https://issues.folio.org/browse/MODRTAC-86))
 
 ## 3.1.0 2021-10-05
 
-* rtac-batch endpoint now correctly returns data for instances with holdings but no items (MODRTAC-56)
+* rtac-batch endpoint now correctly returns data for instances with holdings but no items ([MODRTAC-56](https://issues.folio.org/browse/MODRTAC-56))
 
 ## 3.0.0 2021-06-17
 
-* `embed_postgres` command line option is no longer supported (MODRTAC-58)
-* Upgrades to RAML-Module-Builder 33.0.0 (MODRTAC-58)
-* Upgrades to Vert.x 4.1.0.CR1 (MODRTAC-58)
+* `embed_postgres` command line option is no longer supported ([MODRTAC-58](https://issues.folio.org/browse/MODRTAC-58))
+* Upgrades to RAML-Module-Builder 33.0.0 ([MODRTAC-58](https://issues.folio.org/browse/MODRTAC-58))
+* Upgrades to Vert.x 4.1.0.CR1 ([MODRTAC-58](https://issues.folio.org/browse/MODRTAC-58))
 
 ## 2.1.0 2021-03-16
 
@@ -53,21 +53,21 @@
  * [MODRTAC-14](https://issues.folio.org/browse/MODRTAC-14): Return "volume" in the RTAC response
 
 ## 1.2.2 2019-03-22
- * Requires either `circulation` 3.0, 4.0, 5.0, 6.0 or 7.0 (MODRTAC-11, MODRTAC-12)
+ * Requires either `circulation` 3.0, 4.0, 5.0, 6.0 or 7.0 ([MODRTAC-11](https://issues.folio.org/browse/MODRTAC-11), [MODRTAC-12](https://issues.folio.org/browse/MODRTAC-12))
 
 ## 1.2.1 2018-12-04
- * Requires `inventory` version 8.0 (MODRTAC-9)
- * Requires `holdings-storage` versions `1.2 2.0 3.0` (MODRTAC-10)
+ * Requires `inventory` version 8.0 ([MODRTAC-9](https://issues.folio.org/browse/MODRTAC-9))
+ * Requires `holdings-storage` versions `1.2 2.0 3.0` ([MODRTAC-10](https://issues.folio.org/browse/MODRTAC-10))
 
 ## 1.2.0 2018-11-12
- * Added missing description fields to JSON schemas (MODRTAC-5)
- * Requires either `circulation` 3.0, 4.0 or 5.0 (MODRTAC-6)
- * Requires either `inventory` 5.3, 6.0 or 7.0 (MODRTAC-4)
- * Requires either `holdings-storage` 1.2 or 2.0 (MODRTAC-4)
+ * Added missing description fields to JSON schemas ([MODRTAC-5](https://issues.folio.org/browse/MODRTAC-5))
+ * Requires either `circulation` 3.0, 4.0 or 5.0 ([MODRTAC-6](https://issues.folio.org/browse/MODRTAC-6))
+ * Requires either `inventory` 5.3, 6.0 or 7.0 ([MODRTAC-4](https://issues.folio.org/browse/MODRTAC-4))
+ * Requires either `holdings-storage` 1.2 or 2.0 ([MODRTAC-4](https://issues.folio.org/browse/MODRTAC-4))
 
 ## 1.1.0 2018-09-07
- * Updated the query limit value from `100` to `Integer.MAX_VALUE` (MODRTAC-2)
- * Requires either `circulation` 3.0 or 4.0 (MODRTAC-3, CIRC-136)
+ * Updated the query limit value from `100` to `Integer.MAX_VALUE` ([MODRTAC-2](https://issues.folio.org/browse/MODRTAC-2))
+ * Requires either `circulation` 3.0 or 4.0 ([MODRTAC-3](https://issues.folio.org/browse/MODRTAC-3), [CIRC-136](https://issues.folio.org/browse/CIRC-136))
 
 ## 1.0.1 2018-06-29
  * Added support for the new way item locations are set in mod-inventory.
