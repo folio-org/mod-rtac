@@ -1,6 +1,7 @@
 ## 3.3.0 2022-06-14
 
 * requests containing records with and without items now return holdings data for all records ([MODRTAC-89](https://issues.folio.org/browse/MODRTAC-89))
+* Error message sent when holdings data cannot be found rewritten to be clearer (MODRTAC-88)
 
 ## 3.2.0 2022-02-22
 

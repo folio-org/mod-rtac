@@ -14,7 +14,7 @@ import org.folio.rtac.rest.exceptions.HttpException;
 
 public class ErrorMapper {
 
-  private static final String NOT_FOUND_MESSAGE = "Instance %s can not be retrieved";
+  private static final String NOT_FOUND_MESSAGE = "Holdings data for instance %s can not be retrieved";
 
   /**
    * RTac mapper class.
