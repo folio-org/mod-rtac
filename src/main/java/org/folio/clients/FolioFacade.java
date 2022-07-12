@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.mappers.ErrorMapper;
 import org.folio.mappers.FolioToRtacMapper;
+import org.folio.rest.jaxrs.model.Error;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldings;
@@ -59,26 +60,40 @@ public class FolioFacade {
         .compose(circulationClient::updateInstanceItemsWithLoansDueDate)
         .compose(
             instances -> {
-              var notFoundInstances = new ArrayList<>(rtacRequest.getInstanceIds());
+              List<String> notFoundHoldings = new ArrayList<>();
+              List<String> notFoundInstances = new ArrayList<>(rtacRequest.getInstanceIds());
               final var rtacHoldingsList = new ArrayList<RtacHoldings>();
               for (InventoryHoldingsAndItems instance : instances) {
-                if (CollectionUtils.isEmpty(instance.getHoldings())) {
+
+                if (notFoundInstances.contains(instance.getInstanceId())) {
                   notFoundInstances.remove(instance.getInstanceId());
+                }
+
+                if (CollectionUtils.isEmpty(instance.getHoldings())) {
+                  notFoundHoldings.add(instance.getInstanceId());
                   continue;
                 }
                 RtacHoldings rtacHoldings = folioToRtacMapper.mapToRtac(instance);
                 rtacHoldingsList.add(rtacHoldings);
-                notFoundInstances.remove(instance.getInstanceId());
               }
               logger.info("Mapping inventory instances: {}", rtacHoldingsList.size());
               final var result = new RtacHoldingsBatch();
+              List<Error> errors = new ArrayList<>();
               if (!notFoundInstances.isEmpty()) {
-                final var errors = errorMapper.mapNotFoundInstances(notFoundInstances);
-                logger.info("Mapping errors: {}", errors.size());
+                errors.addAll(errorMapper.mapInstanceNotFound(notFoundInstances));
+                logger.info("Instance not found errors: {}", errors.size());
                 logger.debug("Errors: {}", errors);
-                result.withErrors(errors);
-              } else {
+              } 
+              if (!notFoundHoldings.isEmpty()) {
+                errors.addAll(errorMapper.mapHoldingsNotFound(notFoundHoldings));
+                logger.info("Holdings not found errors: {}", errors.size());
+                logger.debug("Errors: {}", errors);
+              }
+              
+              if (errors.size() == 0) {
                 result.withErrors(null);
+              } else {
+                result.withErrors(errors);
               }
               promise.complete(result.withHoldings(rtacHoldingsList));
               return promise.future();
