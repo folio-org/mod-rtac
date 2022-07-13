@@ -41,7 +41,7 @@ public class ErrorMapper {
         .collect(Collectors.toList());
   }
 
-  private Error createErrorMessage(String str, String message) {
+  private Error createErrorMessage(String instanceId, String message) {
     final var error = new Error();
     error.withCode(String.valueOf(NOT_FOUND.getStatusCode()));
     return error.withMessage(String.format(message, str)).withParameters(null);
