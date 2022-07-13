@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
 import org.folio.rest.RestVerticle;
+import org.folio.rest.jaxrs.model.Error;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
@@ -215,7 +216,7 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
-  void shouldSkipInstance_whenInstanceHasNoHoldings(VertxTestContext testContext) {
+  void shouldAttachError_whenInstanceHasNoHoldings(VertxTestContext testContext) {
     testContext.verify(
         () -> {
           String validInstanceIdsJson =
@@ -233,10 +234,38 @@ class RtacBatchResourceImplTest {
                   .asString();
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           assertTrue(rtacResponse.getHoldings().isEmpty());
+          Error error = rtacResponse.getErrors().get(0);
+          String msg = "Holdings not found for instance 4ed2a3b3-2fb4-414c-aa6f-a265685ca5a6";
+          assertEquals(error.getMessage(), msg);
           testContext.completeNow();
         });
   }
 
+  @Test
+  void shouldAttachError_whenInstanceIsNotFound(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String invalidInstanceIdsJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_NON_EXISTED_INSTANCE_ID);
+          RequestSpecification request = createBaseRequest(invalidInstanceIdsJson);
+          String body =
+              request
+                .when()
+                .post()
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .extract()
+                .body()
+                .asString();
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          Error error = rtacResponse.getErrors().get(0);
+          String msg = "Instance 207dda4d-06dd-4822-856e-63ca5b6c7f1a can not be retrieved";
+          assertEquals(error.getMessage(), msg);
+          testContext.completeNow();
+        });
+  }
+  
   @Test
   void shouldProvideHoldingsData_whenInstancesWithAndWithoutItemsRequested(
       VertxTestContext testContext) {

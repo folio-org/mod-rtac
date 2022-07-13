@@ -14,21 +14,37 @@ import org.folio.rtac.rest.exceptions.HttpException;
 
 public class ErrorMapper {
 
-  private static final String NOT_FOUND_MESSAGE = "Instance %s can not be retrieved";
+  private static final String INSTANCE_NOT_FOUND_MESSAGE = "Instance %s can not be retrieved";
+  private static final String HOLDINGS_NOT_FOUND_MESSAGE = "Holdings not found for instance %s";
 
   /**
    * RTac mapper class.
    *
    * @param ids - not found instanceIds
    */
-  public List<Error> mapNotFoundInstances(List<String> ids) {
-    return ids.stream().map(this::createErrorMessage).collect(Collectors.toList());
+  public List<Error> mapInstanceNotFound(List<String> ids) {
+    return ids
+        .stream()
+        .map(id -> createErrorMessage(id, INSTANCE_NOT_FOUND_MESSAGE))
+        .collect(Collectors.toList());
+  }
+  
+  /**
+   * RTac mapper class.
+   *
+   * @param ids - not found instanceIds
+   */
+  public List<Error> mapHoldingsNotFound(List<String> ids) {
+    return ids
+        .stream()
+        .map(id -> createErrorMessage(id, HOLDINGS_NOT_FOUND_MESSAGE))
+        .collect(Collectors.toList());
   }
 
-  private Error createErrorMessage(String str) {
+  private Error createErrorMessage(String instanceId, String message) {
     final var error = new Error();
     error.withCode(String.valueOf(NOT_FOUND.getStatusCode()));
-    return error.withMessage(String.format(NOT_FOUND_MESSAGE, str)).withParameters(null);
+    return error.withMessage(String.format(message, instanceId)).withParameters(null);
   }
 
   /**
