@@ -242,7 +242,7 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
-  void shouldAttachError_whenNonexistentInstanceRequested(VertxTestContext testContext) {
+  void shouldAttachError_whenInstanceIsNotFound(VertxTestContext testContext) {
     testContext.verify(
         () -> {
           String invalidInstanceIdsJson =
