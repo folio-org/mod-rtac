@@ -44,7 +44,7 @@ public class ErrorMapper {
   private Error createErrorMessage(String instanceId, String message) {
     final var error = new Error();
     error.withCode(String.valueOf(NOT_FOUND.getStatusCode()));
-    return error.withMessage(String.format(message, str)).withParameters(null);
+    return error.withMessage(String.format(message, instanceId)).withParameters(null);
   }
 
   /**
