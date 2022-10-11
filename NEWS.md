@@ -1,3 +1,7 @@
+## 3.4.0 IN-PROGRESS
+
+* Upgraded RMB to 35.0.0 ([MODRTAC-99](https://issues.folio.org/browse/MODRTAC-99)
+
 ## 3.3.0 2022-06-14
 
 * requests containing records with and without items now return holdings data for all records ([MODRTAC-89](https://issues.folio.org/browse/MODRTAC-89))
