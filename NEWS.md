@@ -1,6 +1,7 @@
-## 3.4.0 IN-PROGRESS
+## 3.4.0 2022-10-18
 
 * Upgraded RMB to 35.0.0 ([MODRTAC-99](https://issues.folio.org/browse/MODRTAC-99)
+* Separate error message for not found instances ([MODRTAC-88](https://issues.folio.org/browse/MODRTAC-88))
 
 ## 3.3.0 2022-06-14
 
