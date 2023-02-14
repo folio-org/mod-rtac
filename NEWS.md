@@ -1,3 +1,7 @@
+## 3.5.0 2023-02-14
+
+* Added personal data disclosure form (MODRTAC-96)
+
 ## 3.4.0 2022-10-18
 
 * Upgraded RMB to 35.0.0 ([MODRTAC-99](https://issues.folio.org/browse/MODRTAC-99)
