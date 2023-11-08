@@ -10,9 +10,21 @@
       "type": "string",
       "description": "The FOLIO id of the holding (item)"
     },
+    "barcode": {
+      "description": "Unique inventory control number for physical resources, used largely for circulation purposes",
+      "type": "string"
+    },
     "location": {
       "type": "string",
       "description": "The location of the holding"
+    },
+    "locationCode": {
+      "type": "string",
+      "description": "The location code of the holding"
+    },
+    "locationId": {
+      "type": "string",
+      "description": "The location id of the holding"
     },
     "callNumber": {
       "type": "string",
@@ -38,6 +50,75 @@
     "permanentLoanType": {
       "type": "string",
       "description": "Name of the default loan type for a given item"
+    },
+    "materialType": {
+      "type": "object",
+      "description": "Define what type of thing the item is",
+      "$ref": "./material-type/materialtype.json"
+    },
+    "library": {
+      "type": "object",
+      "description": "The third-level location unit",
+      "$ref": "./library/loclib.json"
+    },
+    "suppressFromDiscovery": {
+      "description": "Indicate if record should not be displayed in a discovery system",
+      "type": "boolean"
+    },
+    "totalHoldRequests": {
+      "description": "The total number of requested items for the patron",
+      "type": "integer"
+    },
+    "holdingsStatements": {
+      "description": "Notes about action, copy, binding etc.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "description": "Name of the holdings note type",
+            "type": "string"
+          },
+          "note": {
+            "description": "Text content of the note",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "holdingsStatementsForIndexes": {
+      "description": "Holdings record indexes statements",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "description": "Textual description of the holdings of indexes",
+            "type": "string"
+          },
+          "note": {
+            "description": "Note attached to a holdings statement",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "holdingsStatementsForSupplements": {
+      "description": "Holdings record supplements statements",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "statement": {
+            "description": "Textual description of the holdings of supplementary material",
+            "type": "string"
+          },
+          "note": {
+            "description": "Note attached to a holdings statement",
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "required": [

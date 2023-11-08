@@ -12,7 +12,9 @@
           "permissionsRequired": ["rtac.holdings.item.get"],
           "modulePermissions": [
             "circulation-storage.loans.collection.get",
-            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post"
+            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post",
+            "inventory-storage.material-types.collection.get",
+            "inventory-storage.location-units.libraries.collection.get"
           ]
         }
       ]
@@ -27,7 +29,9 @@
           "permissionsRequired": ["rtac.batch.post"],
           "modulePermissions": [
             "circulation-storage.loans.collection.get",
-            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post"
+            "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post",
+            "inventory-storage.material-types.collection.get",
+            "inventory-storage.location-units.libraries.collection.get"
           ]
         }
       ]
@@ -41,6 +45,14 @@
     {
       "id": "loan-storage",
       "version": "6.0 7.0 7.1"
+    },
+    {
+      "id": "material-types",
+      "version": "2.2"
+    },
+    {
+      "id": "location-units",
+      "version": "2.0"
     }
   ],
   "permissionSets": [
