@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "description": "third-level location unit",
+  "properties": {
+    "name": {
+      "description": "name of the location",
+      "type": "string"
+    },
+    "code": {
+      "description": "distinct code for the location",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "name", "code"
+  ]
+}

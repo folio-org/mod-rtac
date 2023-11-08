@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.folio.HttpStatus;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rtac.rest.exceptions.HttpException;
 
@@ -29,11 +30,9 @@ class InventoryClient extends FolioClient {
   private static final Logger logger = LogManager.getLogger();
 
   private static final String VIEW_URI = "/inventory-hierarchy/items-and-holdings";
-  private final WebClient webClient;
 
   InventoryClient(Map<String, String> okapiHeaders, WebClient webClient) {
-    super(okapiHeaders);
-    this.webClient = webClient;
+    super(okapiHeaders, webClient);
   }
 
   Future<List<InventoryHoldingsAndItems>> getItemAndHoldingInfo(List<String> instanceIds) {
@@ -41,7 +40,9 @@ class InventoryClient extends FolioClient {
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
 
     if (CollectionUtils.isEmpty(instanceIds)) {
-      promise.fail(new HttpException(404, "Could not find inventory instances"));
+      promise.fail(
+          new HttpException(HttpStatus.HTTP_NOT_FOUND.toInt(),
+            "Could not find inventory instances"));
       return promise.future();
     }
 
@@ -53,11 +54,9 @@ class InventoryClient extends FolioClient {
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
 
     final var instances = new ArrayList<InventoryHoldingsAndItems>();
-    JsonParser parser = JsonParser.newParser();
+    var parser = JsonParser.newParser();
     parser.objectValueMode();
-    parser.exceptionHandler(err -> {
-      logger.error(err.getMessage(), err);
-    });
+    parser.exceptionHandler(err -> logger.error(err.getMessage(), err));
     parser.handler(e -> {
       var inventoryHoldingsAndItems = e.objectValue()
           .mapTo(InventoryHoldingsAndItems.class);
@@ -69,11 +68,9 @@ class InventoryClient extends FolioClient {
     });
 
     request.sendBuffer(createPayload(instanceIds).toBuffer())
-        .onFailure(err -> {
-          promise.fail(err);
-        })
+        .onFailure(promise::fail)
         .onSuccess(resp -> {
-          if (resp.statusCode() != 200) {
+          if (resp.statusCode() != HttpStatus.HTTP_OK.toInt()) {
             promise.fail(new HttpException(resp.statusCode(), resp.statusMessage()));
           } else {
             final var buffer = resp.bodyAsBuffer();
@@ -96,7 +93,7 @@ class InventoryClient extends FolioClient {
     final var payload = new JsonObject();
     payload.put("instanceIds", new JsonArray(instanceIds));
     payload.put("skipSuppressedFromDiscoveryRecords", true);
-    logger.debug("Request body: \n {}", payload.encodePrettily());
+    logger.debug("Request body: \n {}", payload::encodePrettily);
     return payload;
   }
 }
