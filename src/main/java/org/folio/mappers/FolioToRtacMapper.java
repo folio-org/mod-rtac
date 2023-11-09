@@ -87,6 +87,7 @@ public class FolioToRtacMapper {
           new RtacHolding()
               .withId(item.getId())
               .withLocation(mapLocation(item))
+              .withLocationId(mapLocationId(item))
               .withLocationCode(mapLocationCode(item))
               .withLibrary(getLibrary(item))
               .withMaterialType(getMaterialType(item))
@@ -134,6 +135,9 @@ public class FolioToRtacMapper {
               .withId(holding.getId())
               .withCallNumber(mapCallNumber(holding))
               .withLocation(mapLocation(holding))
+              .withLocationId(mapLocationId(holding))
+              .withLocationCode(mapLocationCode(holding))
+              .withLibrary(getLibrary(holding))
               .withStatus(mapHoldingStatements(holding))
               .withDueDate(null)
               .withHoldingsStatements(holding.getHoldingsStatements())
@@ -167,8 +171,20 @@ public class FolioToRtacMapper {
     return item.getLocation().getLocation().getName();
   }
 
+  private String mapLocationId(Item item) {
+    return item.getLocation().getLocation().getId();
+  }
+
+  private String mapLocationId(Holding holding) {
+    return holding.getLocation().getPermanentLocation().getId();
+  }
+
   private String mapLocationCode(Item item) {
     return item.getLocation().getLocation().getCode();
+  }
+
+  private String mapLocationCode(Holding holding) {
+    return holding.getLocation().getPermanentLocation().getCode();
   }
 
   private boolean isPeriodical(InventoryHoldingsAndItems instance) {
@@ -192,6 +208,12 @@ public class FolioToRtacMapper {
     return new Library()
       .withCode(item.getLocation().getLocation().getLibraryCode())
       .withName(item.getLocation().getLocation().getLibraryName());
+  }
+
+  private Library getLibrary(Holding holding) {
+    return new Library()
+      .withCode(holding.getLocation().getPermanentLocation().getLibraryCode())
+      .withName(holding.getLocation().getPermanentLocation().getLibraryName());
   }
 
   /**
