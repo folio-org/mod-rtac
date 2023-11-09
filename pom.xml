@@ -84,6 +84,12 @@
     </dependency>
     <dependency>
       <groupId>org.folio</groupId>
+      <artifactId>util</artifactId>
+      <version>${raml-module-builder.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.folio</groupId>
       <artifactId>domain-models-api-aspects</artifactId>
       <version>${raml-module-builder.version}</version>
       <exclusions>
