@@ -154,7 +154,8 @@ class CirculationRequestClient extends FolioClient {
         try {
           requestsResp = objectMapper.readValue(requests, Requests.class);
         } catch (JsonProcessingException e) {
-          throw new RuntimeException(e);
+          promise.fail(e);
+          return;
         }
         Map<String, Long> requestMap = requestsResp.getRequests()
             .stream()
