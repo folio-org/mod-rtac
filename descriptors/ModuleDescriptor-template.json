@@ -41,6 +41,10 @@
     {
       "id": "loan-storage",
       "version": "6.0 7.0 7.1"
+    },
+    {
+      "id": "circulation",
+      "version": "13.1 14.2"
     }
   ],
   "permissionSets": [
