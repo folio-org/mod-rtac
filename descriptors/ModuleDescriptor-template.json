@@ -13,8 +13,7 @@
           "modulePermissions": [
             "circulation-storage.loans.collection.get",
             "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post",
-            "inventory-storage.material-types.collection.get",
-            "inventory-storage.location-units.libraries.collection.get"
+            "circulation.requests.collection.get"
           ]
         }
       ]
@@ -30,8 +29,7 @@
           "modulePermissions": [
             "circulation-storage.loans.collection.get",
             "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post",
-            "inventory-storage.material-types.collection.get",
-            "inventory-storage.location-units.libraries.collection.get"
+            "circulation.requests.collection.get"
           ]
         }
       ]
@@ -47,12 +45,8 @@
       "version": "6.0 7.0 7.1"
     },
     {
-      "id": "material-types",
-      "version": "2.2"
-    },
-    {
-      "id": "location-units",
-      "version": "2.0"
+      "id": "circulation",
+      "version": "14.2"
     }
   ],
   "permissionSets": [
