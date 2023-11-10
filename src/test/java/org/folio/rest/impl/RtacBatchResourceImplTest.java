@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Stream;
+import org.folio.HttpStatus;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Error;
 import org.folio.rest.jaxrs.model.Item;
@@ -171,6 +172,51 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
+  void shouldReturnError_whenInstanceIdNotValidUuid(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_NOT_VALID_IDS);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(HttpStatus.HTTP_NOT_FOUND.toInt())
+                  .contentType(ContentType.TEXT)
+                  .extract()
+                  .body()
+                  .asString();
+          assertEquals("Could not find instances", body);
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldReturnError_whenInstanceNotExists(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_EMPTY_RESPONSE);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(HttpStatus.HTTP_OK.toInt())
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          Error error = rtacResponse.getErrors().get(0);
+          String msg = "Instance 16757796-da9a-4435-959b-88ce4f2ec272 can not be retrieved";
+          assertEquals(error.getMessage(), msg);
+          testContext.completeNow();
+        });
+  }
+
+  @Test
   void shouldReturnItemDataWithoutDueDate_whenLoanForInstanceItemDoesNotExist(
       VertxTestContext testContext) {
     testContext.verify(
@@ -265,7 +311,7 @@ class RtacBatchResourceImplTest {
           testContext.completeNow();
         });
   }
-  
+
   @Test
   void shouldProvideHoldingsData_whenInstancesWithAndWithoutItemsRequested(
       VertxTestContext testContext) {
@@ -284,12 +330,11 @@ class RtacBatchResourceImplTest {
                 .extract()
                 .body()
                 .asString();
-          
+
             RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
             assertTrue(rtacResponse.getErrors().isEmpty());
             rtacResponse
               .getHoldings()
-              .stream()
               .forEach(holding -> assertFalse(holding.getHoldings().isEmpty()));
             testContext.completeNow();
         });

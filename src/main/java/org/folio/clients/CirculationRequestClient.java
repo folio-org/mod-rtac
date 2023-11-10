@@ -98,7 +98,7 @@ class CirculationRequestClient extends FolioClient {
     return promise.future();
   }
 
-  private static List<Item> itemsWithRequestCount(Map<String, Long> requestMap,
+  private List<Item> itemsWithRequestCount(Map<String, Long> requestMap,
       List<Item> items) {
     items.forEach(item -> {
       String id = item.getId();
