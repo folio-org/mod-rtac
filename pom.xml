@@ -231,7 +231,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <release>11</release>
+          <release>17</release>
           <encoding>UTF-8</encoding>
         </configuration>
         <executions>
@@ -284,13 +284,13 @@
       </plugin>
 
       <plugin>
-        <groupId>com.nickwongdev</groupId>
+        <groupId>dev.aspectj</groupId>
         <artifactId>aspectj-maven-plugin</artifactId>
-        <version>1.12.6</version>
+        <version>1.13.1</version>
         <configuration>
           <verbose>true</verbose>
           <showWeaveInfo>false</showWeaveInfo>
-          <complianceLevel>11</complianceLevel>
+          <complianceLevel>17</complianceLevel>
           <aspectDirectory>src/main/java/org/folio/rest/annotations</aspectDirectory>
           <XaddSerialVersionUID>true</XaddSerialVersionUID>
           <showWeaveInfo>true</showWeaveInfo>
@@ -312,12 +312,12 @@
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.9.6</version>
+            <version>1.9.21</version>
           </dependency>
           <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.9.6</version>
+            <version>1.9.21</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -521,7 +521,9 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.6.1</version>
         <executions>
           <execution>
             <id>analyze</id>
@@ -532,6 +534,8 @@
               <ignoreNonCompile>true</ignoreNonCompile>
               <failOnWarning>true</failOnWarning>
               <ignoredDependencies>jakarta.ws.rs:jakarta.ws.rs-api,javax.ws.rs:javax.ws.rs-api</ignoredDependencies>
+              <!-- ignoreAllNonTestScoped because of https://issues.apache.org/jira/browse/MDEP-757 -->
+              <ignoreAllNonTestScoped>true</ignoreAllNonTestScoped>
             </configuration>
           </execution>
         </executions>
