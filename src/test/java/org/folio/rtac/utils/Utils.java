@@ -1,12 +1,14 @@
 package org.folio.rtac.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.URLEncoder;
 import java.util.Random;
-import org.apache.commons.io.IOUtils;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,7 +57,8 @@ public final class Utils {
       final InputStream is = Utils.class.getClassLoader().getResourceAsStream(path);
 
       if (is != null) {
-        return IOUtils.toString(is, "UTF-8");
+        return new BufferedReader(new InputStreamReader(is))
+            .lines().collect(Collectors.joining("\n"));
       } else {
         return "";
       }
