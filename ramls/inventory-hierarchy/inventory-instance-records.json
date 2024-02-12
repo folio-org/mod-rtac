@@ -387,6 +387,10 @@
             "description": "Descriptive information for the dating scheme of a serial",
             "type": "string"
           },
+          "displaySummary": {
+            "description": "A summary of the item",
+            "type": "string"
+          },
           "itemIdentifier": {
             "description": "Item identifier number, e.g. imported from the union catalogue",
             "type": "string"

@@ -42,7 +42,7 @@ public class FolioToRtacMapper {
     final var periodical = isPeriodical(instance);
 
     if (instance.getItems().size() == 0 && instance.getHoldings().size() == 0) {
-      logger.info("{} has no items or holdings, skipping item/holdings mapping", 
+      logger.info("{} has no items or holdings, skipping item/holdings mapping",
           instance.getInstanceId());
       return rtacHoldings.withInstanceId(instance.getInstanceId());
     } else if (instance.getItems().size() == 0 && instance.getHoldings().size() > 0) {
@@ -50,13 +50,13 @@ public class FolioToRtacMapper {
       instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
     } else if ((!periodical) || periodical && fullPeriodicals) {
-      logger.info("{} is a periodical with full item data requested,", 
-          instance.getInstanceId());  
+      logger.info("{} is a periodical with full item data requested,",
+          instance.getInstanceId());
       logger.info("or a non-periodical. Mapping all holdings and item data.");
       instance.getItems().stream().map(fromItemToRtacHolding).forEach(nested::add);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
     } else {
-      logger.info("{} is a periodical with full item data not requested,", 
+      logger.info("{} is a periodical with full item data not requested,",
           instance.getInstanceId());
       instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
@@ -207,6 +207,7 @@ public class FolioToRtacMapper {
   private String mapVolume(Item item) {
     final String enumeration = item.getEnumeration();
     final String chronology = item.getChronology();
+    final String displaySummary = item.getDisplaySummary();
     final String volume = item.getVolume();
 
     final StringJoiner sj = new StringJoiner(" ", "(", ")").setEmptyValue("");
@@ -216,10 +217,15 @@ public class FolioToRtacMapper {
       if (isNotBlank(chronology)) {
         sj.add(chronology);
       }
+      if (isNotBlank(displaySummary)) {
+        sj.add(displaySummary);
+      }
     } else if (isNotBlank(volume)) {
       sj.add(volume);
     } else if (isNotBlank(chronology)) {
       sj.add(chronology);
+    } else if (isNotBlank(displaySummary)) {
+      sj.add(displaySummary);
     }
 
     return defaultIfEmpty(sj.toString(), null);

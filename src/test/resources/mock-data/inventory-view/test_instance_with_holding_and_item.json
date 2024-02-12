@@ -78,7 +78,8 @@
           {
             "publicDisplay" : true,
             "enumeration" : "testValue",
-            "chronology" : "testValue"
+            "chronology" : "testValue",
+            "displaySummary" : "testValue"
           }
         ]
       },
@@ -139,6 +140,7 @@
       "notes": [],
       "chronology": "1985:July-Dec.",
       "enumeration": "v.71:no.6-2",
+      "displaySummary" : "test value",
       "yearCaption": [],
       "itemIdentifier": "testValue2",
       "numberOfPieces": "123",
