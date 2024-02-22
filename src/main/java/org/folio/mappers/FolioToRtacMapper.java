@@ -212,7 +212,9 @@ public class FolioToRtacMapper {
 
     final StringJoiner sj = new StringJoiner(" ", "(", ")").setEmptyValue("");
 
-    if (isNotBlank(enumeration)) {
+    if (isNotBlank(displaySummary)) {
+      sj.add(displaySummary);
+    } else if (isNotBlank(enumeration)) {
       sj.add(enumeration);
       if (isNotBlank(chronology)) {
         sj.add(chronology);
@@ -224,8 +226,6 @@ public class FolioToRtacMapper {
       sj.add(volume);
     } else if (isNotBlank(chronology)) {
       sj.add(chronology);
-    } else if (isNotBlank(displaySummary)) {
-      sj.add(displaySummary);
     }
 
     return defaultIfEmpty(sj.toString(), null);
