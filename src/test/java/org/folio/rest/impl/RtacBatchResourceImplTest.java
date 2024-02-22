@@ -139,7 +139,8 @@ class RtacBatchResourceImplTest {
           RtacHolding holding =
               response.getHoldings().iterator().next().getHoldings().iterator().next();
           Item item = MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getItems().iterator().next();
-          String expectedVolume = "(" + item.getEnumeration() + " " + item.getChronology() + ")";
+          String expectedVolume = String.format("(%s %s %s)",
+            item.getEnumeration(), item.getChronology(), item.getDisplaySummary());
           assertEquals(expectedVolume, holding.getVolume());
           testContext.completeNow();
         });
@@ -265,7 +266,7 @@ class RtacBatchResourceImplTest {
           testContext.completeNow();
         });
   }
-  
+
   @Test
   void shouldProvideHoldingsData_whenInstancesWithAndWithoutItemsRequested(
       VertxTestContext testContext) {
@@ -284,7 +285,7 @@ class RtacBatchResourceImplTest {
                 .extract()
                 .body()
                 .asString();
-          
+
             RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
             assertTrue(rtacResponse.getErrors().isEmpty());
             rtacResponse
