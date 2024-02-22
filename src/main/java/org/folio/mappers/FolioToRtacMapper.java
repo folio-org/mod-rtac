@@ -219,9 +219,6 @@ public class FolioToRtacMapper {
       if (isNotBlank(chronology)) {
         sj.add(chronology);
       }
-      if (isNotBlank(displaySummary)) {
-        sj.add(displaySummary);
-      }
     } else if (isNotBlank(volume)) {
       sj.add(volume);
     } else if (isNotBlank(chronology)) {
