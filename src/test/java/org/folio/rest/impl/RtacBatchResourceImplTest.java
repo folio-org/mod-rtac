@@ -140,7 +140,7 @@ class RtacBatchResourceImplTest {
               response.getHoldings().iterator().next().getHoldings().iterator().next();
           Item item = MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getItems().iterator().next();
           String expectedVolume = String.format("(%s %s %s)",
-            item.getEnumeration(), item.getChronology(), item.getDisplaySummary());
+              item.getEnumeration(), item.getChronology(), item.getDisplaySummary());
           assertEquals(expectedVolume, holding.getVolume());
           testContext.completeNow();
         });
