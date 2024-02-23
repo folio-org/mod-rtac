@@ -195,6 +195,7 @@ public class FolioToRtacMapper {
    * The rules for generating "volume" are as follows:
    * |data set                     |"volume"                    |
    * |-----------------------------|----------------------------|
+   * |displaySummary               |(displaySummary)            |
    * |enumeration                  |(enumeration)               |
    * |enumeration chronology       |(enumeration chronology)    |
    * |enumeration chronology volume|(enumeration chronology)    |
