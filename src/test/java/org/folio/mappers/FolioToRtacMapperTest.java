@@ -19,8 +19,22 @@ class FolioToRtacMapperTest {
     assertEquals(item.getId(), rtacHolding.getId());
     assertEquals(item.getCallNumber().getCallNumber(), rtacHolding.getCallNumber());
     assertEquals(item.getLocation().getLocation().getName(), rtacHolding.getLocation());
-    String expectedVolume = String.format("(%s %s %s)",
-        item.getEnumeration(), item.getChronology(), item.getDisplaySummary());
+    String expectedVolume = "(" + item.getEnumeration() + " " + item.getChronology() + ")";
+    assertEquals(expectedVolume, rtacHolding.getVolume());
+    assertEquals(item.getDueDate(), rtacHolding.getDueDate());
+  }
+
+  @Test
+  void testMapToRtacForAnItemWithDisplaySummary() {
+    final var folioToRtacMapper = new FolioToRtacMapper(true);
+    var inventoryHoldingsAndItems = createInventoryHoldingsAndItems().withModeOfIssuance("serial");
+    Item item = inventoryHoldingsAndItems.getItems().get(1);
+    final var rtacHoldings = folioToRtacMapper.mapToRtac(inventoryHoldingsAndItems);
+    final var rtacHolding = rtacHoldings.getHoldings().get(1);
+
+    assertEquals(item.getCallNumber().getCallNumber(), rtacHolding.getCallNumber());
+    assertEquals(item.getLocation().getLocation().getName(), rtacHolding.getLocation());
+    String expectedVolume = "(" + item.getDisplaySummary() + ")";
     assertEquals(expectedVolume, rtacHolding.getVolume());
     assertEquals(item.getDueDate(), rtacHolding.getDueDate());
   }

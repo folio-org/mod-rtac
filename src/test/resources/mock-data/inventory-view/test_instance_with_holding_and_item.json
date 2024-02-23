@@ -139,13 +139,62 @@
       "notes": [],
       "chronology": "1985:July-Dec.",
       "enumeration": "v.71:no.6-2",
-      "displaySummary" : "Display summary",
       "yearCaption": [],
       "itemIdentifier": "testValue2",
       "numberOfPieces": "123",
       "descriptionOfPieces": "testValue2",
       "numberOfMissingPieces": "2",
       "missingPieces": "testValue2",
+      "materialType": "text",
+      "electronicAccess": [],
+      "statisticalCodes": [],
+      "permanentLoanType": "Can circulate"
+    },
+    {
+      "id": "4cebe27e-c9ba-4ce8-8148-fe4d4cb40538",
+      "hrId": "22321323333",
+      "holdingsRecordId": "0c45bb50-7c9b-48b0-86eb-178a494e25fe",
+      "suppressFromDiscovery": false,
+      "status": "Available",
+      "formerIds": [
+        "ABW5508",
+        "332882"
+      ],
+      "location": {
+        "location": {
+          "name": "Main Library",
+          "campusName": "City Campus",
+          "libraryName": "Datalogisk Institut",
+          "institutionName": "Københavns Universitet"
+        },
+        "permanentLocation": {
+          "name": "testValue2",
+          "campusName": "testValue2",
+          "libraryName": "testValue2",
+          "institutionName": "testValue2"
+        },
+        "temporaryLocation": {
+          "name": "testValue2",
+          "campusName": "testValue2",
+          "libraryName": "testValue2",
+          "institutionName": "testValue2"
+        }
+      },
+      "callNumber": {
+        "callNumber": "K1 .M44"
+      },
+      "accessionNumber": "accessionNumber2",
+      "barcode": "A14813848587",
+      "copyNumber": "copyNumber2",
+      "volume": "123",
+      "notes": [],
+      "displaySummary" : "Display summary",
+      "yearCaption": [],
+      "itemIdentifier": "itemIdentifier2",
+      "numberOfPieces": "123",
+      "descriptionOfPieces": "descriptionOfPieces2",
+      "numberOfMissingPieces": "2",
+      "missingPieces": "missingPieces2",
       "materialType": "text",
       "electronicAccess": [],
       "statisticalCodes": [],
