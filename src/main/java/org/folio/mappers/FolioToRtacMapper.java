@@ -195,7 +195,6 @@ public class FolioToRtacMapper {
    * The rules for generating "volume" are as follows:
    * |data set                     |"volume"                    |
    * |-----------------------------|----------------------------|
-   * |displaySummary               |(displaySummary)            |
    * |enumeration                  |(enumeration)               |
    * |enumeration chronology       |(enumeration chronology)    |
    * |enumeration chronology volume|(enumeration chronology)    |
@@ -206,9 +205,9 @@ public class FolioToRtacMapper {
    * @param item - folio inventory item
    */
   private String mapVolume(Item item) {
-    final String displaySummary = item.getDisplaySummary();
     final String enumeration = item.getEnumeration();
     final String chronology = item.getChronology();
+    final String displaySummary = item.getDisplaySummary();
     final String volume = item.getVolume();
 
     final StringJoiner sj = new StringJoiner(" ", "(", ")").setEmptyValue("");

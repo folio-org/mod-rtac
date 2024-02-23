@@ -265,6 +265,7 @@ class RtacBatchResourceImplTest {
           testContext.completeNow();
         });
   }
+
   @Test
   void shouldProvideHoldingsData_whenInstancesWithAndWithoutItemsRequested(
       VertxTestContext testContext) {
@@ -283,6 +284,7 @@ class RtacBatchResourceImplTest {
                 .extract()
                 .body()
                 .asString();
+
             RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
             assertTrue(rtacResponse.getErrors().isEmpty());
             rtacResponse
