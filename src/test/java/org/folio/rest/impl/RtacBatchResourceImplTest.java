@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import java.util.stream.Stream;
 import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Error;
+import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
@@ -141,6 +142,34 @@ class RtacBatchResourceImplTest {
           Item item = MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getItems().iterator().next();
           String expectedVolume = "(" + item.getEnumeration() + " " + item.getChronology() + ")";
           assertEquals(expectedVolume, holding.getVolume());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldProperlyFormatTheHoldingValueFieldWithCopyNumbers(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch response = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHolding rtacHolding =
+              response.getHoldings().iterator().next().getHoldings().iterator().next();
+          Item item = MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getItems().iterator().next();
+          Holding holding =
+              MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getHoldings().iterator().next();
+          assertEquals(item.getCopyNumber(), rtacHolding.getItemCopyNumber());
+          assertEquals(holding.getCopyNumber(), rtacHolding.getHoldingsCopyNumber());
           testContext.completeNow();
         });
   }
