@@ -57,7 +57,7 @@ public class FolioToRtacMapper {
       logger.info("{} is a periodical with full item data requested,",
           instance.getInstanceId());
       logger.info("or a non-periodical. Mapping all holdings and item data.");
-      convertItemToRtacHoldingWithHoldingsCopyNumber(instance, nested);
+      convertItemToRtacHolding(instance, nested);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
     } else {
       logger.info("{} is a periodical with full item data not requested,",
@@ -67,7 +67,7 @@ public class FolioToRtacMapper {
     }
   }
 
-  private void convertItemToRtacHoldingWithHoldingsCopyNumber(InventoryHoldingsAndItems instance,
+  private void convertItemToRtacHolding(InventoryHoldingsAndItems instance,
       List<RtacHolding> nested) {
 
     Map<String, Holding> holdingsMap = instance.getHoldings().stream()
@@ -78,9 +78,9 @@ public class FolioToRtacMapper {
       Holding holding = holdingsMap.get(item.getHoldingsRecordId());
       if (Objects.nonNull(holding)) {
         rtacHolding = rtacHolding.withHoldingsCopyNumber(holding.getCopyNumber());
+        addHoldingsStatements(rtacHolding, holding);
       }
 
-      addHoldingsStatements(rtacHolding, holding);
       return rtacHolding;
     }).forEach(nested::add);
   }
