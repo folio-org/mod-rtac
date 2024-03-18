@@ -18,6 +18,8 @@ import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.LegacyHolding;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
+import org.folio.rest.jaxrs.model.Library;
+import org.folio.rest.jaxrs.model.MaterialType;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 
@@ -43,19 +45,19 @@ public class FolioToRtacMapper {
     logger.info("Rtac handling periodicals: {}", fullPeriodicals);
     final var periodical = isPeriodical(instance);
 
-    if (instance.getItems().size() == 0 && instance.getHoldings().size() == 0) {
+    if (instance.getItems().isEmpty() && instance.getHoldings().isEmpty()) {
       logger.info("{} has no items or holdings, skipping item/holdings mapping",
           instance.getInstanceId());
       return rtacHoldings.withInstanceId(instance.getInstanceId());
-    } else if (instance.getItems().size() == 0 && instance.getHoldings().size() > 0) {
+    } else if (instance.getItems().isEmpty() && !instance.getHoldings().isEmpty()) {
       logger.info("{} has no items, mapping holdings data.", instance.getInstanceId());
       instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
-    } else if ((!periodical) || periodical && fullPeriodicals) {
+    } else if (!periodical || fullPeriodicals) {
       logger.info("{} is a periodical with full item data requested,",
           instance.getInstanceId());
       logger.info("or a non-periodical. Mapping all holdings and item data.");
-      convertItemToRtacHoldingWithHoldingsCopyNumber(instance, nested);
+      convertItemToRtacHolding(instance, nested);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
     } else {
       logger.info("{} is a periodical with full item data not requested,",
@@ -65,7 +67,7 @@ public class FolioToRtacMapper {
     }
   }
 
-  private void convertItemToRtacHoldingWithHoldingsCopyNumber(InventoryHoldingsAndItems instance,
+  private void convertItemToRtacHolding(InventoryHoldingsAndItems instance,
       List<RtacHolding> nested) {
 
     Map<String, Holding> holdingsMap = instance.getHoldings().stream()
@@ -76,9 +78,18 @@ public class FolioToRtacMapper {
       Holding holding = holdingsMap.get(item.getHoldingsRecordId());
       if (Objects.nonNull(holding)) {
         rtacHolding = rtacHolding.withHoldingsCopyNumber(holding.getCopyNumber());
+        addHoldingsStatements(rtacHolding, holding);
       }
+
       return rtacHolding;
     }).forEach(nested::add);
+  }
+
+  private RtacHolding addHoldingsStatements(RtacHolding rtacHolding, Holding holding) {
+    return rtacHolding
+      .withHoldingsStatements(holding.getHoldingsStatements())
+      .withHoldingsStatementsForIndexes(holding.getHoldingsStatementsForIndexes())
+      .withHoldingsStatementsForSupplements(holding.getHoldingsStatementsForSupplements());
   }
 
   private final Function<Item, RtacHolding> fromItemToRtacHolding =
@@ -86,6 +97,13 @@ public class FolioToRtacMapper {
           new RtacHolding()
               .withId(item.getId())
               .withLocation(mapLocation(item))
+              .withLocationId(mapLocationId(item))
+              .withLocationCode(mapLocationCode(item))
+              .withLibrary(getLibrary(item))
+              .withMaterialType(getMaterialType(item))
+              .withSuppressFromDiscovery(item.getSuppressFromDiscovery())
+              .withBarcode(item.getBarcode())
+              .withTotalHoldRequests(item.getTotalHoldRequests())
               .withCallNumber(mapCallNumber(item))
               .withStatus(item.getStatus())
               .withTemporaryLoanType(item.getTemporaryLoanType())
@@ -128,9 +146,15 @@ public class FolioToRtacMapper {
               .withId(holding.getId())
               .withCallNumber(mapCallNumber(holding))
               .withLocation(mapLocation(holding))
+              .withLocationId(mapLocationId(holding))
+              .withLocationCode(mapLocationCode(holding))
+              .withLibrary(getLibrary(holding))
               .withStatus(mapHoldingStatements(holding))
               .withHoldingsCopyNumber(holding.getCopyNumber())
-              .withDueDate(null);
+              .withDueDate(null)
+              .withHoldingsStatements(holding.getHoldingsStatements())
+              .withHoldingsStatementsForIndexes(holding.getHoldingsStatementsForIndexes())
+              .withHoldingsStatementsForSupplements(holding.getHoldingsStatementsForSupplements());
 
   private String mapHoldingStatements(Holding holding) {
     final var holdingsStatements = holding.getHoldingsStatements();
@@ -159,6 +183,22 @@ public class FolioToRtacMapper {
     return item.getLocation().getLocation().getName();
   }
 
+  private String mapLocationId(Item item) {
+    return item.getLocation().getLocation().getId();
+  }
+
+  private String mapLocationId(Holding holding) {
+    return holding.getLocation().getPermanentLocation().getId();
+  }
+
+  private String mapLocationCode(Item item) {
+    return item.getLocation().getLocation().getCode();
+  }
+
+  private String mapLocationCode(Holding holding) {
+    return holding.getLocation().getPermanentLocation().getCode();
+  }
+
   private boolean isPeriodical(InventoryHoldingsAndItems instance) {
     return isPeriodicalByNatureOfContent(instance)
         || Objects.equals(instance.getModeOfIssuance(), "serial");
@@ -168,6 +208,24 @@ public class FolioToRtacMapper {
     return instance.getNatureOfContent().stream()
         .map(String::toLowerCase)
         .anyMatch(periodicalNames::contains);
+  }
+
+  private MaterialType getMaterialType(Item item) {
+    return new MaterialType()
+      .withId(item.getMaterialTypeId())
+      .withName(item.getMaterialType());
+  }
+
+  private Library getLibrary(Item item) {
+    return new Library()
+      .withCode(item.getLocation().getLocation().getLibraryCode())
+      .withName(item.getLocation().getLocation().getLibraryName());
+  }
+
+  private Library getLibrary(Holding holding) {
+    return new Library()
+      .withCode(holding.getLocation().getPermanentLocation().getLibraryCode())
+      .withName(holding.getLocation().getPermanentLocation().getLibraryName());
   }
 
   /**

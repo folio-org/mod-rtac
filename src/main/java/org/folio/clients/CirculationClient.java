@@ -9,7 +9,6 @@ import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
-import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpRequest;
@@ -23,6 +22,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.folio.HttpStatus;
 import org.folio.mappers.CirculationToRtacMapper;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
@@ -34,11 +34,10 @@ class CirculationClient extends FolioClient {
   private static final CirculationToRtacMapper circulationToRtacMapper =
       new CirculationToRtacMapper();
   private static final String URI = "/loan-storage/loans";
-  private static final WebClient webClient = WebClient.create(Vertx.currentContext().owner());
   private final Logger logger = LogManager.getLogger(getClass());
 
-  CirculationClient(Map<String, String> okapiHeaders) {
-    super(okapiHeaders);
+  CirculationClient(Map<String, String> okapiHeaders, WebClient webClient) {
+    super(okapiHeaders, webClient);
   }
 
   Future<List<InventoryHoldingsAndItems>> updateInstanceItemsWithLoansDueDate(
@@ -120,11 +119,9 @@ class CirculationClient extends FolioClient {
                 promise.fail(
                     new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
               } else {
-                final var i = httpResponse.statusCode();
-                if (i != 200) {
+                if (httpResponse.statusCode() != HttpStatus.HTTP_OK.toInt()) {
                   promise.fail(
                       new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-                  return;
                 } else {
                   promise.complete(httpResponse.bodyAsJsonObject());
                 }
@@ -149,7 +146,7 @@ class CirculationClient extends FolioClient {
   }
 
   private String buildCql(List<Item> items) {
-    final StringBuilder cql = new StringBuilder();
+    final var cql = new StringBuilder();
     final String query =
         items.stream()
             .map(i -> "itemId==" + i.getId())
