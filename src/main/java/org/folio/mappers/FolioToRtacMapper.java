@@ -6,9 +6,11 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.rest.jaxrs.model.Holding;
@@ -55,17 +57,7 @@ public class FolioToRtacMapper {
       logger.info("{} is a periodical with full item data requested,",
           instance.getInstanceId());
       logger.info("or a non-periodical. Mapping all holdings and item data.");
-      List<Item> items = instance.getItems();
-      List<Holding> holdings = instance.getHoldings();
-      for (Item item : items) {
-        RtacHolding rtacHolding = fromItemToRtacHolding.apply(item);
-        for (Holding holding : holdings) {
-          if (Objects.equals(item.getHoldingsRecordId(), holding.getId())) {
-            rtacHolding = addHoldingsStatements(rtacHolding, holding);
-          }
-        }
-        nested.add(rtacHolding);
-      }
+      convertItemToRtacHoldingWithHoldingsCopyNumber(instance, nested);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
     } else {
       logger.info("{} is a periodical with full item data not requested,",
@@ -73,6 +65,24 @@ public class FolioToRtacMapper {
       instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
       return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
     }
+  }
+
+  private void convertItemToRtacHoldingWithHoldingsCopyNumber(InventoryHoldingsAndItems instance,
+      List<RtacHolding> nested) {
+
+    Map<String, Holding> holdingsMap = instance.getHoldings().stream()
+        .collect(Collectors.toMap(Holding::getId, Function.identity()));
+
+    instance.getItems().stream().map(item -> {
+      RtacHolding rtacHolding = fromItemToRtacHolding.apply(item);
+      Holding holding = holdingsMap.get(item.getHoldingsRecordId());
+      if (Objects.nonNull(holding)) {
+        rtacHolding = rtacHolding.withHoldingsCopyNumber(holding.getCopyNumber());
+      }
+
+      addHoldingsStatements(rtacHolding, holding);
+      return rtacHolding;
+    }).forEach(nested::add);
   }
 
   private RtacHolding addHoldingsStatements(RtacHolding rtacHolding, Holding holding) {
@@ -99,7 +109,8 @@ public class FolioToRtacMapper {
               .withTemporaryLoanType(item.getTemporaryLoanType())
               .withPermanentLoanType(item.getPermanentLoanType())
               .withDueDate(item.getDueDate())
-              .withVolume(mapVolume(item));
+              .withVolume(mapVolume(item))
+              .withItemCopyNumber(item.getCopyNumber());
 
   /**
    * This function is populating holding-level information for periodicals.
@@ -139,6 +150,7 @@ public class FolioToRtacMapper {
               .withLocationCode(mapLocationCode(holding))
               .withLibrary(getLibrary(holding))
               .withStatus(mapHoldingStatements(holding))
+              .withHoldingsCopyNumber(holding.getCopyNumber())
               .withDueDate(null)
               .withHoldingsStatements(holding.getHoldingsStatements())
               .withHoldingsStatementsForIndexes(holding.getHoldingsStatementsForIndexes())
@@ -261,6 +273,7 @@ public class FolioToRtacMapper {
    * The rules for generating "volume" are as follows:
    * |data set                     |"volume"                    |
    * |-----------------------------|----------------------------|
+   * |displaySummary               |(displaySummary)            |
    * |enumeration                  |(enumeration)               |
    * |enumeration chronology       |(enumeration chronology)    |
    * |enumeration chronology volume|(enumeration chronology)    |
@@ -273,11 +286,14 @@ public class FolioToRtacMapper {
   private String mapVolume(Item item) {
     final String enumeration = item.getEnumeration();
     final String chronology = item.getChronology();
+    final String displaySummary = item.getDisplaySummary();
     final String volume = item.getVolume();
 
     final StringJoiner sj = new StringJoiner(" ", "(", ")").setEmptyValue("");
 
-    if (isNotBlank(enumeration)) {
+    if (isNotBlank(displaySummary)) {
+      sj.add(displaySummary);
+    } else if (isNotBlank(enumeration)) {
       sj.add(enumeration);
       if (isNotBlank(chronology)) {
         sj.add(chronology);

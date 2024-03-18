@@ -456,6 +456,10 @@
             "description": "Descriptive information for the dating scheme of a serial",
             "type": "string"
           },
+          "displaySummary": {
+            "description": "Display summary about the item",
+            "type": "string"
+          },
           "itemIdentifier": {
             "description": "Item identifier number, e.g. imported from the union catalogue",
             "type": "string"
@@ -488,6 +492,10 @@
           "totalHoldRequests": {
             "description": "The total number of requested items for the patron",
             "type": "integer"
+          },
+          "copyNumber": {
+            "description": "Copy number is the piece identifier. The copy number reflects if the library has a copy of a single-volume monograph; a copy of a multi-volume, (e.g. Copy 1, or C.7.)",
+            "type": "string"
           }
         }
       }

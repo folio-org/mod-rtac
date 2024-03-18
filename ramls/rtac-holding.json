@@ -119,6 +119,14 @@
           }
         }
       }
+    },
+    "holdingsCopyNumber": {
+      "type": "string",
+      "description": "Piece ID (usually barcode) for systems that do not use holdings record"
+    },
+    "itemCopyNumber": {
+      "type": "string",
+      "description": "Copy number is the piece identifier. The copy number reflects if the library has a copy of a single-volume monograph; a copy of a multi-volume, (e.g. Copy 1, or C.7.)"
     }
   },
   "required": [
