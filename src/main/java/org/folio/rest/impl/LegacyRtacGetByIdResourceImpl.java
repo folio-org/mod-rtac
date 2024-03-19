@@ -5,7 +5,6 @@ import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import java.util.Map;
-import javax.validation.constraints.Pattern;
 import javax.ws.rs.core.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +20,6 @@ public final class LegacyRtacGetByIdResourceImpl implements Rtac {
   @Deprecated
   public void getRtacById(
       String id,
-      @Pattern(regexp = "[a-zA-Z]{2}") String lang,
       Map<String, String> okapiHeaders,
       Handler<AsyncResult<Response>> asyncResultHandler,
       Context vertxContext) {
