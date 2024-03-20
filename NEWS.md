@@ -1,10 +1,20 @@
+## 3.6.0 2024-03-20
+
+* Upgrade mod-rtac to RMB 35.2.0, Vert.x 4.5.4 [MODRTAC-109](https://folio-org.atlassian.net/browse/MODRTAC-109)
+* Add holdingsCopyNumber and itemCopyNumber to rtac response ([EDGRTAC-81](https://folio-org.atlassian.net/browse/EDGRTAC-81))
+* Add new displaySummarry field ([MODRTAC-107](https://folio-org.atlassian.net/browse/MODRTAC-107))
+* Update from Java 11 to Java 17 ([MODRTAC-104](https://folio-org.atlassian.net/browse/MODRTAC-104))
+* Remove commons-io 2.6 dependency fixing CVE-2021-29425 ([MODRTAC-106](https://folio-org.atlassian.net/browse/MODRTAC-106))
+* Add effective location code and material type single and batch response ([MODRTAC-105](https://folio-org.atlassian.net/browse/MODRTAC-105))
+* Enable API-related GitHub Workflows, replace those Jenkins stages ([MODRTAC-103](https://folio-org.atlassian.net/browse/MODRTAC-103))
+
 ## 3.5.0 2023-02-14
 
 * Added personal data disclosure form (MODRTAC-96)
 
 ## 3.4.0 2022-10-18
 
-* Upgraded RMB to 35.0.0 ([MODRTAC-99](https://issues.folio.org/browse/MODRTAC-99)
+* Upgraded RMB to 35.0.0 ([MODRTAC-99](https://issues.folio.org/browse/MODRTAC-99))
 * Separate error message for not found instances ([MODRTAC-88](https://issues.folio.org/browse/MODRTAC-88))
 
 ## 3.3.0 2022-06-14
