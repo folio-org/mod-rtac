@@ -38,7 +38,7 @@
   "requires": [
     {
       "id": "inventory-hierarchy",
-      "version": "0.4"
+      "version": "0.5"
     },
     {
       "id": "loan-storage",
