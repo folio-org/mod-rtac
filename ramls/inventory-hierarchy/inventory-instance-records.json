@@ -496,6 +496,10 @@
           "copyNumber": {
             "description": "Copy number is the piece identifier. The copy number reflects if the library has a copy of a single-volume monograph; a copy of a multi-volume, (e.g. Copy 1, or C.7.)",
             "type": "string"
+          },
+          "effectiveShelvingOrder": {
+            "description": "A system generated normalization of the call number that allows for call number sorting in reports and search results",
+            "type": "string"
           }
         }
       }

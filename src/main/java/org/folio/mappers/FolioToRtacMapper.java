@@ -110,7 +110,8 @@ public class FolioToRtacMapper {
               .withPermanentLoanType(item.getPermanentLoanType())
               .withDueDate(item.getDueDate())
               .withVolume(mapVolume(item))
-              .withItemCopyNumber(item.getCopyNumber());
+              .withItemCopyNumber(item.getCopyNumber())
+              .withEffectiveShelvingOrder(item.getEffectiveShelvingOrder());
 
   /**
    * This function is populating holding-level information for periodicals.
