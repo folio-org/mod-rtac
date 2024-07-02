@@ -176,6 +176,32 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
+  void shouldProperlyFormatTheItemValueFieldWithEffectiveShelvingOrder(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch response = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHolding rtacHolding =
+              response.getHoldings().iterator().next().getHoldings().iterator().next();
+          Item item = MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS.getItems().iterator().next();
+          assertEquals(item.getEffectiveShelvingOrder(), rtacHolding.getEffectiveShelvingOrder());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
   void shouldPopulateItemDataWithDueDate_whenLoanForItemExists(VertxTestContext testContext) {
     testContext.verify(
         () -> {
