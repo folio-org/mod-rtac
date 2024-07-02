@@ -95,7 +95,8 @@
           "source": "folio",
           "statisticalCodeType": "ARL (Collection stats)"
         }
-      ]
+      ],
+      "effectiveShelvingOrder": "TX326"
     }
   ],
   "items": [
@@ -148,7 +149,8 @@
       "materialType": "text",
       "electronicAccess": [],
       "statisticalCodes": [],
-      "permanentLoanType": "Can circulate"
+      "permanentLoanType": "Can circulate",
+      "effectiveShelvingOrder": "3332.024"
     },
     {
       "id": "4cebe27e-c9ba-4ce8-8148-fe4d4cb40538",
@@ -198,7 +200,8 @@
       "materialType": "text",
       "electronicAccess": [],
       "statisticalCodes": [],
-      "permanentLoanType": "Can circulate"
+      "permanentLoanType": "Can circulate",
+      "effectiveShelvingOrder" : "3329 288 3975"
     }
   ]
 }
