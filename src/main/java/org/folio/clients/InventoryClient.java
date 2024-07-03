@@ -24,6 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.HttpStatus;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
+import org.folio.rest.jaxrs.model.Item;
 import org.folio.rtac.rest.exceptions.HttpException;
 
 class InventoryClient extends FolioClient {
@@ -60,6 +61,12 @@ class InventoryClient extends FolioClient {
     parser.handler(e -> {
       var inventoryHoldingsAndItems = e.objectValue()
           .mapTo(InventoryHoldingsAndItems.class);
+      if (inventoryHoldingsAndItems != null && inventoryHoldingsAndItems.getItems() != null) {
+        for (Item item: inventoryHoldingsAndItems.getItems()) {
+          logger.info("item id: {}, item effectiveShelvingOrder: {}",
+              item.getId(), item.getEffectiveShelvingOrder());
+        }
+      }
       instances.add(inventoryHoldingsAndItems);
     });
     parser.endHandler(e -> {
