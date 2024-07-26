@@ -1,0 +1,70 @@
+{
+  "pieces": [
+    {
+      "id": "aaf7be29-a8cc-4b0a-9975-bf39e9a71696",
+      "displaySummary": "212",
+      "format": "Physical",
+      "itemId": "30a7b749-a90d-46d0-a256-997686430905",
+      "poLineId": "8718f05e-9a40-4ea3-a968-672eafbe8784",
+      "titleId": "8afc4d77-73d0-4518-8234-a293c71b6405",
+      "holdingId": "0005bb50-7c9b-48b0-86eb-178a494e25fe",
+      "displayOnHolding": true,
+      "displayToPublic": true,
+      "discoverySuppress": false,
+      "receivingStatus": "Received",
+      "supplement": true,
+      "isBound": true,
+      "receivedDate": "2024-06-24T14:48:02.596+00:00",
+      "statusUpdatedDate": "2024-06-24T14:48:02.596+00:00",
+      "metadata": {
+        "createdDate": "2024-06-24T14:47:32.573+00:00",
+        "createdByUserId": "dc3a69bf-5ddb-47ef-9ac4-b9ef83758828",
+        "updatedDate": "2024-06-24T14:48:09.606+00:00",
+        "updatedByUserId": "dc3a69bf-5ddb-47ef-9ac4-b9ef83758828"
+      }
+    },
+    {
+      "id": "41e08137-6e0f-4ee9-baec-7d3d33100adc",
+      "displaySummary": "ds2",
+      "format": "Physical",
+      "poLineId": "917f6d30-b43f-45d3-80d6-4f8cda8baaae",
+      "titleId": "edb26976-c132-4cfe-8487-8d70da6c2b72",
+      "holdingId": "0005bb50-7c9b-48b0-86eb-178a494e25fe",
+      "displayOnHolding": true,
+      "displayToPublic": true,
+      "discoverySuppress": false,
+      "receivingStatus": "Expected",
+      "supplement": false,
+      "isBound": false,
+      "statusUpdatedDate": "2024-07-18T10:37:22.455+00:00",
+      "metadata": {
+        "createdDate": "2024-07-18T10:37:22.454+00:00",
+        "createdByUserId": "dc3a69bf-5ddb-47ef-9ac4-b9ef83758828",
+        "updatedDate": "2024-07-18T10:37:22.454+00:00",
+        "updatedByUserId": "dc3a69bf-5ddb-47ef-9ac4-b9ef83758828"
+      }
+    },
+    {
+      "id": "b57ebff9-4c40-4412-91a9-670c0e6e6381",
+      "displaySummary": "test-instance-holding-item-piece-summary",
+      "format": "Physical",
+      "poLineId": "1e3a50f8-4332-4acf-85a7-ec6a3733266b",
+      "titleId": "dfc830eb-af99-4bcd-abfa-7c2ed9a47af9",
+      "holdingId": "0005bb50-7c9b-48b0-86eb-178a494e25fe",
+      "displayOnHolding": true,
+      "displayToPublic": true,
+      "discoverySuppress": false,
+      "receivingStatus": "Expected",
+      "supplement": false,
+      "isBound": false,
+      "statusUpdatedDate": "2024-07-19T14:57:59.705+00:00",
+      "metadata": {
+        "createdDate": "2024-07-19T14:57:59.703+00:00",
+        "createdByUserId": "dc3a69bf-5ddb-47ef-9ac4-b9ef83758828",
+        "updatedDate": "2024-07-19T14:57:59.703+00:00",
+        "updatedByUserId": "dc3a69bf-5ddb-47ef-9ac4-b9ef83758828"
+      }
+    }
+  ],
+  "totalRecords": 3
+}

@@ -20,6 +20,7 @@ public class MockServer {
   private static final String LOANS_URI = "/loan-storage/loans";
   private static final String INVENTORY_VIEW_URI = "/inventory-hierarchy/items-and-holdings";
   private static final String CIRCULATION_REQUESTS_URI = "/circulation/requests";
+  private static final String ORDERS_PIECES_URI = "/orders/pieces";
 
   private static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 
@@ -49,6 +50,7 @@ public class MockServer {
     router.post(INVENTORY_VIEW_URI).handler(this::handleInventoryViewResponse);
     router.get(LOANS_URI).handler(this::handleLoansResponse);
     router.get(CIRCULATION_REQUESTS_URI).handler(this::handleHoldRequestsResponse);
+    router.get(ORDERS_PIECES_URI).handler(this::handleOrderPiecesResponse);
     return router;
   }
 
@@ -90,6 +92,9 @@ public class MockServer {
     } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_NO_ITEMS)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_NO_ITEMS));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_NO_PIECES)) {
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITHOUT_ITEM_HOLDING_AND_PIECE));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_NOT_EXISTS)) {
       successResponse(routingContext, "");
     } else {
@@ -103,7 +108,7 @@ public class MockServer {
   private void handleLoansResponse(RoutingContext routingContext) {
     HttpServerRequest request = routingContext.request();
     String query = request.getParam("query");
-    if (query.contains(MockData.INSTANCE_ITEM_ID)) {
+    if (query.contains(MockData.INSTANCE_ITEM_ID_1)) {
       successResponse(routingContext, MockData.LOAN_JSON);
     } else if (query.contains(MockData.ITEM_WITHOUT_LOAN_ID)) {
       successResponse(routingContext, MockData.EMPTY_LOANS_JSON);
@@ -118,11 +123,25 @@ public class MockServer {
   private void handleHoldRequestsResponse(RoutingContext routingContext) {
     HttpServerRequest request = routingContext.request();
     String query = request.getParam("query");
-    if (query.contains(MockData.INSTANCE_ITEM_ID)) {
+    if (query.contains(MockData.INSTANCE_ITEM_ID_1)) {
       successResponse(routingContext, MockData.REQUESTS_JSON);
     } else {
       failureResponse(
           routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for request");
+    }
+  }
+
+  private void handleOrderPiecesResponse(RoutingContext routingContext) {
+    HttpServerRequest request = routingContext.request();
+    String query = request.getParam("query");
+    String pieceCollectionResponse = MockData.pojoToJson(MockData.PIECE_COLLECTION);
+    if (query.contains(MockData.HOLDING_ID)) {
+      successResponse(routingContext, pieceCollectionResponse);
+    } else if (query.contains(MockData.HOLDING_WITHOUT_PIECE_ID)) {
+      successResponse(routingContext, MockData.EMPTY_PIECE_COLLECTION_JSON);
+    } else {
+      failureResponse(
+          routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for pieces");
     }
   }
 

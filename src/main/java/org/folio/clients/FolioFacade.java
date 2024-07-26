@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.folio.HttpStatus;
 import org.folio.mappers.ErrorMapper;
 import org.folio.mappers.FolioToRtacMapper;
+import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.jaxrs.model.Error;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
@@ -30,6 +31,7 @@ public class FolioFacade {
   private final InventoryClient inventoryClient;
   private final CirculationClient circulationClient;
   private final CirculationRequestClient requestClient;
+  private final PieceClient pieceClient;
   private final ErrorMapper errorMapper = new ErrorMapper();
 
   /**
@@ -41,6 +43,7 @@ public class FolioFacade {
     this.inventoryClient = new InventoryClient(okapiHeaders, webClient);
     this.circulationClient = new CirculationClient(okapiHeaders, webClient);
     this.requestClient = new CirculationRequestClient(okapiHeaders, webClient);
+    this.pieceClient = new PieceClient(okapiHeaders, webClient);
   }
 
   /**
@@ -68,20 +71,22 @@ public class FolioFacade {
         .getItemAndHoldingInfo(validUuids)
         .compose(circulationClient::updateInstanceItemsWithLoansDueDate)
         .compose(requestClient::updateInstanceItemsWithRequestsCount)
+        .compose(pieceClient::getPieces)
         .compose(
-            instances -> {
+            instancesAndPieces -> {
               List<String> notFoundHoldings = new ArrayList<>();
               List<String> notFoundInstances = new ArrayList<>(rtacRequest.getInstanceIds());
               final var rtacHoldingsList = new ArrayList<RtacHoldings>();
-              for (InventoryHoldingsAndItems instance : instances) {
+              for (InventoryHoldingsAndItemsAndPieces instanceAndPieces : instancesAndPieces) {
+                InventoryHoldingsAndItems instance = instanceAndPieces
+                    .getInventoryHoldingsAndItems();
 
                 notFoundInstances.remove(instance.getInstanceId());
-
                 if (CollectionUtils.isEmpty(instance.getHoldings())) {
                   notFoundHoldings.add(instance.getInstanceId());
                   continue;
                 }
-                var rtacHoldings = folioToRtacMapper.mapToRtac(instance);
+                var rtacHoldings = folioToRtacMapper.mapToRtac(instanceAndPieces);
                 rtacHoldingsList.add(rtacHoldings);
               }
               logger.info("Mapping inventory instances: {}", rtacHoldingsList.size());

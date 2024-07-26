@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Piece details",
+  "type": "object",
+  "javaName": "Piece",
+  "properties": {
+    "id": {
+      "description": "UUID of this piece record",
+      "$ref": "../uuid.json"
+    },
+      "displaySummary": {
+      "description": "Display summary information",
+      "type": "string"
+    },
+      "comment": {
+      "description": "Free form commentary",
+      "type": "string"
+    },
+    "format": {
+      "description": "The format of the piece",
+      "type": "string",
+      "$ref": "piece_format.json"
+    },
+    "itemId": {
+      "description": "UUID of the associated item record",
+      "$ref": "../uuid.json"
+    },
+    "bindItemId": {
+      "description": "UUID of the associated bind item record",
+      "$ref": "../uuid.json"
+    },
+    "locationId": {
+      "description": "UUID of the (inventory) location record",
+      "$ref": "../uuid.json"
+    },
+    "poLineId": {
+      "description": "UUID of the purchase order line this record is associated with",
+      "$ref": "../uuid.json"
+    },
+    "titleId": {
+      "description": "UUID of the title record",
+      "$ref": "../uuid.json"
+    },
+    "holdingId": {
+      "description": "UUID of the holding record",
+      "$ref": "../uuid.json"
+    },
+    "receivingTenantId": {
+      "description": "Receiving tenant for ECS-enabled clusters",
+      "type": "string"
+    },
+    "displayOnHolding": {
+      "description": "Whether or not receiving history should be displayed in holding record view",
+      "type": "boolean",
+      "default": false
+    },
+    "displayToPublic": {
+      "description": "Whether or not the piece data should display to patrons at point of receipt",
+      "type": "boolean",
+      "default": false
+    },
+    "enumeration": {
+      "type": "string",
+      "description": "Enumeration is the descriptive information for the numbering scheme of a serial. Synchronized with inventory item."
+    },
+    "chronology": {
+      "type": "string",
+      "description": "Chronology is the descriptive information for the dating scheme of a serial. Synchronized with inventory item."
+    },
+    "barcode": {
+      "type": "string",
+      "description": "Barcode is the descriptive information for the barcode of a serial. Synchronized with inventory item."
+    },
+    "accessionNumber": {
+      "type": "string",
+      "description": "AccessionNumber is the descriptive information for the accession number of a serial. Synchronized with inventory item."
+    },
+    "callNumber": {
+      "type": "string",
+      "description": "CallNumber is the descriptive information for the call number of a serial. Synchronized with inventory item."
+    },
+    "discoverySuppress": {
+      "type": "boolean",
+      "description": "Records the fact that the record should not be displayed in a discovery system"
+    },
+    "copyNumber": {
+      "type": "string",
+      "description": "Copy number of the piece"
+    },
+    "receivingStatus": {
+      "description": "The status of this piece",
+      "type": "string",
+      "enum": [
+        "Received",
+        "Expected",
+        "Late",
+        "Claim delayed",
+        "Claim sent",
+        "Unreceivable"
+      ],
+      "default": "Expected"
+    },
+    "supplement": {
+      "description": "Whether or not this is supplementary material",
+      "type": "boolean"
+    },
+    "isBound": {
+      "description": "Whether or not piece has already been bound",
+      "type": "boolean",
+      "default": false
+    },
+    "receiptDate": {
+      "description": "Date that associated item is expected to arrive",
+      "type": "string",
+      "format": "date-time"
+    },
+    "receivedDate": {
+      "description": "The date associated item is actually received",
+      "type": "string",
+      "format": "date-time"
+    },
+    "statusUpdatedDate": {
+      "description": "Date when the status of this piece was last updated",
+      "type": "string",
+      "format": "date-time"
+    },
+    "claimingInterval": {
+      "description": "Time interval (in days) for processing claims related to this piece",
+      "type": "integer"
+    },
+    "internalNote": {
+      "description": "Internal note for Send Claim action",
+      "type": "string"
+    },
+    "externalNote": {
+      "description": "External note for Send Claim action to share with Vendor",
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object",
+      "$ref": "../raml-util/schemas/metadata.schema",
+      "readonly": true
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "poLineId",
+    "titleId",
+    "receivingStatus"
+  ]
+}

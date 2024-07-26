@@ -195,7 +195,65 @@ class RtacBatchResourceImplTest {
           RtacHolding holding = getSingleHolding(rtacResponse);
           final var expected = dateFormat.parse(MockData.LOAN_DUE_DATE_FIELD_VALUE);
           assertEquals(expected, holding.getDueDate());
-          assertEquals(MockData.INSTANCE_ITEM_ID, holding.getId());
+          assertEquals(MockData.INSTANCE_ITEM_ID_1, holding.getId());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldReturnRtacResponse_PiecesDataAvailable(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          List<RtacHolding> holdings = rtacResponse.getHoldings().get(0).getHoldings();
+          assertEquals(MockData.INSTANCE_ITEM_ID_1, holdings.get(0).getId());
+          assertEquals("Available", holdings.get(0).getStatus());
+          assertEquals(MockData.INSTANCE_ITEM_ID_2, holdings.get(1).getId());
+          assertEquals("Available", holdings.get(1).getStatus());
+          assertEquals(MockData.HOLDING_ID, holdings.get(2).getId());
+          assertEquals("Received", holdings.get(2).getStatus());
+          assertEquals(MockData.HOLDING_ID, holdings.get(3).getId());
+          assertEquals("Expected", holdings.get(3).getStatus());
+          assertEquals(MockData.HOLDING_ID, holdings.get(4).getId());
+          assertEquals("Expected", holdings.get(4).getStatus());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldReturnRtacResponse_whenPiecesNotExist(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson = pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_NO_PIECES);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          List<RtacHolding> holdings = rtacResponse.getHoldings().get(0).getHoldings();
+          assertEquals(1, holdings.size());
+          assertEquals(MockData.HOLDING_WITHOUT_PIECE_ID, holdings.get(0).getId());
           testContext.completeNow();
         });
   }
