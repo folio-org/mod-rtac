@@ -92,9 +92,12 @@ public class MockServer {
     } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_NO_ITEMS)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_NO_ITEMS));
-    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_NO_PIECES)) {
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_AND_PIECES)) {
       successResponse(
-          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITHOUT_ITEM_HOLDING_AND_PIECE));
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_PIECES));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_AND_NO_PIECES)) {
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_NO_PIECES));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_NOT_EXISTS)) {
       successResponse(routingContext, "");
     } else {
@@ -135,9 +138,9 @@ public class MockServer {
     HttpServerRequest request = routingContext.request();
     String query = request.getParam("query");
     String pieceCollectionResponse = MockData.pojoToJson(MockData.PIECE_COLLECTION);
-    if (query.contains(MockData.HOLDING_ID)) {
+    if (query.contains(MockData.HOLDING_ID_WITH_PIECES)) {
       successResponse(routingContext, pieceCollectionResponse);
-    } else if (query.contains(MockData.HOLDING_WITHOUT_PIECE_ID)) {
+    } else if (query.contains(MockData.HOLDING_ID_WITHOUT_PIECES)) {
       successResponse(routingContext, MockData.EMPTY_PIECE_COLLECTION_JSON);
     } else {
       failureResponse(

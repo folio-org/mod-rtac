@@ -81,7 +81,12 @@ public class PieceClient extends FolioClient {
 
           promise.complete(new InventoryHoldingsAndItemsAndPieces(instance, pieces));
         })
-        .onFailure(promise::fail);
+        .onFailure(
+          t -> {
+            logger.warn(t.getMessage(), t);
+            promise.complete(new InventoryHoldingsAndItemsAndPieces(instance,
+                Collections.emptyList()));
+          });
 
     return promise.future();
   }
