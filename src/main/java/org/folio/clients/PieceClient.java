@@ -15,6 +15,7 @@ import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.parsetools.JsonParser;
+import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.HttpException;
@@ -51,34 +52,26 @@ public class PieceClient extends FolioClient {
       return promise.future();
     }
 
+    final var httpClientRequest = buildRequest();
     List<Future> futures = inventoryInstances.stream()
-        .map(this::processInstance)
+        .map(instance -> processInstance(instance, httpClientRequest))
         .collect(Collectors.toCollection(ArrayList::new));
 
     CompositeFuture.all(futures)
-        .onSuccess(composite -> promise.complete(composite.result()
-            .list()))
+        .onSuccess(composite -> promise.complete(composite.result().list()))
         .onFailure(promise::fail);
 
     return promise.future();
   }
 
   private Future<InventoryHoldingsAndItemsAndPieces> processInstance(
-      InventoryHoldingsAndItems instance) {
+      InventoryHoldingsAndItems instance, HttpRequest<Buffer> httpClientRequest) {
     logger.info("Processing instance: {}", instance.getInstanceId());
     Promise<InventoryHoldingsAndItemsAndPieces> promise = Promise.promise();
-    List<Future> futures = instance.getHoldings()
-        .stream()
-        .map(this::processHolding)
-        .collect(Collectors.toCollection(ArrayList::new));
-
-    CompositeFuture.all(futures)
+    String cql = buildCql(instance.getHoldings());
+    processHolding(httpClientRequest.copy(), cql)
         .onSuccess(composite -> {
-          List<PieceCollection> pieceCollections = composite.result().list();
-          List<Piece> pieces = pieceCollections.stream()
-              .flatMap(pieceCollection -> pieceCollection.getPieces().stream())
-              .toList();
-
+          List<Piece> pieces = composite.getPieces();
           promise.complete(new InventoryHoldingsAndItemsAndPieces(instance, pieces));
         })
         .onFailure(
@@ -86,25 +79,19 @@ public class PieceClient extends FolioClient {
             logger.warn(t.getMessage(), t);
             promise.complete(new InventoryHoldingsAndItemsAndPieces(instance,
                 Collections.emptyList()));
-          });
+          }
+        );
 
     return promise.future();
   }
 
-  private Future<PieceCollection> processHolding(Holding holding) {
-    logger.info("Fetching pieces for holding: {}", holding.getId());
-    var url = String.format("%s%s", okapiUrl, URI);
-    var httpClientRequest = webClient.getAbs(url);
-    httpClientRequest.putHeader(OKAPI_HEADER_TOKEN, okapiToken)
-        .putHeader(OKAPI_HEADER_TENANT, tenantId)
-        .putHeader(ACCEPT, APPLICATION_JSON)
-        .putHeader(CONTENT_TYPE, APPLICATION_JSON);
-
+  private Future<PieceCollection> processHolding(HttpRequest<Buffer> httpClientRequest,
+      String cql) {
+    logger.info("Fetching pieces for holding with ?query={}", cql);
     Promise<PieceCollection> promise = Promise.promise();
     var jsonParser = getJsonParser(promise);
     httpClientRequest
-        .addQueryParam("query", String.format("holdingId==%s and displayToPublic=true and "
-            + "displayOnHolding=true", holding.getId()))
+        .addQueryParam("query", cql)
         .send(ar -> handleResponse(ar, promise, jsonParser));
     return promise.future();
   }
@@ -150,6 +137,32 @@ public class PieceClient extends FolioClient {
           }
           promise.complete(pieceCollectionResponse);
         });
+  }
+
+  private HttpRequest<Buffer> buildRequest() {
+    var url = String.format("%s%s", okapiUrl, URI);
+    logger.info("Sending request to {}", url);
+
+    final var httpClientRequest = webClient.getAbs(url);
+    httpClientRequest
+        .putHeader(OKAPI_HEADER_TOKEN, okapiToken)
+        .putHeader(OKAPI_HEADER_TENANT, tenantId)
+        .putHeader(ACCEPT, APPLICATION_JSON)
+        .putHeader(CONTENT_TYPE, APPLICATION_JSON);
+
+    return httpClientRequest;
+  }
+
+  private String buildCql(List<Holding> holdings) {
+    final var cql = new StringBuilder();
+    final String query =
+        holdings.stream()
+            .map(i -> "holdingId==" + i.getId())
+            .collect(Collectors.joining(" or ", "(", ")"));
+    cql.append(query);
+    cql.append("and displayToPublic=true and displayOnHolding=true");
+
+    return cql.toString();
   }
 
   private void logError(Throwable err) {
