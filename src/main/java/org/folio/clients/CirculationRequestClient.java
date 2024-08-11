@@ -8,6 +8,10 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
+import static org.folio.rest.jaxrs.model.Request.Status.OPEN_AWAITING_DELIVERY;
+import static org.folio.rest.jaxrs.model.Request.Status.OPEN_AWAITING_PICKUP;
+import static org.folio.rest.jaxrs.model.Request.Status.OPEN_IN_TRANSIT;
+import static org.folio.rest.jaxrs.model.Request.Status.OPEN_NOT_YET_FILLED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -22,6 +26,7 @@ import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -159,9 +164,20 @@ class CirculationRequestClient extends FolioClient {
         }
         Map<String, Long> requestMap = requestsResp.getRequests()
             .stream()
+            .filter(this::removeClosedCancelledRequests)
             .collect(groupingBy(Request::getItemId, counting()));
         promise.complete(requestMap);
       });
+  }
+
+  private boolean removeClosedCancelledRequests(Request itemRequest) {
+    try {
+      EnumSet<Request.Status> openStatuses = EnumSet.of(
+          OPEN_NOT_YET_FILLED, OPEN_AWAITING_PICKUP, OPEN_IN_TRANSIT, OPEN_AWAITING_DELIVERY);
+      return openStatuses.contains(itemRequest.getStatus());
+    } catch (Exception e) {
+      return false;
+    }
   }
 
   private void logError(Throwable err) {
