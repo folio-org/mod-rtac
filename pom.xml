@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.folio</groupId>
   <artifactId>mod-rtac</artifactId>
-  <version>3.5.0-DCB</version>
+  <version>3.5.0-DCB.2024.09.08</version>
   <packaging>jar</packaging>
 
   <licenses>
