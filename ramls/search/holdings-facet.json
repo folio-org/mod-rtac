@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Response schema for search holdings tenants",
+  "type": "object",
+  "properties": {
+    "facets": {
+      "description": "Requested facets",
+      "type": "object",
+      "properties": {
+        "holdings.tenantId": {
+          "description": "Facet name",
+          "type": "object",
+          "properties": {
+            "values": {
+              "description": "Facet result values",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "description": "Facet value",
+                    "type": "string"
+                  },
+                  "totalRecords": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "totalRecords": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "totalRecords": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "facets",
+    "totalRecords"
+  ],
+  "additionalProperties": false
+}

@@ -18,7 +18,6 @@ import io.vertx.core.parsetools.JsonParser;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
-import io.vertx.ext.web.handler.HttpException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +26,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.folio.HttpStatus;
 import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
@@ -43,7 +41,7 @@ public class PieceClient extends FolioClient {
   }
 
   Future<List<InventoryHoldingsAndItemsAndPieces>> getPieces(
-      List<InventoryHoldingsAndItems> inventoryInstances) {
+      List<InventoryHoldingsAndItems> inventoryInstances, String tenantId) {
     logger.info("Fetching pieces for inventory instances.");
     Promise<List<InventoryHoldingsAndItemsAndPieces>> promise = Promise.promise();
 
@@ -52,7 +50,7 @@ public class PieceClient extends FolioClient {
       return promise.future();
     }
 
-    final var httpClientRequest = buildRequest();
+    final var httpClientRequest = buildRequest(tenantId);
     List<Future> futures = inventoryInstances.stream()
         .map(instance -> processInstance(instance, httpClientRequest))
         .collect(Collectors.toCollection(ArrayList::new));
@@ -99,21 +97,14 @@ public class PieceClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<PieceCollection> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (ar.failed()) {
-      promise.fail(new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-    } else {
-      if (httpResponse.statusCode() != HttpStatus.HTTP_OK.toInt()) {
-        logger.error("Failed with HTTP status: {}", httpResponse.statusCode());
-        promise.fail(new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-      } else {
-        final var buffer = httpResponse.bodyAsBuffer();
-        if (buffer == null) {
-          logger.error("Piece response buffer is null, returning fallback result");
-          handleNullPointerException(promise);
-        }
-        parser.handle(buffer);
-        parser.end();
+    if (validateHttpStatusOk(ar, promise)) {
+      final var buffer = httpResponse.bodyAsBuffer();
+      if (buffer == null) {
+        logger.error("Piece response buffer is null, returning fallback result");
+        handleNullPointerException(promise);
       }
+      parser.handle(buffer);
+      parser.end();
     }
   }
 
@@ -139,7 +130,7 @@ public class PieceClient extends FolioClient {
         });
   }
 
-  private HttpRequest<Buffer> buildRequest() {
+  private HttpRequest<Buffer> buildRequest(String tenantId) {
     var url = String.format("%s%s", okapiUrl, URI);
     logger.info("Sending request to {}", url);
 

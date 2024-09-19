@@ -1,0 +1,204 @@
+{
+  "instanceId": "76d5a72a-af24-4ac6-8e73-4e39604f6f59",
+  "source": "FOLIO",
+  "holdings": [
+    {
+      "id": "3fd5faf2-a657-4b6f-88bc-b02a141c19b6",
+      "hrId": "123213213",
+      "suppressFromDiscovery": false,
+      "holdingsType": "testValue",
+      "formerIds": [
+        "ABW4508",
+        "442882"
+      ],
+      "location": {
+        "permanentLocation": {
+          "name": "testValue",
+          "campusName": "testValue",
+          "libraryName": "testValue",
+          "institutionName": "testValue"
+        },
+        "temporaryLocation": {
+          "name": "testValue",
+          "campusName": "testValue",
+          "libraryName": "testValue",
+          "institutionName": "testValue"
+        }
+      },
+      "callNumber": {
+        "prefix": "testValue",
+        "suffix": "testValue",
+        "typeId": "testValue",
+        "typeName": "testValue",
+        "callNumber": "testValue"
+      },
+      "shelvingTitle": "testValue",
+      "acquisitionFormat": "testValue",
+      "acquisitionMethod": "testValue",
+      "receiptStatus": "testValue",
+      "electronicAccess": [
+        {
+          "uri": "http://www.jstor.com",
+          "name": "Version of resource",
+          "publicNote": "Most recent 4 years not available.",
+          "relationshipId": "3b430592-2e09-4b48-9a0c-0636d66b9fb3",
+          "materialsSpecification": "1984-"
+        }
+      ],
+      "notes": [
+        {
+          "note": "Asked Ebsco to check with publisher and ask what years were paid since we are missing (2001:Oct.-Dec.), (All of 2002), & (2003:Jan.-Feb.). 20030305. evaldez",
+          "holdingsNoteTypeName": "Note"
+        }
+      ],
+      "illPolicy": "testValue",
+      "retentionPolicy": "Permanently retained.",
+      "digitizationPolicy": "testValue",
+      "holdingsStatements": [
+        {
+          "statement": "v.70-84 (1984-1998)",
+          "note": "testValue"
+        }
+      ],
+      "holdingsStatementsForIndexes": [
+        {
+          "statement": "v.70-84 (1984-1998)",
+          "note": "testValue"
+        }
+      ],
+      "holdingsStatementsForSupplements": [
+        {
+          "statement": "no.1-23 ",
+          "note": "testValue"
+        }
+      ],
+      "copyNumber": "1",
+      "receivingHistory": {
+        "entries": [
+          {
+            "publicDisplay" : true,
+            "enumeration" : "testValue",
+            "chronology" : "testValue"
+          }
+        ]
+      },
+      "tags": {
+        "tagList" : [
+          "testValue"
+        ]
+      },
+      "statisticalCodes": [
+        {
+          "id": "775b6ad4-9c35-4d29-bf78-8775a9b42226",
+          "code": "serials",
+          "name": "Serials, print (serials)",
+          "source": "folio",
+          "statisticalCodeType": "ARL (Collection stats)"
+        }
+      ]
+    }
+  ],
+  "items": [
+    {
+      "id": "14125d00-d716-48f3-b556-bc2ba7d204ca",
+      "hrId": "12321323121",
+      "holdingsRecordId": "3fd5faf2-a657-4b6f-88bc-b02a141c19b6",
+      "suppressFromDiscovery": false,
+      "status": "Available",
+      "formerIds": [
+        "ABW5508",
+        "332882"
+      ],
+      "location": {
+        "location": {
+          "name": "College",
+          "campusName": "City Campus",
+          "libraryName": "Datalogisk Institut",
+          "institutionName": "Københavns Universitet"
+        },
+        "permanentLocation": {
+          "name": "testValue2",
+          "campusName": "testValue2",
+          "libraryName": "testValue2",
+          "institutionName": "testValue2"
+        },
+        "temporaryLocation": {
+          "name": "testValue2",
+          "campusName": "testValue2",
+          "libraryName": "testValue2",
+          "institutionName": "testValue2"
+        }
+      },
+      "callNumber": {
+        "callNumber": "K1 .M44"
+      },
+      "accessionNumber": "testValue2",
+      "barcode": "A14813848587",
+      "copyNumber": "testValue2",
+      "volume": "123",
+      "notes": [],
+      "chronology": "1985:July-Dec.",
+      "enumeration": "v.71:no.6-2",
+      "yearCaption": [],
+      "itemIdentifier": "testValue2",
+      "numberOfPieces": "123",
+      "descriptionOfPieces": "testValue2",
+      "numberOfMissingPieces": "2",
+      "missingPieces": "testValue2",
+      "materialType": "text",
+      "electronicAccess": [],
+      "statisticalCodes": [],
+      "permanentLoanType": "Can circulate"
+    },
+    {
+      "id": "5f2ec7ab-5c82-4af7-a0a7-fe094ccfd163",
+      "hrId": "22321323333",
+      "holdingsRecordId": "3fd5faf2-a657-4b6f-88bc-b02a141c19b6",
+      "suppressFromDiscovery": false,
+      "status": "Available",
+      "formerIds": [
+        "ABW5508",
+        "332882"
+      ],
+      "location": {
+        "location": {
+          "name": "College",
+          "campusName": "City Campus",
+          "libraryName": "Datalogisk Institut",
+          "institutionName": "Københavns Universitet"
+        },
+        "permanentLocation": {
+          "name": "testValue2",
+          "campusName": "testValue2",
+          "libraryName": "testValue2",
+          "institutionName": "testValue2"
+        },
+        "temporaryLocation": {
+          "name": "testValue2",
+          "campusName": "testValue2",
+          "libraryName": "testValue2",
+          "institutionName": "testValue2"
+        }
+      },
+      "callNumber": {
+        "callNumber": "K1 .M44"
+      },
+      "accessionNumber": "accessionNumber2",
+      "barcode": "A14813848587",
+      "copyNumber": "copyNumber2",
+      "volume": "123",
+      "notes": [],
+      "displaySummary" : "Display summary",
+      "yearCaption": [],
+      "itemIdentifier": "itemIdentifier2",
+      "numberOfPieces": "123",
+      "descriptionOfPieces": "descriptionOfPieces2",
+      "numberOfMissingPieces": "2",
+      "missingPieces": "missingPieces2",
+      "materialType": "text",
+      "electronicAccess": [],
+      "statisticalCodes": [],
+      "permanentLoanType": "Can circulate"
+    }
+  ]
+}

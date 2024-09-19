@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.PieceCollection;
@@ -23,6 +24,9 @@ public class MockData {
 
   private static final String INSTANCE_JSON_PATH =
       "/mock-data/inventory-view/test_instance_with_holding_and_item.json";
+  private static final String INSTANCE_JSON_PATH_TEST_TENANT_0001 =
+      "/mock-data/inventory-view/test_instance_with_holding_and_item_test_tenant_0001.json";
+
 
   private static final String LOAN_JSON_PATH = "/mock-data/loan-storage/test_loan.json";
   private static final String EMPTY_LOANS_JSON_PATH = "/mock-data/loan-storage/empty_loans.json";
@@ -30,13 +34,21 @@ public class MockData {
       "/mock-data/circulation-requests/test_requests.json";
   public static final String EMPTY_PIECE_COLLECTION_JSON_PATH =
       "/mock-data/pieces/empty_piece_collection.json";
+  public static final String USERS_CENTRAL_TENANT_JSON_PATH =
+      "/mock-data/users/user_tenants.json";
+  public static final String USERS_TENANT_JSON_PATH =
+      "/mock-data/users/user_tenants_non_consortia.json";
+  public static final String HOLDINGS_FACET_JSON_PATH =
+      "/mock-data/search/holdings_facet.json";
   public static final String ORDER_PIECES_PATH = "/mock-data/pieces/piece_collection.json";
   private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE;
+  private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE_TEST_TENANT_0001;
   public static final String LOAN_DUE_DATE_FIELD_VALUE = "2017-01-19T12:42:21.000+0000";
 
   public static final String INSTANCE_ID = "76d5a72a-af24-4ac6-8e73-4e39604f6f59";
   public static final String INSTANCE_ITEM_ID_1 = "645549b1-2a73-4251-b8bb-39598f773a93";
   public static final String INSTANCE_ITEM_ID_2 = "4cebe27e-c9ba-4ce8-8148-fe4d4cb40538";
+
   public static final String HOLDING_ID_WITH_PIECES = "3c91f915-1f43-404f-87fa-6a01fbc5b81a";
   public static final String HOLDING_ID_WITHOUT_PIECES = "0005bb50-7c9b-48b0-86eb-178a494e25fe";
 
@@ -70,8 +82,12 @@ public class MockData {
   public static final String REQUESTS_JSON;
   public static final String EMPTY_LOANS_JSON;
   public static final String EMPTY_PIECE_COLLECTION_JSON;
+  public static final String USERS_CENTRAL_TENANT_JSON;
+  public static final String USERS_NON_CONSORTIA_TENANT_JSON;
+  public static final String HOLDINGS_FACET_JSON;
 
   public static final InventoryHoldingsAndItems INSTANCE_WITH_HOLDINGS_AND_ITEMS;
+  public static final InventoryHoldingsAndItems INSTANCE_WITH_HOLDINGS_AND_ITEMS_TEST_TENANT_0001;
   public static final InventoryHoldingsAndItems INSTANCE_WITHOUT_HOLDINGS_AND_ITEMS;
   public static final InventoryHoldingsAndItems INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS;
   public static final InventoryHoldingsAndItems INSTANCE_LOAN_STORAGE_ERROR;
@@ -88,6 +104,7 @@ public class MockData {
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_NO_ITEMS_AND_HOLDINGS;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_HOLDINGS_NO_ITEMS;
   public static final RtacRequest RTAC_REQUEST_MIXED_INSTANCES_WITH_ITEMS_AND_NO_ITEMS;
+  public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_IN_CONSORTIA;
 
   public static final RtacRequest RTAC_REQUEST_WITH_NOT_VALID_IDS;
 
@@ -101,12 +118,18 @@ public class MockData {
     EMPTY_LOANS_JSON = getJsonObjectFromFile(EMPTY_LOANS_JSON_PATH);
     REQUESTS_JSON = getJsonObjectFromFile(REQUESTS_JSON_PATH);
     EMPTY_PIECE_COLLECTION_JSON = getJsonObjectFromFile(EMPTY_PIECE_COLLECTION_JSON_PATH);
+    USERS_CENTRAL_TENANT_JSON = getJsonObjectFromFile(USERS_CENTRAL_TENANT_JSON_PATH);
+    USERS_NON_CONSORTIA_TENANT_JSON = getJsonObjectFromFile(USERS_TENANT_JSON_PATH);
+    HOLDINGS_FACET_JSON = getJsonObjectFromFile(HOLDINGS_FACET_JSON_PATH);
 
     // === inventory view responses ====
     INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE = getJsonObjectFromFile(INSTANCE_JSON_PATH);
+    INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE_TEST_TENANT_0001 = getJsonObjectFromFile(
+        INSTANCE_JSON_PATH_TEST_TENANT_0001);
 
     INSTANCE_WITH_HOLDINGS_NO_ITEMS =
-      stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+        stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+
     INSTANCE_WITH_HOLDINGS_NO_ITEMS.setInstanceId(INSTANCE_ID_HOLDINGS_NO_ITEMS);
     INSTANCE_WITH_HOLDINGS_NO_ITEMS.withModeOfIssuance("serial");
     INSTANCE_WITH_HOLDINGS_NO_ITEMS.setItems(Collections.emptyList());
@@ -119,6 +142,8 @@ public class MockData {
 
     INSTANCE_WITH_HOLDINGS_AND_ITEMS =
         stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
+    INSTANCE_WITH_HOLDINGS_AND_ITEMS_TEST_TENANT_0001 = stringToPojo(
+        INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE_TEST_TENANT_0001, InventoryHoldingsAndItems.class);
 
     INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS =
         stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class);
@@ -131,7 +156,7 @@ public class MockData {
 
     INSTANCE_NO_FULL_PERIODICALS =
         MockData.stringToPojo(
-            INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class)
+                INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class)
             .withModeOfIssuance("serial")
             .withInstanceId(INSTANCE_ID_NO_FULL_PERIODICALS);
 
@@ -149,7 +174,7 @@ public class MockData {
     // === Rtac requests ====
     RTAC_REQUEST_MIXED_INSTANCES_WITH_ITEMS_AND_NO_ITEMS =
         new RtacRequest().withInstanceIds(
-          Arrays.asList(INSTANCE_ID_HOLDINGS_NO_ITEMS, INSTANCE_ID_WITH_NO_LOANS_ITEM));
+            Arrays.asList(INSTANCE_ID_HOLDINGS_NO_ITEMS, INSTANCE_ID_WITH_NO_LOANS_ITEM));
     VALID_INSTANCE_IDS_RTAC_REQUEST =
         new RtacRequest().withInstanceIds(Collections.singletonList(INSTANCE_ID));
     RTAC_REQUEST_WITH_INSTANCE_NO_LOANS_ITEM =
@@ -168,6 +193,9 @@ public class MockData {
     RTAC_REQUEST_WITH_INSTANCE_HOLDINGS_NO_ITEMS =
         new RtacRequest()
             .withInstanceIds(Collections.singletonList(INSTANCE_ID_HOLDINGS_NO_ITEMS));
+    RTAC_REQUEST_WITH_INSTANCE_IN_CONSORTIA =
+        new RtacRequest()
+            .withInstanceIds(List.of(INSTANCE_ID));
     RTAC_REQUEST_WITH_NOT_VALID_IDS =
         new RtacRequest()
             .withInstanceIds(Collections.singletonList("qwe"));

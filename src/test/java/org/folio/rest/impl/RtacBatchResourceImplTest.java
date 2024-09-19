@@ -55,15 +55,19 @@ import org.junit.jupiter.params.provider.MethodSource;
 @ExtendWith(VertxExtension.class)
 @TestInstance(PER_CLASS)
 class RtacBatchResourceImplTest {
+
+  public static final String TEST_CENTRAL_TENANT_ID = "test_central_tenant";
+  public static final String TEST_TENANT_ID = "test_tenant";
+  public static final String TEST_TENANT_0001_ID = "test_tenant_0001";
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
   private static final String SERVER_ERROR = "Internal Server Error";
   private static final String RTAC_PATH = "/rtac-batch";
-  private static final String TEST_TENANT_ID = "test_tenant";
   private static final String TEST_USER_ID = "30fde4be-2d1a-4546-8d6c-b468caca2720";
   private static final Header okapiTenantHeader = new Header("X-Okapi-Tenant", TEST_TENANT_ID);
+  private static final Header okapiCentralTenantHeader = new Header("X-Okapi-Tenant",
+      TEST_CENTRAL_TENANT_ID);
   private static final Header okapiUrlHeader =
       new Header("X-Okapi-Url", "http://localhost:" + mockPort);
   private static final Header okapiUserHeader = new Header("X-Okapi-User-Id", TEST_USER_ID);
@@ -452,6 +456,31 @@ class RtacBatchResourceImplTest {
           assertFalse(rtacResponse.getHoldings().isEmpty());
           testContext.completeNow();
       });
+  }
+
+  @Test
+  void shouldProvideHoldingDataFromMemberTenantsWhenFolioIsInConsortia(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_IN_CONSORTIA);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          request.header(okapiCentralTenantHeader);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          assertEquals(4, rtacResponse.getHoldings().get(0).getHoldings().size());
+          testContext.completeNow();
+        });
   }
 
   private String pojoToJson(Object pojo) {
