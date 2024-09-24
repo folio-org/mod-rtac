@@ -34,12 +34,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.folio.HttpStatus;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.Request;
 import org.folio.rest.jaxrs.model.Requests;
-import org.folio.rtac.rest.exceptions.HttpException;
 
 class CirculationRequestClient extends FolioClient {
 
@@ -51,7 +49,7 @@ class CirculationRequestClient extends FolioClient {
   }
 
   public Future<List<InventoryHoldingsAndItems>> updateInstanceItemsWithRequestsCount(
-      List<InventoryHoldingsAndItems> inventoryInstances) {
+      List<InventoryHoldingsAndItems> inventoryInstances, String tenantId) {
 
     logger.info("Getting hold requests for instance items from circulation");
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
@@ -63,7 +61,7 @@ class CirculationRequestClient extends FolioClient {
 
     List<Future> futures =
         inventoryInstances.stream()
-        .map(this::processInstance)
+        .map(instance -> processInstance(instance, tenantId))
         .collect(Collectors.toCollection(ArrayList::new));
 
     CompositeFuture.all(futures)
@@ -74,7 +72,7 @@ class CirculationRequestClient extends FolioClient {
   }
 
   private Future<InventoryHoldingsAndItems> processInstance(
-      InventoryHoldingsAndItems inventoryInstance) {
+      InventoryHoldingsAndItems inventoryInstance, String tenantId) {
     var url = String.format("%s%s", okapiUrl, URI);
     var httpClientRequest = webClient.getAbs(url);
     httpClientRequest.putHeader(OKAPI_HEADER_TOKEN, okapiToken)
@@ -128,22 +126,14 @@ class CirculationRequestClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<Map<String, Long>> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (ar.failed()) {
-      promise.fail(
-          new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-    } else {
-      if (httpResponse.statusCode() != HttpStatus.HTTP_OK.toInt()) {
-        promise.fail(
-            new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-      } else {
-        final var buffer = httpResponse.bodyAsBuffer();
-        if (buffer == null) {
-          handleNullPointerException(promise);
-        }
-
-        parser.handle(buffer);
-        parser.end();
+    if (validateHttpStatusOk(ar, promise)) {
+      final var buffer = httpResponse.bodyAsBuffer();
+      if (buffer == null) {
+        handleNullPointerException(promise);
       }
+
+      parser.handle(buffer);
+      parser.end();
     }
   }
 
