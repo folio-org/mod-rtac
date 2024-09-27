@@ -24,14 +24,19 @@ public class MockData {
 
   private static final String INSTANCE_JSON_PATH =
       "/mock-data/inventory-view/test_instance_with_holding_and_item.json";
+
+  private static final String INSTANCE_FOR_HOLD_COUNT_JSON_PATH =
+      "/mock-data/inventory-view/test_instance_with_holding_and_item_for_holdcount.json";
+
   private static final String INSTANCE_JSON_PATH_TEST_TENANT_0001 =
       "/mock-data/inventory-view/test_instance_with_holding_and_item_test_tenant_0001.json";
-
 
   private static final String LOAN_JSON_PATH = "/mock-data/loan-storage/test_loan.json";
   private static final String EMPTY_LOANS_JSON_PATH = "/mock-data/loan-storage/empty_loans.json";
   public static final String REQUESTS_JSON_PATH =
       "/mock-data/circulation-requests/test_requests.json";
+  public static final String REQUESTS_HOLD_COUNT_JSON_PATH =
+      "/mock-data/circulation-requests/circulation_requests_holdcount.json";
   public static final String EMPTY_PIECE_COLLECTION_JSON_PATH =
       "/mock-data/pieces/empty_piece_collection.json";
   public static final String USERS_CENTRAL_TENANT_JSON_PATH =
@@ -41,6 +46,7 @@ public class MockData {
   public static final String HOLDINGS_FACET_JSON_PATH =
       "/mock-data/search/holdings_facet.json";
   public static final String ORDER_PIECES_PATH = "/mock-data/pieces/piece_collection.json";
+
   private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE;
   private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE_TEST_TENANT_0001;
   public static final String LOAN_DUE_DATE_FIELD_VALUE = "2017-01-19T12:42:21.000+0000";
@@ -80,6 +86,7 @@ public class MockData {
 
   public static final String LOAN_JSON;
   public static final String REQUESTS_JSON;
+  public static final String REQUESTS_HOLD_COUNT_JSON;
   public static final String EMPTY_LOANS_JSON;
   public static final String EMPTY_PIECE_COLLECTION_JSON;
   public static final String USERS_CENTRAL_TENANT_JSON;
@@ -117,10 +124,14 @@ public class MockData {
     LOAN_JSON = getJsonObjectFromFile(LOAN_JSON_PATH);
     EMPTY_LOANS_JSON = getJsonObjectFromFile(EMPTY_LOANS_JSON_PATH);
     REQUESTS_JSON = getJsonObjectFromFile(REQUESTS_JSON_PATH);
+
+    REQUESTS_HOLD_COUNT_JSON = getJsonObjectFromFile(REQUESTS_HOLD_COUNT_JSON_PATH);
+
     EMPTY_PIECE_COLLECTION_JSON = getJsonObjectFromFile(EMPTY_PIECE_COLLECTION_JSON_PATH);
     USERS_CENTRAL_TENANT_JSON = getJsonObjectFromFile(USERS_CENTRAL_TENANT_JSON_PATH);
     USERS_NON_CONSORTIA_TENANT_JSON = getJsonObjectFromFile(USERS_TENANT_JSON_PATH);
     HOLDINGS_FACET_JSON = getJsonObjectFromFile(HOLDINGS_FACET_JSON_PATH);
+
 
     // === inventory view responses ====
     INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE = getJsonObjectFromFile(INSTANCE_JSON_PATH);
@@ -236,6 +247,11 @@ public class MockData {
   public static InventoryHoldingsAndItemsAndPieces createInventoryHoldingsAndItemsAndPieces() {
     return new InventoryHoldingsAndItemsAndPieces(INSTANCE_WITH_HOLDINGS_AND_PIECES,
         PIECE_COLLECTION.getPieces());
+  }
+
+  public static InventoryHoldingsAndItems createInventoryHoldingsAndItemsForHoldCount() {
+    String json = getJsonObjectFromFile(INSTANCE_FOR_HOLD_COUNT_JSON_PATH);
+    return stringToPojo(json, InventoryHoldingsAndItems.class);
   }
 
   private static String getJsonObjectFromFile(String path) {

@@ -1,0 +1,97 @@
+{
+  "instanceId": "562f176a-f2ff-50ca-a441-62924bc7bf3f",
+  "source": "MARC",
+  "modeOfIssuance": "single unit",
+  "natureOfContent": [],
+  "holdings": [
+    {
+      "id": "7b68ecba-6d90-54d7-865f-f218e8eeef32",
+      "notes": [],
+      "location": {
+        "effectiveLocation": {
+          "id": "bbe20fd2-c7c9-49f4-be51-60fd3ce8677e",
+          "code": "CEGEN",
+          "name": "MU Ellis Library General Collection",
+          "campusName": "University of Missouri - Columbia",
+          "libraryCode": "CELLIS",
+          "libraryName": "Ellis Library",
+          "institutionName": "University of Missouri System"
+        },
+        "permanentLocation": {
+          "id": "bbe20fd2-c7c9-49f4-be51-60fd3ce8677e",
+          "code": "CEGEN",
+          "name": "MU Ellis Library General Collection",
+          "campusName": "University of Missouri - Columbia",
+          "libraryCode": "CELLIS",
+          "libraryName": "Ellis Library",
+          "institutionName": "University of Missouri System"
+        },
+        "temporaryLocation": {}
+      },
+      "formerIds": [
+        ".b49570535ceiii",
+        ".b49570535"
+      ],
+      "callNumber": {
+        "typeId": "95467209-6d7b-468b-94df-0f5d7ad2747d",
+        "typeName": "Library of Congress classification",
+        "callNumber": "NB1280 .R684 2002"
+      },
+      "holdingsType": "Monograph",
+      "electronicAccess": [],
+      "statisticalCodes": [],
+      "holdingsStatements": [],
+      "suppressFromDiscovery": false,
+      "holdingsStatementsForIndexes": [],
+      "holdingsStatementsForSupplements": []
+    }
+  ],
+  "items": [
+    {
+      "id": "3be8c001-3ff5-5f59-9507-8680a6572651",
+      "notes": [],
+      "status": "Available",
+      "barcode": "010-505915191",
+      "location": {
+        "location": {
+          "id": "bbe20fd2-c7c9-49f4-be51-60fd3ce8677e",
+          "code": "CEGEN",
+          "name": "MU Ellis Library General Collection",
+          "campusName": "University of Missouri - Columbia",
+          "libraryCode": "CELLIS",
+          "libraryName": "Ellis Library",
+          "institutionName": "University of Missouri System"
+        },
+        "permanentLocation": {
+          "id": "bbe20fd2-c7c9-49f4-be51-60fd3ce8677e",
+          "code": "CEGEN",
+          "name": "MU Ellis Library General Collection",
+          "campusName": "University of Missouri - Columbia",
+          "libraryCode": "CELLIS",
+          "libraryName": "Ellis Library",
+          "institutionName": "University of Missouri System"
+        },
+        "temporaryLocation": {}
+      },
+      "formerIds": [
+        "010-505915191"
+      ],
+      "callNumber": {
+        "typeId": "95467209-6d7b-468b-94df-0f5d7ad2747d",
+        "typeName": "Library of Congress classification",
+        "callNumber": "NB1280 .R684 2002"
+      },
+      "copyNumber": "1",
+      "yearCaption": [],
+      "materialType": "Book",
+      "itemIdentifier": ".i97949218",
+      "materialTypeId": "93c6e7ad-ba70-4628-858c-926ffe927a99",
+      "accessionNumber": "Y91519",
+      "electronicAccess": [],
+      "holdingsRecordId": "7b68ecba-6d90-54d7-865f-f218e8eeef32",
+      "statisticalCodes": [],
+      "permanentLoanType": "120 days",
+      "suppressFromDiscovery": false
+    }
+  ]
+}

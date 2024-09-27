@@ -623,7 +623,7 @@
     <url>https://github.com/folio-org/mod-rtac.git</url>
     <connection>scm:git:git://github.com/folio-org/mod-rtac.git</connection>
     <developerConnection>scm:git:git@github.com:folio-org/mod-rtac.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v3.6.0</tag>
   </scm>
   <ciManagement>
     <system>Jenkins</system>
