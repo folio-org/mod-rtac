@@ -25,8 +25,7 @@ import org.junit.jupiter.api.Test;
 
 public class CirculationRequestClientTests {
 
-  private final WireMockServer fakeWebServer =
-    new WireMockServer(Options.DYNAMIC_PORT);
+  private final WireMockServer fakeWebServer = new WireMockServer(Options.DYNAMIC_PORT);
 
   @BeforeEach
   @SneakyThrows
@@ -43,19 +42,23 @@ public class CirculationRequestClientTests {
   @Test
   @SneakyThrows
   public void holdCountCheck() {
-    fakeWebServer.stubFor(get(urlEqualTo(
-      "/circulation/requests?query=itemId%3D%3D%283be8c001-3ff5-5f59-9507-8680a6572651%29&limit=10000"))
-      .willReturn(aResponse()
-        .withStatus(200)
-        .withHeader("Content-Type", "application/json")
-        .withBody(MockData.REQUESTS_HOLD_COUNT_JSON)));
+    String circRequestUrl = "/circulation/requests?"
+        + "query=itemId%3D%3D%283be8c001-3ff5-5f59-9507-8680a6572651%29&limit=10000";
+    fakeWebServer.stubFor(
+        get(urlEqualTo(circRequestUrl))
+        .willReturn(aResponse()
+          .withStatus(200)
+          .withHeader("Content-Type", "application/json")
+          .withBody(MockData.REQUESTS_HOLD_COUNT_JSON)));
 
     var inventoryHoldingsAndItems = createInventoryHoldingsAndItemsForHoldCount();
     final var client = new CirculationRequestClient(Headers.toMap(fakeWebServer.baseUrl()),
-      WebClient.create(Vertx.vertx()));
-    final var futureResult = client.updateInstanceItemsWithRequestsCount(List.of(inventoryHoldingsAndItems));
-    final var updatedInstanceItems = futureResult.toCompletionStage()
-      .toCompletableFuture().get(5, SECONDS);
+        WebClient.create(Vertx.vertx()));
+    final var futureResult = client.updateInstanceItemsWithRequestsCount(
+        List.of(inventoryHoldingsAndItems)
+    );
+    final var updatedInstanceItems = futureResult
+        .toCompletionStage().toCompletableFuture().get(5, SECONDS);
     assertEquals(0, updatedInstanceItems.get(0).getItems().get(0).getTotalHoldRequests());
   }
 
