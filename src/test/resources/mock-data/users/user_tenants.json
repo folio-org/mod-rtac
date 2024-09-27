@@ -1,0 +1,13 @@
+{
+  "userTenants": [
+    {
+      "id": "81200455-2a10-40f6-b487-4c7115db52ac",
+      "userId": "30fde4be-2d1a-4546-8d6c-b468caca2720",
+      "username": "dummy_user",
+      "tenantId": "test_tenant",
+      "centralTenantId": "test_central_tenant",
+      "consortiumId": "1f06c60e-4431-432d-97a4-ca2bc6b152cb"
+    }
+  ],
+  "totalRecords": 1
+}

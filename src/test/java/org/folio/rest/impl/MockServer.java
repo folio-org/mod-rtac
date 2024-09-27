@@ -1,6 +1,9 @@
 package org.folio.rest.impl;
 
 import static java.lang.String.format;
+import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
+import static org.folio.rest.impl.RtacBatchResourceImplTest.TEST_TENANT_0001_ID;
+import static org.folio.rest.impl.RtacBatchResourceImplTest.TEST_TENANT_ID;
 
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.vertx.core.Vertx;
@@ -20,7 +23,9 @@ public class MockServer {
   private static final String LOANS_URI = "/loan-storage/loans";
   private static final String INVENTORY_VIEW_URI = "/inventory-hierarchy/items-and-holdings";
   private static final String CIRCULATION_REQUESTS_URI = "/circulation/requests";
-
+  private static final String ORDERS_PIECES_URI = "/orders/pieces";
+  private static final String USER_TENANTS_URI = "/user-tenants";
+  private static final String HOLDINGS_FACET_URI = "/search/instances/facets";
   private static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 
   private final int port;
@@ -49,12 +54,16 @@ public class MockServer {
     router.post(INVENTORY_VIEW_URI).handler(this::handleInventoryViewResponse);
     router.get(LOANS_URI).handler(this::handleLoansResponse);
     router.get(CIRCULATION_REQUESTS_URI).handler(this::handleHoldRequestsResponse);
+    router.get(ORDERS_PIECES_URI).handler(this::handleOrderPiecesResponse);
+    router.get(USER_TENANTS_URI).handler(this::handleUserTenantsResponse);
+    router.get(HOLDINGS_FACET_URI).handler(this::handleHoldingsFacetResponse);
     return router;
   }
 
   private void handleInventoryViewResponse(RoutingContext routingContext) {
     JsonObject jsonObject = routingContext.getBody().toJsonObject();
     JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
+    var tenant = routingContext.request().getHeader(OKAPI_HEADER_TENANT);
     var first = jsonArray.getString(0);
 
     if (first.equals(MockData.UUID_400)) {
@@ -72,9 +81,13 @@ public class MockServer {
           MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS)
           + MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_NO_ITEMS);
       successResponse(routingContext, multipleResponse);
-    } else if (jsonArray.contains(MockData.INSTANCE_ID)) {
+    } else if (jsonArray.contains(MockData.INSTANCE_ID) && tenant.equals(TEST_TENANT_ID)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID) && tenant.equals(TEST_TENANT_0001_ID)) {
+      successResponse(
+          routingContext,
+          MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_ITEMS_TEST_TENANT_0001));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_WITH_NO_LOANS_ITEM)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_WHICH_HAS_NOT_LOANS));
@@ -90,6 +103,12 @@ public class MockServer {
     } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_NO_ITEMS)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_NO_ITEMS));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_AND_PIECES)) {
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_PIECES));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_AND_NO_PIECES)) {
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_NO_PIECES));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_NOT_EXISTS)) {
       successResponse(routingContext, "");
     } else {
@@ -103,7 +122,7 @@ public class MockServer {
   private void handleLoansResponse(RoutingContext routingContext) {
     HttpServerRequest request = routingContext.request();
     String query = request.getParam("query");
-    if (query.contains(MockData.INSTANCE_ITEM_ID)) {
+    if (query.contains(MockData.INSTANCE_ITEM_ID_1)) {
       successResponse(routingContext, MockData.LOAN_JSON);
     } else if (query.contains(MockData.ITEM_WITHOUT_LOAN_ID)) {
       successResponse(routingContext, MockData.EMPTY_LOANS_JSON);
@@ -118,11 +137,46 @@ public class MockServer {
   private void handleHoldRequestsResponse(RoutingContext routingContext) {
     HttpServerRequest request = routingContext.request();
     String query = request.getParam("query");
-    if (query.contains(MockData.INSTANCE_ITEM_ID)) {
+    if (query.contains(MockData.INSTANCE_ITEM_ID_1)) {
       successResponse(routingContext, MockData.REQUESTS_JSON);
     } else {
       failureResponse(
           routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for request");
+    }
+  }
+
+  private void handleOrderPiecesResponse(RoutingContext routingContext) {
+    HttpServerRequest request = routingContext.request();
+    String query = request.getParam("query");
+    String pieceCollectionResponse = MockData.pojoToJson(MockData.PIECE_COLLECTION);
+    if (query.contains(MockData.HOLDING_ID_WITH_PIECES)) {
+      successResponse(routingContext, pieceCollectionResponse);
+    } else if (query.contains(MockData.HOLDING_ID_WITHOUT_PIECES)) {
+      successResponse(routingContext, MockData.EMPTY_PIECE_COLLECTION_JSON);
+    } else {
+      failureResponse(
+          routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for pieces");
+    }
+  }
+
+  private void handleUserTenantsResponse(RoutingContext routingContext) {
+    HttpServerRequest request = routingContext.request();
+    String tenant = request.getHeader(OKAPI_HEADER_TENANT);
+    if (tenant.equals(RtacBatchResourceImplTest.TEST_CENTRAL_TENANT_ID)) {
+      successResponse(routingContext, MockData.USERS_CENTRAL_TENANT_JSON);
+    } else {
+      successResponse(routingContext, MockData.USERS_NON_CONSORTIA_TENANT_JSON);
+    }
+  }
+
+  private void handleHoldingsFacetResponse(RoutingContext routingContext) {
+    HttpServerRequest request = routingContext.request();
+    String tenant = request.getHeader(OKAPI_HEADER_TENANT);
+    if (tenant.equals(RtacBatchResourceImplTest.TEST_CENTRAL_TENANT_ID)) {
+      successResponse(routingContext, MockData.HOLDINGS_FACET_JSON);
+    } else {
+      failureResponse(
+          routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for pieces");
     }
   }
 

@@ -41,7 +41,7 @@ class CirculationClient extends FolioClient {
   }
 
   Future<List<InventoryHoldingsAndItems>> updateInstanceItemsWithLoansDueDate(
-      List<InventoryHoldingsAndItems> inventoryInstances) {
+      List<InventoryHoldingsAndItems> inventoryInstances, String tenantId) {
 
     logger.info("Getting loans for instance items from circulation");
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
@@ -51,7 +51,7 @@ class CirculationClient extends FolioClient {
       return promise.future();
     }
 
-    final var httpClientRequest = buildRequest();
+    final var httpClientRequest = buildRequest(tenantId);
     List<Future> futures =
         inventoryInstances.stream()
             .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
@@ -130,7 +130,7 @@ class CirculationClient extends FolioClient {
     return promise.future();
   }
 
-  private HttpRequest<Buffer> buildRequest() {
+  private HttpRequest<Buffer> buildRequest(String tenantId) {
     var url = String.format("%s%s", okapiUrl, URI);
     logger.info("Sending request to {}", url);
 

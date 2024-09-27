@@ -30,7 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class InventoryClientTests {
-  private final WireMockServer fakeWebServer = 
+  private final WireMockServer fakeWebServer =
       new WireMockServer(Options.DYNAMIC_PORT);
 
   @BeforeEach
@@ -57,7 +57,7 @@ public class InventoryClientTests {
     final var client = new InventoryClient(Headers.toMap(fakeWebServer.baseUrl()),
         WebClient.create(Vertx.vertx()));
 
-    final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId));
+    final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId), Headers.tenantId);
 
     final var itemsAndHoldings = futureResult.toCompletionStage()
         .toCompletableFuture().get(1, SECONDS);
@@ -80,7 +80,7 @@ public class InventoryClientTests {
     final var client = new InventoryClient(Headers.toMap(fakeWebServer.baseUrl()),
         WebClient.create(Vertx.vertx()));
 
-    final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId));
+    final var futureResult = client.getItemAndHoldingInfo(List.of(instanceId), Headers.tenantId);
 
     final var itemsAndHoldings = futureResult.toCompletionStage()
         .toCompletableFuture().get(1, SECONDS);

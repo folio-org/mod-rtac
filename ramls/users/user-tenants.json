@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Response schema for user tenants",
+  "type": "object",
+  "properties": {
+    "userTenants": {
+      "description": "User tenant affiliations",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {
+            "description": "user UUID",
+            "type": "string"
+          },
+          "username": {
+            "description": "username",
+            "type": "string"
+          },
+          "tenantId": {
+            "description": "tenant id of user tenant affiliation",
+            "type": "string"
+          },
+          "centralTenantId": {
+            "description": "central tenant id",
+            "type": "string"
+          },
+          "consortiumId": {
+            "description": "id of consortium from mod-consortia",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "totalRecords": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "userTenants",
+    "totalRecords"
+  ],
+  "additionalProperties": false
+}

@@ -1,4 +1,3 @@
-
 ## 3.6.1 2024-09-27
 
 * Do not include closed and cancelled hold in the hold count [MODRTAC-112](https://folio-org.atlassian.net/browse/MODRTAC-112)

@@ -27,6 +27,7 @@ import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rtac.rest.exceptions.HttpException;
 
 class InventoryClient extends FolioClient {
+
   private static final Logger logger = LogManager.getLogger();
 
   private static final String VIEW_URI = "/inventory-hierarchy/items-and-holdings";
@@ -35,14 +36,15 @@ class InventoryClient extends FolioClient {
     super(okapiHeaders, webClient);
   }
 
-  Future<List<InventoryHoldingsAndItems>> getItemAndHoldingInfo(List<String> instanceIds) {
+  Future<List<InventoryHoldingsAndItems>> getItemAndHoldingInfo(List<String> instanceIds,
+      String tenantId) {
     logger.info("Getting item and holding information from inventory");
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
 
     if (CollectionUtils.isEmpty(instanceIds)) {
       promise.fail(
           new HttpException(HttpStatus.HTTP_NOT_FOUND.toInt(),
-            "Could not find inventory instances"));
+              "Could not find inventory instances"));
       return promise.future();
     }
 

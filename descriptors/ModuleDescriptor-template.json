@@ -13,7 +13,8 @@
           "modulePermissions": [
             "circulation-storage.loans.collection.get",
             "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post",
-            "circulation.requests.collection.get"
+            "circulation.requests.collection.get",
+            "orders.pieces.collection.get"
           ]
         }
       ]
@@ -29,7 +30,10 @@
           "modulePermissions": [
             "circulation-storage.loans.collection.get",
             "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post",
-            "circulation.requests.collection.get"
+            "circulation.requests.collection.get",
+            "orders.pieces.collection.get",
+            "user-tenants.collection.get",
+            "search.facets.collection.get"
           ]
         }
       ]
@@ -47,6 +51,18 @@
     {
       "id": "circulation",
       "version": "13.1 14.2"
+    },
+    {
+      "id": "pieces",
+      "version": "3.0"
+    },
+    {
+      "id": "user-tenants",
+      "version": "1.0"
+    },
+    {
+      "id": "search",
+      "version": "1.3"
     }
   ],
   "permissionSets": [

@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
@@ -36,35 +37,55 @@ public class FolioToRtacMapper {
   /**
    * RTac mapper class.
    *
-   * @param instance items and holdings
+   * @param instanceAndPieces items, holdings and pieces
    * @return RTac holdings
    */
-  public RtacHoldings mapToRtac(InventoryHoldingsAndItems instance) {
-    final var rtacHoldings = new RtacHoldings();
+  public RtacHoldings mapToRtac(InventoryHoldingsAndItemsAndPieces instanceAndPieces) {
     final var nested = new ArrayList<RtacHolding>();
     logger.info("Rtac handling periodicals: {}", fullPeriodicals);
+    final var instance = instanceAndPieces.getInventoryHoldingsAndItems();
     final var periodical = isPeriodical(instance);
+    final var rtacHoldings = new RtacHoldings().withInstanceId(instance.getInstanceId());
 
     if (instance.getItems().isEmpty() && instance.getHoldings().isEmpty()) {
       logger.info("{} has no items or holdings, skipping item/holdings mapping",
           instance.getInstanceId());
-      return rtacHoldings.withInstanceId(instance.getInstanceId());
     } else if (instance.getItems().isEmpty() && !instance.getHoldings().isEmpty()) {
       logger.info("{} has no items, mapping holdings data.", instance.getInstanceId());
       instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
-      return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+      rtacHoldings.withHoldings(nested);
     } else if (!periodical || fullPeriodicals) {
       logger.info("{} is a periodical with full item data requested,",
           instance.getInstanceId());
       logger.info("or a non-periodical. Mapping all holdings and item data.");
       convertItemToRtacHolding(instance, nested);
-      return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+      rtacHoldings.withHoldings(nested);
     } else {
       logger.info("{} is a periodical with full item data not requested,",
           instance.getInstanceId());
       instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
-      return rtacHoldings.withInstanceId(instance.getInstanceId()).withHoldings(nested);
+      rtacHoldings.withHoldings(nested);
     }
+
+    convertPieceToRtacHolding(instanceAndPieces, nested);
+    return rtacHoldings;
+  }
+
+  private void convertPieceToRtacHolding(InventoryHoldingsAndItemsAndPieces instanceAndPieces,
+      List<RtacHolding> nested) {
+
+    var instance = instanceAndPieces.getInventoryHoldingsAndItems();
+    var holdingsMap = instance.getHoldings().stream()
+        .collect(Collectors.toMap(Holding::getId, Function.identity()));
+
+    instanceAndPieces.getPieces().stream().map(piece -> {
+      var holding = holdingsMap.get(piece.getHoldingId());
+      var rtacHolding = fromHoldingToRtacHolding.apply(holding);
+      var receivingStatus = piece.getReceivingStatus().value();
+      rtacHolding.withStatus(receivingStatus);
+
+      return rtacHolding;
+    }).forEach(nested::add);
   }
 
   private void convertItemToRtacHolding(InventoryHoldingsAndItems instance,
