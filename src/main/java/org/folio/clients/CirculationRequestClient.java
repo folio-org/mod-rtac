@@ -164,20 +164,16 @@ class CirculationRequestClient extends FolioClient {
         }
         Map<String, Long> requestMap = requestsResp.getRequests()
             .stream()
-            .filter(this::removeClosedCancelledRequests)
+            .filter(this::isOpenStatus)
             .collect(groupingBy(Request::getItemId, counting()));
         promise.complete(requestMap);
       });
   }
 
-  private boolean removeClosedCancelledRequests(Request itemRequest) {
-    try {
-      EnumSet<Request.Status> openStatuses = EnumSet.of(
-          OPEN_NOT_YET_FILLED, OPEN_AWAITING_PICKUP, OPEN_IN_TRANSIT, OPEN_AWAITING_DELIVERY);
-      return openStatuses.contains(itemRequest.getStatus());
-    } catch (Exception e) {
-      return false;
-    }
+  private boolean isOpenStatus(Request itemRequest) {
+    EnumSet<Request.Status> openStatuses = EnumSet.of(
+      OPEN_NOT_YET_FILLED, OPEN_AWAITING_PICKUP, OPEN_IN_TRANSIT, OPEN_AWAITING_DELIVERY);
+    return openStatuses.contains(itemRequest.getStatus());
   }
 
   private void logError(Throwable err) {
