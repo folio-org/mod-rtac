@@ -1,3 +1,8 @@
+
+## 3.6.1 2024-09-27
+
+* Do not include closed and cancelled hold in the hold count [MODRTAC-112](https://folio-org.atlassian.net/browse/MODRTAC-112)
+
 ## 3.6.0 2024-03-20
 
 * Upgrade mod-rtac to RMB 35.2.0, Vert.x 4.5.4 [MODRTAC-109](https://folio-org.atlassian.net/browse/MODRTAC-109)
