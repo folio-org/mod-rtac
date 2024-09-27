@@ -20,7 +20,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CirculationRequestClientTests {
+class CirculationRequestClientTests {
 
   private final WireMockServer fakeWebServer = new WireMockServer(Options.DYNAMIC_PORT);
 
