@@ -172,7 +172,7 @@ class CirculationRequestClient extends FolioClient {
 
   private boolean isOpenStatus(Request itemRequest) {
     EnumSet<Request.Status> openStatuses = EnumSet.of(
-      OPEN_NOT_YET_FILLED, OPEN_AWAITING_PICKUP, OPEN_IN_TRANSIT, OPEN_AWAITING_DELIVERY);
+        OPEN_NOT_YET_FILLED, OPEN_AWAITING_PICKUP, OPEN_IN_TRANSIT, OPEN_AWAITING_DELIVERY);
     return openStatuses.contains(itemRequest.getStatus());
   }
 
