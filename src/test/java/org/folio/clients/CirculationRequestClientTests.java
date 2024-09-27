@@ -1,11 +1,9 @@
 package org.folio.clients;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.folio.rest.impl.MockData.createInventoryHoldingsAndItems;
 import static org.folio.rest.impl.MockData.createInventoryHoldingsAndItemsForHoldCount;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -18,7 +16,6 @@ import java.util.Map;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.folio.rest.impl.MockData;
-import org.folio.rtac.utils.Utils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +38,7 @@ public class CirculationRequestClientTests {
 
   @Test
   @SneakyThrows
-  public void holdCountCheck() {
+  void holdCountCheck() {
     String circRequestUrl = "/circulation/requests?"
         + "query=itemId%3D%3D%283be8c001-3ff5-5f59-9507-8680a6572651%29&limit=10000";
     fakeWebServer.stubFor(
@@ -64,15 +61,15 @@ public class CirculationRequestClientTests {
 
   private static class Headers {
 
-    private static final String tenantId = "test-tenant";
+    private static final String TENANT_ID = "test-tenant";
     // Cannot be a representative token because it fails checkstyle
-    private static final String token = "fake-token";
+    private static final String TOKEN = "fake-token";
 
     static Map<String, String> toMap(String okapiUrl) {
       return new CaseInsensitiveMap<>(Map.of(
         "X-Okapi-Url", okapiUrl,
-        "x-okapi-tenant", Headers.tenantId,
-        "x-okapi-token", Headers.token));
+        "x-okapi-tenant", Headers.TENANT_ID,
+        "x-okapi-token", Headers.TOKEN));
     }
   }
 }
