@@ -19,7 +19,8 @@
     <http.port>8081</http.port>
     <ramlfiles_path>${basedir}/ramls</ramlfiles_path>
     <ramlfiles_util_path>${ramlfiles_path}/raml-util</ramlfiles_util_path>
-    <raml-module-builder.version>35.2.0</raml-module-builder.version> <!-- also update vertx.version -->
+    <raml-module-builder.version>35.3.0</raml-module-builder.version> <!-- also update vertx.version -->
+    <vertx.version>4.5.10</vertx.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <folio-module-descriptor-validator.version>1.0.0</folio-module-descriptor-validator.version>
   </properties>
@@ -59,7 +60,7 @@
       <dependency>
         <groupId>io.vertx</groupId>
         <artifactId>vertx-stack-depchain</artifactId>
-        <version>4.5.4</version>
+        <version>${vertx.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
