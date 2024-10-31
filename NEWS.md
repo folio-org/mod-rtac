@@ -1,3 +1,10 @@
+## 3.7.0 2024-10-31
+
+* Add mod-orders peices status to RTAC table [MODRTAC-113](https://folio-org.atlassian.net/browse/MODRTAC-113)
+* Better handle hold counts [MODRTAC-112](https://folio-org.atlassian.net/browse/MODRTAC-112)
+* Update Vert.x to v4.5.10 version and RMB dependency to v35.3.0 [MODRTAC-115](https://folio-org.atlassian.net/browse/MODRTAC-115)
+* Add support for ECS [MODRTAC-116](https://folio-org.atlassian.net/browse/MODRTAC-116)
+
 ## 3.6.0 2024-03-20
 
 * Upgrade mod-rtac to RMB 35.2.0, Vert.x 4.5.4 [MODRTAC-109](https://folio-org.atlassian.net/browse/MODRTAC-109)
