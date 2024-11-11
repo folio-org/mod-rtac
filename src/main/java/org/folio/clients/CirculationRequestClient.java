@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
+import static org.folio.rest.RestVerticle.OKAPI_REQUESTID_HEADER;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -74,6 +75,7 @@ class CirculationRequestClient extends FolioClient {
     var httpClientRequest = webClient.getAbs(url);
     httpClientRequest.putHeader(OKAPI_HEADER_TOKEN, okapiToken)
       .putHeader(OKAPI_HEADER_TENANT, tenantId)
+      .putHeader(OKAPI_REQUESTID_HEADER, requestId)
       .putHeader(ACCEPT, APPLICATION_JSON)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
     Promise<InventoryHoldingsAndItems> promise = Promise.promise();

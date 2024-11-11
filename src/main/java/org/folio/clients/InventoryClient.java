@@ -6,6 +6,7 @@ import static jakarta.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
+import static org.folio.rest.RestVerticle.OKAPI_REQUESTID_HEADER;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
@@ -51,6 +52,7 @@ class InventoryClient extends FolioClient {
     request.putHeader(OKAPI_HEADER_TOKEN, okapiToken)
         .putHeader(OKAPI_HEADER_TENANT, tenantId)
         .putHeader(ACCEPT, APPLICATION_JSON)
+        .putHeader(OKAPI_REQUESTID_HEADER, requestId)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
 
     final var instances = new ArrayList<InventoryHoldingsAndItems>();
