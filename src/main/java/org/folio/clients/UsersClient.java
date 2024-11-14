@@ -5,6 +5,8 @@ import static jakarta.ws.rs.core.HttpHeaders.CONTENT_TYPE;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
+import static org.folio.rest.RestVerticle.OKAPI_REQUESTID_HEADER;
+import static org.folio.rest.RestVerticle.OKAPI_USERID_HEADER;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
@@ -36,6 +38,8 @@ public class UsersClient extends FolioClient {
     httpClientRequest
         .putHeader(OKAPI_HEADER_TOKEN, okapiToken)
         .putHeader(OKAPI_HEADER_TENANT, tenantId)
+        .putHeader(OKAPI_REQUESTID_HEADER, requestId)
+        .putHeader(OKAPI_USERID_HEADER, userId)
         .putHeader(ACCEPT, APPLICATION_JSON)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
 
