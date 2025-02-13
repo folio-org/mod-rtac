@@ -101,7 +101,6 @@ public class FolioFacade {
             notFoundInstances.remove(instance.getInstanceId());
             if (CollectionUtils.isEmpty(instance.getHoldings())) {
               notFoundHoldings.add(instance.getInstanceId());
-              continue;
             }
             var rtacHoldings = folioToRtacMapper.mapToRtac(instanceAndPieces);
             rtacHoldingsList.add(rtacHoldings);
@@ -256,7 +255,7 @@ public class FolioFacade {
       return promise.future();
     }
     var searchFutures = instanceIds.stream()
-        .map(id -> searchTenantsForInstance(id))
+        .map(this::searchTenantsForInstance)
         .toList();
     Future.all(searchFutures).onComplete(ar -> {
       if (ar.failed()) {
