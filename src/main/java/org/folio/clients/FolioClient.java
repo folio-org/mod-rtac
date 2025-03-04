@@ -1,6 +1,8 @@
 package org.folio.clients;
 
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
+import static org.folio.rest.RestVerticle.OKAPI_REQUESTID_HEADER;
+import static org.folio.rest.RestVerticle.OKAPI_USERID_HEADER;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Promise;
@@ -19,11 +21,15 @@ abstract class FolioClient {
 
   protected final String okapiUrl;
   protected final String okapiToken;
+  protected final String userId;
+  protected final String requestId;
   protected final WebClient webClient;
 
   FolioClient(Map<String, String> okapiHeaders, WebClient webClient) {
     this.okapiUrl = okapiHeaders.getOrDefault("X-Okapi-Url", "");
     this.okapiToken = okapiHeaders.getOrDefault(OKAPI_HEADER_TOKEN, "");
+    this.userId = okapiHeaders.getOrDefault(OKAPI_USERID_HEADER, "");
+    this.requestId = okapiHeaders.getOrDefault(OKAPI_REQUESTID_HEADER, "");
     this.webClient = webClient;
   }
 
