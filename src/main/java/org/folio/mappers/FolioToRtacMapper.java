@@ -13,6 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
@@ -21,6 +22,7 @@ import org.folio.rest.jaxrs.model.LegacyHolding;
 import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.Library;
 import org.folio.rest.jaxrs.model.MaterialType;
+import org.folio.rest.jaxrs.model.Piece;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 
@@ -83,7 +85,7 @@ public class FolioToRtacMapper {
       var rtacHolding = fromHoldingToRtacHolding.apply(holding);
       var receivingStatus = piece.getReceivingStatus().value();
       rtacHolding.withStatus(receivingStatus);
-
+      rtacHolding.withVolume(mapVolume(piece));
       return rtacHolding;
     }).forEach(nested::add);
   }
@@ -326,5 +328,40 @@ public class FolioToRtacMapper {
     }
 
     return defaultIfEmpty(sj.toString(), null);
+  }
+
+  /**
+   * Generating rules.
+   * <p/>
+   * The rules for generating "volume" are as follows:
+   * |data set                     |"volume"                    |
+   * |-----------------------------|----------------------------|
+   * |displaySummary               |(displaySummary)            |
+   * |enumeration                  |(enumeration)               |
+   * |enumeration chronology       |(enumeration chronology)    |
+   * |chronology                   |(chronology)                |
+   *
+   * @param piece - folio order piece
+   */
+
+  private String mapVolume(Piece piece) {
+    final String enumeration = piece.getEnumeration();
+    final String chronology = piece.getChronology();
+    final String displaySummary = piece.getDisplaySummary();
+
+    final StringJoiner sj = new StringJoiner(" ", "(", ")").setEmptyValue("");
+
+    if (isNotBlank(displaySummary)) {
+      sj.add(displaySummary);
+    } else if (isNotBlank(enumeration)) {
+      sj.add(enumeration);
+      if (isNotBlank(chronology)) {
+        sj.add(chronology);
+      }
+    } else if (isNotBlank(chronology)) {
+      sj.add(chronology);
+    }
+
+    return defaultIfEmpty(sj.toString(), Strings.EMPTY);
   }
 }
