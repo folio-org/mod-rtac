@@ -1,3 +1,8 @@
+## 3.8.0 2025-03-14
+
+* Update to mod-rtac Java 21 [MODRTAC-120](https://folio-org.atlassian.net/browse/MODRTAC-120)
+* Update rtac holdings response [MODRTAC-119](https://folio-org.atlassian.net/browse/MODRTAC-119)
+
 ## 3.7.0 2024-10-31
 
 * Add mod-orders peices status to RTAC table [MODRTAC-113](https://folio-org.atlassian.net/browse/MODRTAC-113)
