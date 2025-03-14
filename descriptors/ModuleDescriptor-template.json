@@ -46,11 +46,11 @@
     },
     {
       "id": "loan-storage",
-      "version": "6.0 7.0 7.1 7.3"
+      "version": "7.1 7.3"
     },
     {
       "id": "circulation",
-      "version": "13.1 14.2 14.6"
+      "version": "14.2 14.6"
     },
     {
       "id": "pieces",
