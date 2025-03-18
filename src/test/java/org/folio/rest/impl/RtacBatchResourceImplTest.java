@@ -32,9 +32,7 @@ import io.vertx.junit5.VertxTestContext;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.TimeZone;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 import org.folio.HttpStatus;
 import org.folio.rest.RestVerticle;
@@ -235,6 +233,12 @@ class RtacBatchResourceImplTest {
           assertThat(holdings, hasItem(anyOf(
               hasProperty("status", equalTo("Expected")),
               hasProperty("status", equalTo("Received"))
+          )));
+          assertThat(holdings, hasItem(anyOf(
+              hasProperty("volume", equalTo("(212)")),
+              hasProperty("volume", equalTo("(v.101:no.3) (testChronology2)")),
+              hasProperty("volume", equalTo("(testChronology3)")),
+              hasProperty("volume", equalTo(""))
           )));
           testContext.completeNow();
         });
