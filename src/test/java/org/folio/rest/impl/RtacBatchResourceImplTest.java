@@ -240,6 +240,10 @@ class RtacBatchResourceImplTest {
               hasProperty("volume", equalTo("(testChronology3)")),
               hasProperty("volume", equalTo(""))
           )));
+          assertThat(holdings, hasItem(anyOf(
+              hasProperty("holdingsCopyNumber", equalTo("1")),
+              hasProperty("holdingsCopyNumber", equalTo("test copy number"))
+          )));
           testContext.completeNow();
         });
   }
