@@ -86,6 +86,7 @@ public class FolioToRtacMapper {
       var receivingStatus = piece.getReceivingStatus().value();
       rtacHolding.withStatus(receivingStatus);
       rtacHolding.withVolume(mapVolume(piece));
+      rtacHolding.withHoldingsCopyNumber(piece.getCopyNumber());
       return rtacHolding;
     }).forEach(nested::add);
   }
