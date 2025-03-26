@@ -40,6 +40,7 @@ import org.folio.rest.jaxrs.model.Error;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.Item;
 import org.folio.rest.jaxrs.model.RtacHolding;
+import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
 import org.folio.rest.jaxrs.model.RtacRequest;
 import org.folio.rest.tools.utils.NetworkUtils;
@@ -233,6 +234,16 @@ class RtacBatchResourceImplTest {
               hasProperty("status", equalTo("Expected")),
               hasProperty("status", equalTo("Received"))
           )));
+          assertThat(holdings, hasItem(anyOf(
+              hasProperty("volume", equalTo("(212)")),
+              hasProperty("volume", equalTo("(v.101:no.3) (testChronology2)")),
+              hasProperty("volume", equalTo("(testChronology3)")),
+              hasProperty("volume", equalTo(""))
+          )));
+          assertThat(holdings, hasItem(anyOf(
+              hasProperty("holdingsCopyNumber", equalTo("1")),
+              hasProperty("holdingsCopyNumber", equalTo("test copy number"))
+          )));
           testContext.completeNow();
         });
   }
@@ -373,10 +384,49 @@ class RtacBatchResourceImplTest {
                   .body()
                   .asString();
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
-          assertTrue(rtacResponse.getHoldings().isEmpty());
+          assertTrue(rtacResponse.getHoldings().get(0).getHoldings().isEmpty());
+          assertEquals("4ed2a3b3-2fb4-414c-aa6f-a265685ca5a6",
+              rtacResponse.getHoldings().get(0).getInstanceId());
           Error error = rtacResponse.getErrors().get(0);
           String msg = "Holdings not found for instance 4ed2a3b3-2fb4-414c-aa6f-a265685ca5a6";
           assertEquals(error.getMessage(), msg);
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldRetrunResponseAndAttachError_whenInstanceWithItemsAndInstanceHasNoHoldings(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson =
+              pojoToJson(MockData.RTAC_REQUEST_MIXED_INSTANCES_WITH_ITEMS_AND_NO_HOLDINGS);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          assertEquals(2, rtacResponse.getHoldings().size());
+          RtacHoldings rtacHoldingWithoutHoldings = rtacResponse.getHoldings().stream()
+              .filter(rtacHolding ->
+                  rtacHolding.getInstanceId().equals("4ed2a3b3-2fb4-414c-aa6f-a265685ca5a6"))
+              .findFirst().get();
+          assertTrue(rtacHoldingWithoutHoldings.getHoldings().isEmpty());
+          Error error = rtacResponse.getErrors().get(0);
+          String msg = "Holdings not found for instance 4ed2a3b3-2fb4-414c-aa6f-a265685ca5a6";
+          assertEquals(error.getMessage(), msg);
+          RtacHoldings rtacHoldingWithHoldings = rtacResponse.getHoldings().stream()
+              .filter(rtacHolding ->
+                  rtacHolding.getInstanceId().equals("76d5a72a-af24-4ac6-8e73-4e39604f6f59"))
+              .findFirst().get();
+          assertFalse(rtacHoldingWithHoldings.getHoldings().isEmpty());
           testContext.completeNow();
         });
   }
