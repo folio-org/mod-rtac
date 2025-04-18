@@ -1,0 +1,14 @@
+{
+  "facets": {
+    "holdings.tenantId": {
+      "values": [
+        {
+          "id": "test_tenant",
+          "totalRecords": 1
+        }
+      ],
+      "totalRecords": 1
+    }
+  },
+  "totalRecords": 1
+}
