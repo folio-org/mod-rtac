@@ -44,6 +44,7 @@ public class FolioFacade {
   private final UsersClient usersClient;
   private final SearchClient searchClient;
   private final ErrorMapper errorMapper = new ErrorMapper();
+  private String centralTenantId;
 
   /**
    * Default constructor.
@@ -180,7 +181,8 @@ public class FolioFacade {
             itemAndHoldings -> requestClient.updateInstanceItemsWithRequestsCount(
                 itemAndHoldings,
                 tenantId))
-        .compose(itemAndHoldings -> pieceClient.getPieces(itemAndHoldings, tenantId));
+        .compose(
+            itemAndHoldings -> pieceClient.getPieces(itemAndHoldings, tenantId, centralTenantId));
   }
 
   private List<InventoryHoldingsAndItemsAndPieces> mergeTenantData(
@@ -201,6 +203,7 @@ public class FolioFacade {
         });
     return instanceHoldingsMap.values().stream().toList();
   }
+
 
   private void mergeInventoryHoldings(InventoryHoldingsAndItemsAndPieces inventory1,
       InventoryHoldingsAndItemsAndPieces inventory2) {
@@ -237,8 +240,9 @@ public class FolioFacade {
       }
       var userTenants = ar.result();
       if (userTenants.getTotalRecords() > 0
-          && userTenants.getUserTenants().get(0).getCentralTenantId().equals(tenantId)) {
-        promise.complete(true);
+          && userTenants.getUserTenants().get(0).getCentralTenantId() != null) {
+        centralTenantId = userTenants.getUserTenants().get(0).getCentralTenantId();
+        promise.complete(userTenants.getUserTenants().get(0).getCentralTenantId().equals(tenantId));
       } else {
         promise.complete(false);
       }

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -29,7 +30,6 @@ import org.apache.logging.log4j.Logger;
 import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
-import org.folio.rest.jaxrs.model.Piece;
 import org.folio.rest.jaxrs.model.PieceCollection;
 
 public class PieceClient extends FolioClient {
@@ -41,7 +41,7 @@ public class PieceClient extends FolioClient {
   }
 
   Future<List<InventoryHoldingsAndItemsAndPieces>> getPieces(
-      List<InventoryHoldingsAndItems> inventoryInstances, String tenantId) {
+      List<InventoryHoldingsAndItems> inventoryInstances, String tenantId, String centralTenantId) {
     logger.info("Fetching pieces for inventory instances.");
     Promise<List<InventoryHoldingsAndItemsAndPieces>> promise = Promise.promise();
 
@@ -50,9 +50,13 @@ public class PieceClient extends FolioClient {
       return promise.future();
     }
 
-    final var httpClientRequest = buildRequest(tenantId);
+    final var httpMemberClientRequest = buildRequest(tenantId);
+    final var httpCentralClientRequest = Optional.ofNullable(
+        centralTenantId != null ? buildRequest(centralTenantId) : null);
+
     List<Future> futures = inventoryInstances.stream()
-        .map(instance -> processInstance(instance, httpClientRequest))
+        .map(instance -> processInstance(instance, httpMemberClientRequest,
+            httpCentralClientRequest))
         .collect(Collectors.toCollection(ArrayList::new));
 
     CompositeFuture.all(futures)
@@ -63,21 +67,27 @@ public class PieceClient extends FolioClient {
   }
 
   private Future<InventoryHoldingsAndItemsAndPieces> processInstance(
-      InventoryHoldingsAndItems instance, HttpRequest<Buffer> httpClientRequest) {
+      InventoryHoldingsAndItems instance, HttpRequest<Buffer> httpMemberClientRequest,
+      Optional<HttpRequest<Buffer>> httpCentralClientRequest) {
     logger.info("Processing instance: {}", instance.getInstanceId());
     Promise<InventoryHoldingsAndItemsAndPieces> promise = Promise.promise();
     String cql = buildCql(instance.getHoldings());
-    processHolding(httpClientRequest.copy(), cql)
+    List<Future<PieceCollection>> piecesRequests = new ArrayList<>();
+    piecesRequests.add(processHolding(httpMemberClientRequest, cql));
+    httpCentralClientRequest.ifPresent(request -> piecesRequests.add(processHolding(request, cql)));
+    Future.all(piecesRequests)
         .onSuccess(composite -> {
-          List<Piece> pieces = composite.getPieces();
+          List<PieceCollection> piecesColections = composite.list();
+          var pieces = piecesColections.stream()
+              .flatMap(pieceCollection -> pieceCollection.getPieces().stream()).toList();
           promise.complete(new InventoryHoldingsAndItemsAndPieces(instance, pieces));
         })
         .onFailure(
-          t -> {
-            logger.warn(t.getMessage(), t);
-            promise.complete(new InventoryHoldingsAndItemsAndPieces(instance,
-                Collections.emptyList()));
-          }
+            t -> {
+              logger.warn(t.getMessage(), t);
+              promise.complete(new InventoryHoldingsAndItemsAndPieces(instance,
+                  Collections.emptyList()));
+            }
         );
 
     return promise.future();
