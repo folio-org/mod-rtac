@@ -5,6 +5,8 @@ import static org.folio.rest.impl.MockData.UUID_400;
 import static org.folio.rest.impl.MockData.UUID_403;
 import static org.folio.rest.impl.MockData.UUID_404;
 import static org.folio.rest.impl.MockData.UUID_500;
+import static org.folio.rest.impl.MockServer.TEST_CENTRAL_TENANT_ID;
+import static org.folio.rest.impl.MockServer.TEST_TENANT_ID;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
@@ -57,9 +59,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 @TestInstance(PER_CLASS)
 class RtacBatchResourceImplTest {
 
-  public static final String TEST_CENTRAL_TENANT_ID = "test_central_tenant";
-  public static final String TEST_TENANT_ID = "test_tenant";
-  public static final String TEST_TENANT_0001_ID = "test_tenant_0001";
   private final int okapiPort = NetworkUtils.nextFreePort();
   private static int mockPort = NetworkUtils.nextFreePort();
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -529,6 +528,31 @@ class RtacBatchResourceImplTest {
                   .asString();
           RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
           assertEquals(4, rtacResponse.getHoldings().get(0).getHoldings().size());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldProvidePiecesDataFromMemberAndCentralTenantWhenFolioIsInConsortia(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String validInstanceIdsJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_AND_PIECES_IN_CONSORTIA);
+          RequestSpecification request = createBaseRequest(validInstanceIdsJson);
+          request.header(okapiCentralTenantHeader);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch rtacResponse = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          assertEquals(5, rtacResponse.getHoldings().get(0).getHoldings().size());
           testContext.completeNow();
         });
   }
