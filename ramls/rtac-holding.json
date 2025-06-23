@@ -69,6 +69,27 @@
       "description": "The total number of requested items for the patron",
       "type": "integer"
     },
+    "notes": {
+      "description": "Notes about action, copy, binding etc.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "holdingsNoteTypeName": {
+            "description": "Name of the holdings note type",
+            "type": "string"
+          },
+          "note": {
+            "description": "Text content of the note",
+            "type": "string"
+          }
+        },
+        "required": [
+          "holdingsNoteTypeName",
+          "note"
+        ]
+      }
+    },
     "holdingsStatements": {
       "description": "Notes about action, copy, binding etc.",
       "type": "array",

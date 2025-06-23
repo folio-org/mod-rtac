@@ -103,6 +103,7 @@ public class FolioToRtacMapper {
       if (Objects.nonNull(holding)) {
         rtacHolding = rtacHolding.withHoldingsCopyNumber(holding.getCopyNumber());
         addHoldingsStatements(rtacHolding, holding);
+        addHoldingNotes(rtacHolding, holding);
       }
 
       return rtacHolding;
@@ -114,6 +115,11 @@ public class FolioToRtacMapper {
       .withHoldingsStatements(holding.getHoldingsStatements())
       .withHoldingsStatementsForIndexes(holding.getHoldingsStatementsForIndexes())
       .withHoldingsStatementsForSupplements(holding.getHoldingsStatementsForSupplements());
+  }
+
+  private RtacHolding addHoldingNotes(RtacHolding rtacHolding, Holding holding) {
+    return rtacHolding
+        .withNotes(holding.getNotes());
   }
 
   private final Function<Item, RtacHolding> fromItemToRtacHolding =
@@ -176,6 +182,7 @@ public class FolioToRtacMapper {
               .withStatus(mapHoldingStatements(holding))
               .withHoldingsCopyNumber(holding.getCopyNumber())
               .withDueDate(null)
+              .withNotes(holding.getNotes())
               .withHoldingsStatements(holding.getHoldingsStatements())
               .withHoldingsStatementsForIndexes(holding.getHoldingsStatementsForIndexes())
               .withHoldingsStatementsForSupplements(holding.getHoldingsStatementsForSupplements());
