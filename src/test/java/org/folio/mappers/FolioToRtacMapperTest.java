@@ -1,10 +1,9 @@
 package org.folio.mappers;
 
 import static org.folio.rest.impl.MockData.createInventoryHoldingsAndItemsAndNoPieces;
-import static org.folio.rest.impl.MockData.createInventoryHoldingsAndItemsAndPieces;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.Collections;
 import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.impl.MockData;
 import org.folio.rest.jaxrs.model.Item;
@@ -28,6 +27,8 @@ class FolioToRtacMapperTest {
     String expectedVolume = "(" + item.getEnumeration() + " " + item.getChronology() + ")";
     assertEquals(expectedVolume, rtacHolding.getVolume());
     assertEquals(item.getDueDate(), rtacHolding.getDueDate());
+    assertFalse(rtacHolding.getNotes().isEmpty());
+    assertEquals(inventoryHoldingsAndItems.getHoldings().get(0).getNotes(), rtacHolding.getNotes());
   }
 
   @Test
