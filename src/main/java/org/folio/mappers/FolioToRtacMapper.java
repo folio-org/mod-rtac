@@ -57,9 +57,8 @@ public class FolioToRtacMapper {
       instance.getHoldings().stream().map(fromHoldingToRtacHolding).forEach(nested::add);
       rtacHoldings.withHoldings(nested);
     } else if (!periodical || fullPeriodicals) {
-      logger.info("{} is a periodical with full item data requested,",
-          instance.getInstanceId());
-      logger.info("or a non-periodical. Mapping all holdings and item data.");
+      logger.info("{} is a periodical with full item data requested, or a non-periodical. "
+                  + "Mapping all holdings and item data.", instance.getInstanceId());
       convertItemToRtacHolding(instance, nested);
       rtacHoldings.withHoldings(nested);
     } else {
@@ -140,7 +139,8 @@ public class FolioToRtacMapper {
               .withPermanentLoanType(item.getPermanentLoanType())
               .withDueDate(item.getDueDate())
               .withVolume(mapVolume(item))
-              .withItemCopyNumber(item.getCopyNumber());
+              .withItemCopyNumber(item.getCopyNumber())
+              .withItemDisplayOrder(item.getOrder());
 
   /**
    * This function is populating holding-level information for periodicals.

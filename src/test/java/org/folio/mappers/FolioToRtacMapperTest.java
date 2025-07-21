@@ -24,6 +24,7 @@ class FolioToRtacMapperTest {
     assertEquals(item.getId(), rtacHolding.getId());
     assertEquals(item.getCallNumber().getCallNumber(), rtacHolding.getCallNumber());
     assertEquals(item.getLocation().getLocation().getName(), rtacHolding.getLocation());
+    assertEquals(item.getOrder(), rtacHolding.getItemDisplayOrder());
     String expectedVolume = "(" + item.getEnumeration() + " " + item.getChronology() + ")";
     assertEquals(expectedVolume, rtacHolding.getVolume());
     assertEquals(item.getDueDate(), rtacHolding.getDueDate());
