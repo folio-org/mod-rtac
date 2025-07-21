@@ -282,6 +282,10 @@
             "description": "Indicate if record should not be displayed in a discovery system",
             "type": "boolean"
           },
+          "order": {
+            "type": "integer",
+            "description": "Order of the item in the holdings record."
+          },
           "location": {
             "description": "Item location",
             "type": "object",

@@ -104,6 +104,7 @@
       "hrId": "12321323121",
       "holdingsRecordId": "0005bb50-7c9b-48b0-86eb-178a494e25fe",
       "suppressFromDiscovery": false,
+      "order": 43,
       "status": "Available",
       "formerIds": [
         "ABW5508",
@@ -154,6 +155,7 @@
       "id": "4cebe27e-c9ba-4ce8-8148-fe4d4cb40538",
       "hrId": "22321323333",
       "holdingsRecordId": "0c45bb50-7c9b-48b0-86eb-178a494e25fe",
+      "order": 0,
       "suppressFromDiscovery": false,
       "status": "Available",
       "formerIds": [
