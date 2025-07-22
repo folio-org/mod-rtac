@@ -35,6 +35,7 @@ import org.folio.rest.jaxrs.model.PieceCollection;
 public class PieceClient extends FolioClient {
   private static final Logger logger = LogManager.getLogger();
   private static final String URI = "/orders/pieces";
+  private static final String PIECES_FETCH_LIMIT = "1000";
 
   PieceClient(Map<String, String> okapiHeaders, WebClient webClient) {
     super(okapiHeaders, webClient);
@@ -149,7 +150,8 @@ public class PieceClient extends FolioClient {
         .putHeader(OKAPI_HEADER_TOKEN, okapiToken)
         .putHeader(OKAPI_HEADER_TENANT, tenantId)
         .putHeader(ACCEPT, APPLICATION_JSON)
-        .putHeader(CONTENT_TYPE, APPLICATION_JSON);
+        .putHeader(CONTENT_TYPE, APPLICATION_JSON)
+        .addQueryParam("limit", PIECES_FETCH_LIMIT);
 
     return httpClientRequest;
   }
