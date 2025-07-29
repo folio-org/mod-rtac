@@ -100,6 +100,7 @@ public class PieceClient extends FolioClient {
     Promise<PieceCollection> promise = Promise.promise();
     var jsonParser = getJsonParser(promise);
     httpClientRequest
+        .copy()
         .addQueryParam("query", cql)
         .send(ar -> handleResponse(ar, promise, jsonParser));
     return promise.future();
