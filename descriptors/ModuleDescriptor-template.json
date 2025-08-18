@@ -14,7 +14,9 @@
             "circulation-storage.loans.collection.get",
             "inventory-storage.inventory-hierarchy.items-and-holdings.collection.post",
             "circulation.requests.collection.get",
-            "orders.pieces.collection.get"
+            "orders.pieces.collection.get",
+            "mod-settings.entries.collection.get",
+            "mod-settings.global.read.mod-rtac"
           ]
         }
       ]
@@ -33,7 +35,9 @@
             "circulation.requests.collection.get",
             "orders.pieces.collection.get",
             "user-tenants.collection.get",
-            "search.facets.collection.get"
+            "search.facets.collection.get",
+            "mod-settings.entries.collection.get",
+            "mod-settings.global.read.mod-rtac"
           ]
         }
       ]
@@ -63,9 +67,23 @@
     {
       "id": "search-facets",
       "version": "1.0"
+    },
+    {
+      "id": "settings",
+      "version": "1.1 1.2"
     }
   ],
   "permissionSets": [
+    {
+      "permissionName": "mod-settings.global.read.mod-rtac",
+      "displayName": "Read settings for mod-rtac",
+      "description": "Read settings for mod-rtac"
+    },
+    {
+      "permissionName": "mod-settings.global.write.mod-rtac",
+      "displayName": "Write settings for mod-rtac",
+      "description": "Write settings for mod-rtac"
+    },
     {
       "permissionName": "rtac.holdings.item.get",
       "displayName": "Legacy RTAC - Get individual holding",

@@ -30,6 +30,7 @@ public class MockServer {
   private static final String ORDERS_PIECES_URI = "/orders/pieces";
   private static final String USER_TENANTS_URI = "/user-tenants";
   private static final String HOLDINGS_FACET_URI = "/search/instances/facets";
+  private static final String SETTINGS_URI = "/settings/entries";
   private static final String INTERNAL_SERVER_ERROR = "Internal Server Error";
 
   private final int port;
@@ -61,6 +62,7 @@ public class MockServer {
     router.get(ORDERS_PIECES_URI).handler(this::handleOrderPiecesResponse);
     router.get(USER_TENANTS_URI).handler(this::handleUserTenantsResponse);
     router.get(HOLDINGS_FACET_URI).handler(this::handleHoldingsFacetResponse);
+    router.get(SETTINGS_URI).handler(this::handleSettingsResponse);
     return router;
   }
 
@@ -206,6 +208,15 @@ public class MockServer {
       failureResponse(
           routingContext, HttpStatus.SC_BAD_REQUEST, "There is no mock response for pieces");
     }
+  }
+
+  private void handleSettingsResponse(RoutingContext routingContext) {
+    HttpServerRequest request = routingContext.request();
+    String tenant = request.getHeader(OKAPI_HEADER_TENANT);
+    if (tenant.equals((TEST_CENTRAL_TENANT_ID))) {
+      successResponse(routingContext, MockData.SETTINGS_JSON);
+    }
+    successResponse(routingContext, MockData.EMPTY_SETTINGS_JSON);
   }
 
   private void successResponse(RoutingContext ctx, String body) {

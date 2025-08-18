@@ -6,9 +6,11 @@ import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
 
+import com.google.common.cache.Cache;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpRequest;
@@ -24,8 +26,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.folio.HttpStatus;
 import org.folio.mappers.CirculationToRtacMapper;
+import org.folio.rest.impl.Init;
 import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
+import org.folio.rest.tools.utils.TenantTool;
 import org.folio.rtac.rest.exceptions.HttpException;
 
 class CirculationClient extends FolioClient {
@@ -34,10 +38,15 @@ class CirculationClient extends FolioClient {
   private static final CirculationToRtacMapper circulationToRtacMapper =
       new CirculationToRtacMapper();
   private static final String URI = "/loan-storage/loans";
+  private static final String LOAN_TENANT_CONFIG = "LOAN_TENANT";
   private final Logger logger = LogManager.getLogger(getClass());
+  private final SettingsClient settingsClient;
+  private final Map<String, String> okapiHeaders;
 
   CirculationClient(Map<String, String> okapiHeaders, WebClient webClient) {
     super(okapiHeaders, webClient);
+    this.okapiHeaders = okapiHeaders;
+    this.settingsClient = new SettingsClient(okapiHeaders, webClient);
   }
 
   Future<List<InventoryHoldingsAndItems>> updateInstanceItemsWithLoansDueDate(
@@ -45,23 +54,28 @@ class CirculationClient extends FolioClient {
 
     logger.info("Getting loans for instance items from circulation");
     Promise<List<InventoryHoldingsAndItems>> promise = Promise.promise();
-
     if (CollectionUtils.isEmpty(inventoryInstances)) {
       promise.complete(inventoryInstances);
       return promise.future();
     }
 
-    final var httpClientRequest = buildRequest(tenantId);
-    List<Future> futures =
-        inventoryInstances.stream()
-            .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
-            .collect(Collectors.toCollection(ArrayList::new));
+    getLoanTenant(TenantTool.tenantId(okapiHeaders), tenantId).onComplete(ar -> {
+      if (ar.succeeded()) {
+        final var httpClientRequest = buildRequest(ar.result());
+        List<Future> futures =
+            inventoryInstances.stream()
+                .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-    CompositeFuture.all(futures)
-        .onSuccess(updatedInstances -> {
-          promise.complete(updatedInstances.result().list());
-        })
-        .onFailure(promise::fail);
+        CompositeFuture.all(futures)
+            .onSuccess(updatedInstances -> {
+              promise.complete(updatedInstances.result().list());
+            })
+            .onFailure(promise::fail);
+      } else {
+        promise.fail(ar.cause());
+      }
+    });
 
     return promise.future();
   }
@@ -111,6 +125,7 @@ class CirculationClient extends FolioClient {
   private Future<JsonObject> queryForLoans(HttpRequest<Buffer> httpClientRequest, String cql) {
     Promise<JsonObject> promise = Promise.promise();
     httpClientRequest
+        .copy()
         .addQueryParam("query", cql)
         .send(
             ar -> {
@@ -156,4 +171,40 @@ class CirculationClient extends FolioClient {
 
     return cql.toString();
   }
+
+  // Fetches the tenant where loans are stored
+  // (used for clusters where loans are not stored with items)
+  private Future<String> getLoanTenant(String configTenantId, String itemsTenantId) {
+    Promise<String> promise = Promise.promise();
+    var cache = (Cache) Vertx.currentContext().get(Init.RTAC_CACHE_NAME);
+    var loanTenant = cache.getIfPresent(getLoanTenantCacheKey(configTenantId));
+    if (loanTenant != null) {
+      var value = String.valueOf(loanTenant);
+      promise.complete(value.isEmpty() ? itemsTenantId : value);
+      return promise.future();
+    }
+    settingsClient.getSettings(configTenantId, LOAN_TENANT_CONFIG).onComplete(
+        ar -> {
+          if (ar.succeeded()) {
+            if (ar.result().getResultInfo().getTotalRecords() > 0) {
+              var tenantValue = String.valueOf(ar.result().getItems().get(0).getValue());
+              cache.put(getLoanTenantCacheKey(configTenantId), tenantValue);
+              promise.complete(tenantValue);
+            } else {
+              cache.put(getLoanTenantCacheKey(configTenantId), "");
+              promise.complete(itemsTenantId);
+            }
+          } else {
+            logger.error("Failed to fetch settings for tenant {}: {}",
+                configTenantId, ar.cause().getMessage());
+            promise.fail(ar.cause());
+          }
+        });
+    return promise.future();
+  }
+
+  private String getLoanTenantCacheKey(String tenantId) {
+    return tenantId + "-" + LOAN_TENANT_CONFIG;
+  }
+
 }
