@@ -46,6 +46,10 @@ public class MockData {
       "/mock-data/search/holdings_facet.json";
   public static final String HOLDINGS_FACET_WITH_1_TENANT_JSON_PATH =
       "/mock-data/search/holdings_facet_with_1_tenant.json";
+  public static final String EMPTY_SETTINGS_JSON_PATH =
+      "/mock-data/settings/empty-settings.json";
+  public static final String SETTINGS_JSON_PATH =
+      "/mock-data/settings/settings.json";
   public static final String ORDER_PIECES_PATH = "/mock-data/pieces/piece_collection.json";
   private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE;
   private static final String INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE_TEST_TENANT_0001;
@@ -128,6 +132,9 @@ public class MockData {
   public static final String ORDER_PIECES_TEMPLATE;
   public static final PieceCollection PIECE_COLLECTION;
   public static final PieceCollection PIECE_COLLECTION_FOR_CENTRAL_TENANT;
+
+  public static final String EMPTY_SETTINGS_JSON;
+  public static final String SETTINGS_JSON;
 
   static {
     LOAN_JSON = getJsonObjectFromFile(LOAN_JSON_PATH);
@@ -248,6 +255,9 @@ public class MockData {
         PieceCollection.class);
     PIECE_COLLECTION_FOR_CENTRAL_TENANT.getPieces()
         .forEach(piece -> piece.setHoldingId(HOLDING_ID_WITH_PIECES_IN_CENTRAL));
+
+    EMPTY_SETTINGS_JSON = getJsonObjectFromFile(EMPTY_SETTINGS_JSON_PATH);
+    SETTINGS_JSON = getJsonObjectFromFile(SETTINGS_JSON_PATH);
   }
 
   static String pojoToJson(Object pojo) {

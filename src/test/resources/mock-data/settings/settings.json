@@ -1,0 +1,11 @@
+{
+  "items": [{
+    "id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+    "scope": "mod-rtac",
+    "key": "LOAN_TENANT",
+    "value": "test_central_tenant"
+  }],
+  "resultInfo": {
+    "totalRecords": 1
+  }
+}

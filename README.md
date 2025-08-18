@@ -23,3 +23,15 @@ at the [FOLIO issue tracker](https://dev.folio.org/guidelines/issue-tracker).
 Other [modules](https://dev.folio.org/source-code/#server-side) are described,
 with further FOLIO Developer documentation at [dev.folio.org](https://dev.folio.org/)
 
+### Settings
+LOAN_TENANT setting used to specify the tenant from where Loan data is fetched.
+Example payload: 
+```
+{
+"id": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+"scope": "mod-rtac",
+"key": "LOAN_TENANT",
+"value": "test_central_tenant"
+}
+```
+
