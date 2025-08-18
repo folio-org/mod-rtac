@@ -152,6 +152,10 @@
       <artifactId>commons-collections4</artifactId>
       <version>4.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
     <!-- test dependencies -->
     <dependency>
@@ -569,6 +573,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <failOnInvalidDescriptor>false</failOnInvalidDescriptor>
+        </configuration>
       </plugin>
     </plugins>
     <pluginManagement>
