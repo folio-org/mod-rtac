@@ -1,3 +1,13 @@
+## 3.7.1 2025-09-01
+
+* Fetch loans from central tenant when configured
+  [MODRTAC-133](https://folio-org.atlassian.net/browse/MODRTAC-133)
+* Fix pieces fetching for multiple instances [MODRTAC-132](https://folio-org.atlassian.net/browse/MODRTAC-132)
+* Increase fetch limit for pieces [MODRTAC-131](https://folio-org.atlassian.net/browse/MODRTAC-131)
+* Expose holding notes [MODRTAC-125](https://folio-org.atlassian.net/browse/MODRTAC-125)
+* Show display summary info for pieces without items [MODRTAC-123](https://folio-org.atlassian.net/browse/MODRTAC-123)
+* Update rtac holdings response [MODRTAC-119](https://folio-org.atlassian.net/browse/MODRTAC-119)
+
 ## 3.7.0 2024-10-31
 
 * Add mod-orders peices status to RTAC table [MODRTAC-113](https://folio-org.atlassian.net/browse/MODRTAC-113)
