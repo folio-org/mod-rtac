@@ -51,6 +51,9 @@ public class CirculationToRtacMapper {
                     l -> {
                       final String dueDateString = l.getString("dueDate");
                       logger.debug("Loan {} due date: {}", l.getString("id"), dueDateString);
+                      if (dueDateString == null || dueDateString.isEmpty()) {
+                        return;
+                      }
                       Date dueDate = null;
                       try {
                         dueDate = dateFormat.parse(dueDateString);
