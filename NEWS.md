@@ -1,3 +1,6 @@
+## 3.8.2 2025-12-10
+* Add handling of missing loan dueDate information [MODRTAC-145](https://issues.folio.org/browse/MODRTAC-145)
+
 ## 3.8.1 2025-08-29
 
 * Fetch loans from central tenant when configured
