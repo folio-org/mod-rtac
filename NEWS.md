@@ -1,3 +1,7 @@
+## 3.7.2 2026-01-19
+
+* RMB 35.3.2, Vertx 4.5.23, reduce logging, fix Netty vulns [MODRTAC-147](https://folio-org.atlassian.net/browse/MODRTAC-147)
+
 ## 3.7.1 2025-09-01
 
 * Fetch loans from central tenant when configured
