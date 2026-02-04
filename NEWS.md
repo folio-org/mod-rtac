@@ -1,3 +1,7 @@
+## 3.8.3 2026-02-05
+
+* RMB 35.4.2, Vertx 4.5.23, less RMB logging, fix Netty vuln [MODRTAC-148](https://folio-org.atlassian.net/browse/MODRTAC-148)
+
 ## 3.8.2 2025-12-10
 * Add handling of missing loan dueDate information [MODRTAC-145](https://issues.folio.org/browse/MODRTAC-145)
 
