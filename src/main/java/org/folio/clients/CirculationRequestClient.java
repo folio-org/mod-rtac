@@ -17,7 +17,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
@@ -59,13 +58,13 @@ class CirculationRequestClient extends FolioClient {
       return promise.future();
     }
 
-    List<Future> futures =
+    List<Future<InventoryHoldingsAndItems>> futures =
         inventoryInstances.stream()
         .map(instance -> processInstance(instance, tenantId))
         .collect(Collectors.toCollection(ArrayList::new));
 
-    CompositeFuture.all(futures)
-      .onSuccess(updatedInstances -> promise.complete(updatedInstances.result().list()))
+    Future.all(futures)
+      .onSuccess(composite -> promise.complete(composite.list()))
         .onFailure(promise::fail);
 
     return promise.future();
@@ -119,7 +118,8 @@ class CirculationRequestClient extends FolioClient {
     httpClientRequest
       .addQueryParam("query", String.format("itemId==%s", itemIds))
       .addQueryParam("limit", "10000")
-        .send(ar -> handleResponse(ar, promise, parser));
+        .send()
+        .onComplete(ar -> handleResponse(ar, promise, parser));
     return promise.future();
   }
 

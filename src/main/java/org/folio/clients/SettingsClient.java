@@ -54,7 +54,7 @@ public class SettingsClient extends FolioClient {
         .putHeader(CONTENT_TYPE, APPLICATION_JSON)
         .addQueryParam("query", String.format("(scope==%s and key==%s)", SCOPE, key));
 
-    httpClientRequest.send(assyncResult -> handleResponse(assyncResult, promise));
+    httpClientRequest.send().onComplete(asyncResult -> handleResponse(asyncResult, promise));
     return promise.future();
   }
 

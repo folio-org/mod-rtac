@@ -44,7 +44,7 @@ public class SearchClient extends FolioClient {
         .addQueryParam("facet", FACET)
         .addQueryParam("query", "id=" + instanceId);
 
-    httpClientRequest.send(asyncResult -> handleResponse(asyncResult, promise));
+    httpClientRequest.send().onComplete(asyncResult -> handleResponse(asyncResult, promise));
     return promise.future();
   }
 

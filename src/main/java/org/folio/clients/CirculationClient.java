@@ -7,7 +7,6 @@ import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
 
 import com.google.common.cache.Cache;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -62,15 +61,13 @@ class CirculationClient extends FolioClient {
     getLoanTenant(TenantTool.tenantId(okapiHeaders), tenantId).onComplete(ar -> {
       if (ar.succeeded()) {
         final var httpClientRequest = buildRequest(ar.result());
-        List<Future> futures =
+        List<Future<InventoryHoldingsAndItems>> futures =
             inventoryInstances.stream()
                 .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        CompositeFuture.all(futures)
-            .onSuccess(updatedInstances -> {
-              promise.complete(updatedInstances.result().list());
-            })
+        Future.all(futures)
+            .onSuccess(composite -> promise.complete(composite.list()))
             .onFailure(promise::fail);
       } else {
         promise.fail(ar.cause());
@@ -108,14 +105,14 @@ class CirculationClient extends FolioClient {
 
     Promise<List<JsonObject>> promise = Promise.promise();
     List<JsonObject> loans = new CopyOnWriteArrayList<>();
-    var loansFutures = new ArrayList<Future>();
+    List<Future<JsonObject>> loansFutures = new ArrayList<>();
     for (List<Item> itemList : ListUtils.partition(items, CIRCULATION_BATCH_SIZE)) {
       String cql = buildCql(itemList);
       logger.debug("?query={}", cql);
       loansFutures.add(queryForLoans(httpClientRequest.copy(), cql).onSuccess(loans::add));
     }
 
-    CompositeFuture.all(loansFutures)
+    Future.all(loansFutures)
         .onSuccess(r -> promise.complete(loans))
         .onFailure(promise::fail);
 
@@ -127,21 +124,23 @@ class CirculationClient extends FolioClient {
     httpClientRequest
         .copy()
         .addQueryParam("query", cql)
-        .send(
-            ar -> {
-              final var httpResponse = ar.result();
-              if (ar.failed()) {
-                promise.fail(
-                    new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-              } else {
-                if (httpResponse.statusCode() != HttpStatus.HTTP_OK.toInt()) {
-                  promise.fail(
-                      new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-                } else {
-                  promise.complete(httpResponse.bodyAsJsonObject());
-                }
-              }
-            });
+        .send()
+        .onComplete(ar -> {
+          final var httpResponse = ar.result();
+          if (ar.failed()) {
+            promise.fail(
+                new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
+            return;
+          }
+
+          if (httpResponse.statusCode() != HttpStatus.HTTP_OK.toInt()) {
+            promise.fail(
+                new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
+            return;
+          }
+
+          promise.complete(httpResponse.bodyAsJsonObject());
+        });
     return promise.future();
   }
 

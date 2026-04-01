@@ -39,7 +39,7 @@ public class UsersClient extends FolioClient {
         .putHeader(ACCEPT, APPLICATION_JSON)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
 
-    httpClientRequest.send(asyncResult -> handleResponse(asyncResult, promise));
+    httpClientRequest.send().onComplete(asyncResult -> handleResponse(asyncResult, promise));
     return promise.future();
   }
 
