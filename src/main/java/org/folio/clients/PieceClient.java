@@ -61,7 +61,10 @@ public class PieceClient extends FolioClient {
 
     Future.all(futures)
         .onSuccess(composite -> promise.complete(composite.list()))
-        .onFailure(promise::fail);
+        .onFailure(t -> {
+          logger.error("Failed fetching pieces for inventory instances", t);
+          promise.fail(t);
+        });
 
     return promise.future();
   }
@@ -109,15 +112,17 @@ public class PieceClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<PieceCollection> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (validateHttpStatusOk(ar, promise)) {
-      final var buffer = httpResponse.bodyAsBuffer();
-      if (buffer == null) {
-        logger.error("Piece response buffer is null, returning fallback result");
-        handleNullPointerException(promise);
-      }
-      parser.handle(buffer);
-      parser.end();
+    if (!validateHttpStatusOk(ar, promise, "Fetching pieces")) {
+      return;
     }
+
+    final var buffer = httpResponse.bodyAsBuffer();
+    if (buffer == null) {
+      logger.error("Piece response buffer is null, returning fallback result");
+      handleNullPointerException(promise);
+    }
+    parser.handle(buffer);
+    parser.end();
   }
 
   private JsonParser getJsonParser(Promise<PieceCollection> promise) {

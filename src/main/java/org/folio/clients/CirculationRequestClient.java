@@ -64,8 +64,11 @@ class CirculationRequestClient extends FolioClient {
         .collect(Collectors.toCollection(ArrayList::new));
 
     Future.all(futures)
-      .onSuccess(composite -> promise.complete(composite.list()))
-        .onFailure(promise::fail);
+        .onSuccess(composite -> promise.complete(composite.list()))
+        .onFailure(t -> {
+          logger.error("Failed getting hold requests for instance items from circulation", t);
+          promise.fail(t);
+        });
 
     return promise.future();
   }
@@ -126,15 +129,17 @@ class CirculationRequestClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<Map<String, Long>> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (validateHttpStatusOk(ar, promise)) {
-      final var buffer = httpResponse.bodyAsBuffer();
-      if (buffer == null) {
-        handleNullPointerException(promise);
-      }
-
-      parser.handle(buffer);
-      parser.end();
+    if (!validateHttpStatusOk(ar, promise, "Fetching circulation requests")) {
+      return;
     }
+
+    final var buffer = httpResponse.bodyAsBuffer();
+    if (buffer == null) {
+      handleNullPointerException(promise);
+    }
+
+    parser.handle(buffer);
+    parser.end();
   }
 
   private JsonParser getJsonParser(Promise<Map<String, Long>> promise) {

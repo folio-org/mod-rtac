@@ -61,8 +61,10 @@ public class SettingsClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> asyncResult,
       Promise<Settings> promise) {
     final var httpResponse = asyncResult.result();
-    if (validateHttpStatusOk(asyncResult, promise)) {
-      promise.complete(httpResponse.bodyAsJson(Settings.class));
+    if (!validateHttpStatusOk(asyncResult, promise, "Fetching settings entry")) {
+      return;
     }
+
+    promise.complete(httpResponse.bodyAsJson(Settings.class));
   }
 }

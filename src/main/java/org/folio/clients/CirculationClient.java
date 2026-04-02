@@ -68,7 +68,10 @@ class CirculationClient extends FolioClient {
 
         Future.all(futures)
             .onSuccess(composite -> promise.complete(composite.list()))
-            .onFailure(promise::fail);
+            .onFailure(t -> {
+              logger.error("Failed getting loans for instance items from circulation", t);
+              promise.fail(t);
+            });
       } else {
         promise.fail(ar.cause());
       }
@@ -114,7 +117,10 @@ class CirculationClient extends FolioClient {
 
     Future.all(loansFutures)
         .onSuccess(r -> promise.complete(loans))
-        .onFailure(promise::fail);
+        .onFailure(t -> {
+          logger.error("Failed fetching loans for instance items from circulation", t);
+          promise.fail(t);
+        });
 
     return promise.future();
   }
@@ -127,15 +133,30 @@ class CirculationClient extends FolioClient {
         .send()
         .onComplete(ar -> {
           final var httpResponse = ar.result();
+          final int status = httpResponse.statusCode();
+          final String message = httpResponse.statusMessage();
           if (ar.failed()) {
+            logger.error(
+                "Loans query failed: status={} message={} query={}",
+                status,
+                message,
+                cql,
+                ar.cause());
             promise.fail(
-                new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
+                new HttpException(status, message));
             return;
           }
 
-          if (httpResponse.statusCode() != HttpStatus.HTTP_OK.toInt()) {
+          if (status != HttpStatus.HTTP_OK.toInt()) {
+            final String body = httpResponse.bodyAsString();
+            logger.error(
+                "Loans query failed: status={} message={} query={} body={}",
+                status,
+                message,
+                cql,
+                body);
             promise.fail(
-                new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
+                new HttpException(status, message));
             return;
           }
 
