@@ -142,8 +142,7 @@ class CirculationClient extends FolioClient {
                 message,
                 cql,
                 ar.cause());
-            promise.fail(
-                new HttpException(status, message));
+            promise.fail(new HttpException(status, message));
             return;
           }
 
@@ -155,8 +154,7 @@ class CirculationClient extends FolioClient {
                 message,
                 cql,
                 body);
-            promise.fail(
-                new HttpException(status, message));
+            promise.fail(new HttpException(status, message));
             return;
           }
 
