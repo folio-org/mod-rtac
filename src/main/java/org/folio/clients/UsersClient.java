@@ -46,7 +46,7 @@ public class UsersClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> asyncResult,
       Promise<UserTenants> promise) {
     final var httpResponse = asyncResult.result();
-    if (!validateHttpStatusOk(asyncResult, promise, "Fetching user tenants")) {
+    if (responseFailed(asyncResult, promise, "Fetching user tenants")) {
       return;
     }
 

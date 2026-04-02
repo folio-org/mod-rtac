@@ -27,12 +27,12 @@ abstract class FolioClient {
     this.webClient = webClient;
   }
 
-  protected <T> boolean validateHttpStatusOk(AsyncResult<HttpResponse<Buffer>> asyncResult,
-      Promise<T> promise, String operation) {
+  protected <T> boolean responseFailed(AsyncResult<HttpResponse<Buffer>> asyncResult,
+                                       Promise<T> promise, String operation) {
     if (asyncResult.failed()) {
       logger.error("{} failed", operation, asyncResult.cause());
       promise.fail(asyncResult.cause());
-      return false;
+      return true;
     }
 
     final var httpResponse = asyncResult.result();
@@ -42,9 +42,9 @@ abstract class FolioClient {
       final String body = httpResponse.bodyAsString();
       logger.error("{} failed: status={} message={} body={}", operation, status, message, body);
       promise.fail(new HttpException(status, message));
-      return false;
+      return true;
     }
 
-    return true;
+    return false;
   }
 }

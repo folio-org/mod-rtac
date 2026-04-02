@@ -51,7 +51,7 @@ public class SearchClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> asyncResult,
       Promise<HoldingsFacet> promise) {
     final var httpResponse = asyncResult.result();
-    if (!validateHttpStatusOk(asyncResult, promise, "Fetching holdings tenants facet")) {
+    if (responseFailed(asyncResult, promise, "Fetching holdings tenants facet")) {
       return;
     }
 

@@ -112,7 +112,7 @@ public class PieceClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<PieceCollection> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (!validateHttpStatusOk(ar, promise, "Fetching pieces")) {
+    if (responseFailed(ar, promise, "Fetching pieces")) {
       return;
     }
 

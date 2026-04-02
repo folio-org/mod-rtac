@@ -129,7 +129,7 @@ class CirculationRequestClient extends FolioClient {
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<Map<String, Long>> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (!validateHttpStatusOk(ar, promise, "Fetching circulation requests")) {
+    if (responseFailed(ar, promise, "Fetching circulation requests")) {
       return;
     }
 
