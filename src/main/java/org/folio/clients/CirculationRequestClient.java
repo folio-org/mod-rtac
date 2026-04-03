@@ -17,7 +17,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
@@ -59,14 +58,17 @@ class CirculationRequestClient extends FolioClient {
       return promise.future();
     }
 
-    List<Future> futures =
+    List<Future<InventoryHoldingsAndItems>> futures =
         inventoryInstances.stream()
         .map(instance -> processInstance(instance, tenantId))
         .collect(Collectors.toCollection(ArrayList::new));
 
-    CompositeFuture.all(futures)
-      .onSuccess(updatedInstances -> promise.complete(updatedInstances.result().list()))
-        .onFailure(promise::fail);
+    Future.all(futures)
+        .onSuccess(composite -> promise.complete(composite.list()))
+        .onFailure(t -> {
+          logger.error("Failed getting hold requests for instance items from circulation", t);
+          promise.fail(t);
+        });
 
     return promise.future();
   }
@@ -119,22 +121,25 @@ class CirculationRequestClient extends FolioClient {
     httpClientRequest
       .addQueryParam("query", String.format("itemId==%s", itemIds))
       .addQueryParam("limit", "10000")
-        .send(ar -> handleResponse(ar, promise, parser));
+        .send()
+        .onComplete(ar -> handleResponse(ar, promise, parser));
     return promise.future();
   }
 
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<Map<String, Long>> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (validateHttpStatusOk(ar, promise)) {
-      final var buffer = httpResponse.bodyAsBuffer();
-      if (buffer == null) {
-        handleNullPointerException(promise);
-      }
-
-      parser.handle(buffer);
-      parser.end();
+    if (responseFailed(ar, promise, "Fetching circulation requests")) {
+      return;
     }
+
+    final var buffer = httpResponse.bodyAsBuffer();
+    if (buffer == null) {
+      handleNullPointerException(promise);
+    }
+
+    parser.handle(buffer);
+    parser.end();
   }
 
   private JsonParser getJsonParser(Promise<Map<String, Long>> promise) {

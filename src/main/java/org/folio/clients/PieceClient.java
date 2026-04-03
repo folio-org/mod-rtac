@@ -10,7 +10,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vertx.core.AsyncResult;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
@@ -55,14 +54,17 @@ public class PieceClient extends FolioClient {
     final var httpCentralClientRequest = Optional.ofNullable(
         centralTenantId != null ? buildRequest(centralTenantId) : null);
 
-    List<Future> futures = inventoryInstances.stream()
+    List<Future<InventoryHoldingsAndItemsAndPieces>> futures = inventoryInstances.stream()
         .map(instance -> processInstance(instance, httpMemberClientRequest,
             httpCentralClientRequest))
         .collect(Collectors.toCollection(ArrayList::new));
 
-    CompositeFuture.all(futures)
-        .onSuccess(composite -> promise.complete(composite.result().list()))
-        .onFailure(promise::fail);
+    Future.all(futures)
+        .onSuccess(composite -> promise.complete(composite.list()))
+        .onFailure(t -> {
+          logger.error("Failed fetching pieces for inventory instances", t);
+          promise.fail(t);
+        });
 
     return promise.future();
   }
@@ -102,22 +104,25 @@ public class PieceClient extends FolioClient {
     httpClientRequest
         .copy()
         .addQueryParam("query", cql)
-        .send(ar -> handleResponse(ar, promise, jsonParser));
+        .send()
+        .onComplete(ar -> handleResponse(ar, promise, jsonParser));
     return promise.future();
   }
 
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> ar,
       Promise<PieceCollection> promise, JsonParser parser) {
     final var httpResponse = ar.result();
-    if (validateHttpStatusOk(ar, promise)) {
-      final var buffer = httpResponse.bodyAsBuffer();
-      if (buffer == null) {
-        logger.error("Piece response buffer is null, returning fallback result");
-        handleNullPointerException(promise);
-      }
-      parser.handle(buffer);
-      parser.end();
+    if (responseFailed(ar, promise, "Fetching pieces")) {
+      return;
     }
+
+    final var buffer = httpResponse.bodyAsBuffer();
+    if (buffer == null) {
+      logger.error("Piece response buffer is null, returning fallback result");
+      handleNullPointerException(promise);
+    }
+    parser.handle(buffer);
+    parser.end();
   }
 
   private JsonParser getJsonParser(Promise<PieceCollection> promise) {

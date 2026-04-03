@@ -6,7 +6,7 @@ import static org.folio.rest.impl.MockData.HOLDING_ID_WITH_PIECES;
 import static org.folio.rest.impl.MockData.INSTANCE_ID;
 import static org.folio.rest.impl.MockData.INSTANCE_ID_HOLDINGS_AND_PIECES_IN_CONSORTIA;
 
-import io.netty.handler.codec.http.HttpHeaderValues;
+import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpServer;
@@ -16,7 +16,6 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
-import io.vertx.junit5.VertxTestContext;
 import org.apache.http.HttpStatus;
 
 public class MockServer {
@@ -41,16 +40,9 @@ public class MockServer {
     this.vertx = vertx;
   }
 
-  void start(VertxTestContext context) {
+  Future<Void> start() {
     HttpServer server = vertx.createHttpServer();
-    server
-        .requestHandler(defineRoutes())
-        .listen(
-            port,
-            context.succeeding(
-                result -> {
-                  context.completeNow();
-                }));
+    return server.requestHandler(defineRoutes()).listen(port).mapEmpty();
   }
 
   private Router defineRoutes() {
@@ -67,7 +59,7 @@ public class MockServer {
   }
 
   private void handleInventoryViewResponse(RoutingContext routingContext) {
-    JsonObject jsonObject = routingContext.getBody().toJsonObject();
+    JsonObject jsonObject = routingContext.body().asJsonObject();
     JsonArray jsonArray = jsonObject.getJsonArray("instanceIds");
     var tenant = routingContext.request().getHeader(OKAPI_HEADER_TENANT);
     var first = jsonArray.getString(0);
@@ -222,7 +214,7 @@ public class MockServer {
   private void successResponse(RoutingContext ctx, String body) {
     ctx.response()
         .setStatusCode(200)
-        .putHeader(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_JSON)
+        .putHeader(HttpHeaders.CONTENT_TYPE, "application/json")
         .end(body);
   }
 

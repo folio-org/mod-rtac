@@ -85,19 +85,15 @@ class RtacBatchResourceImplTest {
     dpConfig.put("http.port", okapiPort);
     DeploymentOptions deploymentOptions = new DeploymentOptions().setConfig(dpConfig);
 
-    vertx.deployVerticle(
-        RestVerticle.class.getName(),
-        deploymentOptions,
-        testContext.succeeding(
-            v -> {
-              new MockServer(mockPort, vertx).start(testContext);
-              testContext.completeNow();
-            }));
+    vertx
+        .deployVerticle(RestVerticle.class.getName(), deploymentOptions)
+        .compose(ignored -> new MockServer(mockPort, vertx).start())
+        .onComplete(testContext.succeedingThenComplete());
   }
 
   @AfterAll
   void afterAll(Vertx vertx, VertxTestContext testContext) {
-    vertx.close(testContext.succeeding(v -> testContext.completeNow()));
+    vertx.close().onComplete(testContext.succeedingThenComplete());
   }
 
   @Test

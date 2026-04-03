@@ -1,8 +1,10 @@
 package org.folio.clients;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.folio.rest.impl.MockData.createInventoryHoldingsAndItemsForHoldCount;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,6 +59,30 @@ class CirculationRequestClientTests {
     final var updatedInstanceItems = futureResult
         .toCompletionStage().toCompletableFuture().get(5, SECONDS);
     assertEquals(0, updatedInstanceItems.get(0).getItems().get(0).getTotalHoldRequests());
+  }
+
+  @Test
+  @SneakyThrows
+  void responseFailed_isCovered_whenCirculationRequestsReturnsNon200() {
+    fakeWebServer.stubFor(
+        get(urlPathEqualTo("/circulation/requests"))
+            .withQueryParam("query", containing("itemId=="))
+            .withQueryParam("limit", containing("10000"))
+            .willReturn(aResponse().withStatus(500).withBody("downstream-error")));
+
+    var client = new CirculationRequestClient(Headers.toMap(fakeWebServer.baseUrl()),
+        WebClient.create(Vertx.vertx()));
+
+    var inventoryHoldingsAndItems = createInventoryHoldingsAndItemsForHoldCount();
+    inventoryHoldingsAndItems.getItems().get(0).setTotalHoldRequests(123);
+
+    var futureResult =
+        client.updateInstanceItemsWithRequestsCount(List.of(inventoryHoldingsAndItems),
+            "test-tenant");
+
+    var updated =
+        futureResult.toCompletionStage().toCompletableFuture().get(5, SECONDS);
+    assertEquals(123, updated.get(0).getItems().get(0).getTotalHoldRequests());
   }
 
   private static class Headers {

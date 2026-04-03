@@ -54,15 +54,17 @@ public class SettingsClient extends FolioClient {
         .putHeader(CONTENT_TYPE, APPLICATION_JSON)
         .addQueryParam("query", String.format("(scope==%s and key==%s)", SCOPE, key));
 
-    httpClientRequest.send(assyncResult -> handleResponse(assyncResult, promise));
+    httpClientRequest.send().onComplete(asyncResult -> handleResponse(asyncResult, promise));
     return promise.future();
   }
 
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> asyncResult,
       Promise<Settings> promise) {
     final var httpResponse = asyncResult.result();
-    if (validateHttpStatusOk(asyncResult, promise)) {
-      promise.complete(httpResponse.bodyAsJson(Settings.class));
+    if (responseFailed(asyncResult, promise, "Fetching settings entry")) {
+      return;
     }
+
+    promise.complete(httpResponse.bodyAsJson(Settings.class));
   }
 }

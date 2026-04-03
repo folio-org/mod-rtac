@@ -7,7 +7,6 @@ import static org.folio.rest.RestVerticle.OKAPI_HEADER_TENANT;
 import static org.folio.rest.RestVerticle.OKAPI_HEADER_TOKEN;
 
 import com.google.common.cache.Cache;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
@@ -62,16 +61,17 @@ class CirculationClient extends FolioClient {
     getLoanTenant(TenantTool.tenantId(okapiHeaders), tenantId).onComplete(ar -> {
       if (ar.succeeded()) {
         final var httpClientRequest = buildRequest(ar.result());
-        List<Future> futures =
+        List<Future<InventoryHoldingsAndItems>> futures =
             inventoryInstances.stream()
                 .map(updatedInstance -> processInstance(updatedInstance, httpClientRequest))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        CompositeFuture.all(futures)
-            .onSuccess(updatedInstances -> {
-              promise.complete(updatedInstances.result().list());
-            })
-            .onFailure(promise::fail);
+        Future.all(futures)
+            .onSuccess(composite -> promise.complete(composite.list()))
+            .onFailure(t -> {
+              logger.error("Failed getting loans for instance items from circulation", t);
+              promise.fail(t);
+            });
       } else {
         promise.fail(ar.cause());
       }
@@ -108,16 +108,19 @@ class CirculationClient extends FolioClient {
 
     Promise<List<JsonObject>> promise = Promise.promise();
     List<JsonObject> loans = new CopyOnWriteArrayList<>();
-    var loansFutures = new ArrayList<Future>();
+    List<Future<JsonObject>> loansFutures = new ArrayList<>();
     for (List<Item> itemList : ListUtils.partition(items, CIRCULATION_BATCH_SIZE)) {
       String cql = buildCql(itemList);
       logger.debug("?query={}", cql);
       loansFutures.add(queryForLoans(httpClientRequest.copy(), cql).onSuccess(loans::add));
     }
 
-    CompositeFuture.all(loansFutures)
+    Future.all(loansFutures)
         .onSuccess(r -> promise.complete(loans))
-        .onFailure(promise::fail);
+        .onFailure(t -> {
+          logger.error("Failed fetching loans for instance items from circulation", t);
+          promise.fail(t);
+        });
 
     return promise.future();
   }
@@ -127,21 +130,36 @@ class CirculationClient extends FolioClient {
     httpClientRequest
         .copy()
         .addQueryParam("query", cql)
-        .send(
-            ar -> {
-              final var httpResponse = ar.result();
-              if (ar.failed()) {
-                promise.fail(
-                    new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-              } else {
-                if (httpResponse.statusCode() != HttpStatus.HTTP_OK.toInt()) {
-                  promise.fail(
-                      new HttpException(httpResponse.statusCode(), httpResponse.statusMessage()));
-                } else {
-                  promise.complete(httpResponse.bodyAsJsonObject());
-                }
-              }
-            });
+        .send()
+        .onComplete(ar -> {
+          final var httpResponse = ar.result();
+          final int status = httpResponse.statusCode();
+          final String message = httpResponse.statusMessage();
+          if (ar.failed()) {
+            logger.error(
+                "Loans query failed: status={} message={} query={}",
+                status,
+                message,
+                cql,
+                ar.cause());
+            promise.fail(new HttpException(status, message));
+            return;
+          }
+
+          if (status != HttpStatus.HTTP_OK.toInt()) {
+            final String body = httpResponse.bodyAsString();
+            logger.error(
+                "Loans query failed: status={} message={} query={} body={}",
+                status,
+                message,
+                cql,
+                body);
+            promise.fail(new HttpException(status, message));
+            return;
+          }
+
+          promise.complete(httpResponse.bodyAsJsonObject());
+        });
     return promise.future();
   }
 

@@ -44,15 +44,17 @@ public class SearchClient extends FolioClient {
         .addQueryParam("facet", FACET)
         .addQueryParam("query", "id=" + instanceId);
 
-    httpClientRequest.send(asyncResult -> handleResponse(asyncResult, promise));
+    httpClientRequest.send().onComplete(asyncResult -> handleResponse(asyncResult, promise));
     return promise.future();
   }
 
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> asyncResult,
       Promise<HoldingsFacet> promise) {
     final var httpResponse = asyncResult.result();
-    if (validateHttpStatusOk(asyncResult, promise)) {
-      promise.complete(httpResponse.bodyAsJson(HoldingsFacet.class));
+    if (responseFailed(asyncResult, promise, "Fetching holdings tenants facet")) {
+      return;
     }
+
+    promise.complete(httpResponse.bodyAsJson(HoldingsFacet.class));
   }
 }

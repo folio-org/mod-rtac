@@ -39,15 +39,17 @@ public class UsersClient extends FolioClient {
         .putHeader(ACCEPT, APPLICATION_JSON)
         .putHeader(CONTENT_TYPE, APPLICATION_JSON);
 
-    httpClientRequest.send(asyncResult -> handleResponse(asyncResult, promise));
+    httpClientRequest.send().onComplete(asyncResult -> handleResponse(asyncResult, promise));
     return promise.future();
   }
 
   private void handleResponse(AsyncResult<HttpResponse<Buffer>> asyncResult,
       Promise<UserTenants> promise) {
     final var httpResponse = asyncResult.result();
-    if (validateHttpStatusOk(asyncResult, promise)) {
-      promise.complete(httpResponse.bodyAsJson(UserTenants.class));
+    if (responseFailed(asyncResult, promise, "Fetching user tenants")) {
+      return;
     }
+
+    promise.complete(httpResponse.bodyAsJson(UserTenants.class));
   }
 }
