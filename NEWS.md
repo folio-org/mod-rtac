@@ -1,3 +1,14 @@
+## 3.9.0 2026-04-16
+
+* Show display summary info for pieces without items [MODRTAC-123](https://folio-org.atlassian.net/browse/MODRTAC-123)
+* Expose holding notes [MODRTAC-125](https://folio-org.atlassian.net/browse/MODRTAC-125)
+* Update for Split Search & Browse APIs [MODRTAC-128](https://folio-org.atlassian.net/browse/MODRTAC-128)
+* Increase fetch limit for pieces [MODRTAC-131](https://folio-org.atlassian.net/browse/MODRTAC-131)
+* Fetch loans from central tenant when configured [MODRTAC-133](https://folio-org.atlassian.net/browse/MODRTAC-133)
+* Add handling of missing loan dueDate information [MODRTAC-145](https://folio-org.atlassian.net/browse/MODRTAC-145)
+* Use GitHub Workflows for Maven build and test, replace Jenkins stages [MODRTAC-150](https://folio-org.atlassian.net/browse/MODRTAC-150)
+* Upgrade module to Vert.x 5.0 [MODRTAC-136](https://folio-org.atlassian.net/browse/MODRTAC-136)
+
 ## 3.8.0 2025-03-14
 
 * Update to mod-rtac Java 21 [MODRTAC-120](https://folio-org.atlassian.net/browse/MODRTAC-120)
