@@ -50,15 +50,15 @@
     },
     {
       "id": "loan-storage",
-      "version": "7.1 7.3"
+      "version": "7.4"
     },
     {
       "id": "circulation",
-      "version": "14.2 14.6"
+      "version": "14.7"
     },
     {
       "id": "pieces",
-      "version": "3.0 3.1"
+      "version": "3.1"
     },
     {
       "id": "user-tenants",
@@ -70,7 +70,7 @@
     },
     {
       "id": "settings",
-      "version": "1.1 1.2"
+      "version": "1.2"
     }
   ],
   "permissionSets": [
