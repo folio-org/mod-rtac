@@ -1,3 +1,7 @@
+## 3.9.1 2026-05-26
+### Bug Fixes
+* Fix Vert.x race condition and Dockefile issues [MODRTAC-154](https://folio-org.atlassian.net/browse/MODRTAC-154)
+
 ## 3.9.0 2026-04-16
 
 * Show display summary info for pieces without items [MODRTAC-123](https://folio-org.atlassian.net/browse/MODRTAC-123)
