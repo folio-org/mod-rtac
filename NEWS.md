@@ -1,3 +1,7 @@
+## WIP
+
+* Set "permissions: contents: read" in maven.yml [FOLIO-4553](https://folio-org.atlassian.net/browse/FOLIO-4553)
+
 ## 3.9.0 2026-04-16
 
 * Show display summary info for pieces without items [MODRTAC-123](https://folio-org.atlassian.net/browse/MODRTAC-123)
