@@ -1,5 +1,6 @@
 ## WIP
 
+* Fix NPE when a holding or item has no call number [MODRTAC-158](https://folio-org.atlassian.net/browse/MODRTAC-158)
 * Set "permissions: contents: read" in maven.yml [FOLIO-4553](https://folio-org.atlassian.net/browse/FOLIO-4553)
 
 ## 3.9.0 2026-04-16
