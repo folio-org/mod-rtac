@@ -117,6 +117,9 @@ public class MockServer {
     } else if (jsonArray.contains(MockData.INSTANCE_ID_HOLDINGS_AND_NO_PIECES)) {
       successResponse(
           routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_HOLDINGS_AND_NO_PIECES));
+    } else if (jsonArray.contains(MockData.INSTANCE_ID_ITEM_NO_CALL_NUMBER)) {
+      successResponse(
+          routingContext, MockData.pojoToJson(MockData.INSTANCE_WITH_ITEM_NO_CALL_NUMBER));
     } else if (jsonArray.contains(MockData.INSTANCE_ID_NOT_EXISTS)) {
       successResponse(routingContext, "");
     } else {

@@ -86,6 +86,8 @@ public class MockData {
       "78651120-83c1-4666-8083-53126cc1f6dc";
   public static final String INSTANCE_ID_HOLDINGS_AND_PIECES_IN_CONSORTIA =
       "36551120-83c1-4666-8083-53126cc1f6dc";
+  public static final String INSTANCE_ID_ITEM_NO_CALL_NUMBER =
+      "5a4567aa-1832-4ded-8bf9-e35c238ef400";
 
   public static final String UUID_400 = "c031f1d4-09b0-11eb-adc1-0242ac120002";
   public static final String UUID_500 = "c031f1d4-09b0-11eb-adc1-0242ac120003";
@@ -112,6 +114,7 @@ public class MockData {
   public static final InventoryHoldingsAndItems INSTANCE_WITH_HOLDINGS_AND_PIECES;
   public static final InventoryHoldingsAndItems INSTANCE_WITH_HOLDINGS_AND_PIECES_IN_CONSORTIA;
   public static final InventoryHoldingsAndItems INSTANCE_WITH_HOLDINGS_AND_NO_PIECES;
+  public static final InventoryHoldingsAndItems INSTANCE_WITH_ITEM_NO_CALL_NUMBER;
 
   public static final RtacRequest VALID_INSTANCE_IDS_RTAC_REQUEST;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_NO_LOANS_ITEM;
@@ -129,6 +132,7 @@ public class MockData {
 
   public static final RtacRequest RTAC_REQUEST_WITH_EMPTY_RESPONSE;
   public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_AND_PIECES;
+  public static final RtacRequest RTAC_REQUEST_WITH_INSTANCE_ITEM_NO_CALL_NUMBER;
   public static final String ORDER_PIECES_TEMPLATE;
   public static final PieceCollection PIECE_COLLECTION;
   public static final PieceCollection PIECE_COLLECTION_FOR_CENTRAL_TENANT;
@@ -205,6 +209,11 @@ public class MockData {
         stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class)
             .withInstanceId(INSTANCE_ID_HOLDINGS_AND_NO_PIECES);
 
+    INSTANCE_WITH_ITEM_NO_CALL_NUMBER =
+        stringToPojo(INSTANCE_WITH_ITEM_AND_HOLDING_TEMPLATE, InventoryHoldingsAndItems.class)
+            .withInstanceId(INSTANCE_ID_ITEM_NO_CALL_NUMBER);
+    INSTANCE_WITH_ITEM_NO_CALL_NUMBER.getItems().get(0).setCallNumber(null);
+
     // === Rtac requests ====
     RTAC_REQUEST_MIXED_INSTANCES_WITH_ITEMS_AND_NO_ITEMS =
         new RtacRequest().withInstanceIds(
@@ -242,6 +251,9 @@ public class MockData {
     RTAC_REQUEST_WITH_INSTANCE_AND_PIECES =
         new RtacRequest()
             .withInstanceIds(Collections.singletonList(INSTANCE_ID_HOLDINGS_AND_PIECES));
+    RTAC_REQUEST_WITH_INSTANCE_ITEM_NO_CALL_NUMBER =
+        new RtacRequest()
+            .withInstanceIds(Collections.singletonList(INSTANCE_ID_ITEM_NO_CALL_NUMBER));
     RTAC_REQUEST_WITH_INSTANCE_AND_PIECES_IN_CONSORTIA =
         new RtacRequest()
             .withInstanceIds(

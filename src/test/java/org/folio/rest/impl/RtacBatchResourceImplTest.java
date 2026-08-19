@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
@@ -123,6 +124,31 @@ class RtacBatchResourceImplTest {
           String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
           RequestSpecification request = createBaseRequest(validInstanceIdsJson);
           request.when().post().then().statusCode(200).contentType(ContentType.JSON);
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldReturnRtacResponse_whenItemHasNoCallNumber(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String requestJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_ITEM_NO_CALL_NUMBER);
+          RequestSpecification request = createBaseRequest(requestJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch response = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHolding holding =
+              response.getHoldings().iterator().next().getHoldings().iterator().next();
+          assertNull(holding.getCallNumber());
           testContext.completeNow();
         });
   }
