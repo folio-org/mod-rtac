@@ -154,6 +154,31 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
+  void shouldReturnRtacResponse_whenHoldingHasNoCallNumber(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String requestJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_HOLDING_NO_CALL_NUMBER);
+          RequestSpecification request = createBaseRequest(requestJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch response = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHolding holding =
+              response.getHoldings().iterator().next().getHoldings().iterator().next();
+          assertNull(holding.getCallNumber());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
   void shouldProperlyFormatTheHoldingValueField(VertxTestContext testContext) {
     testContext.verify(
         () -> {
