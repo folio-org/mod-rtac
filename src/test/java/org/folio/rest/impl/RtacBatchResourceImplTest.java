@@ -42,6 +42,8 @@ import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Error;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.Item;
+import org.folio.rest.jaxrs.model.LegacyHolding;
+import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
@@ -113,6 +115,34 @@ class RtacBatchResourceImplTest {
               .then()
               .statusCode(200)
               .contentType(ContentType.JSON);
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldReturnRtacResponse_whenLegacyApiIsCalledAndItemHasNoCallNumber(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          RequestSpecification request =
+              RestAssured.given()
+                  .header(okapiTenantHeader)
+                  .header(okapiUrlHeader)
+                  .header(okapiUserHeader)
+                  .header(contentTypeHeader);
+          String body =
+              request
+                  .when()
+                  .get("/rtac/" + MockData.INSTANCE_ID_ITEM_NO_CALL_NUMBER)
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          LegacyHoldings response = MockData.stringToPojo(body, LegacyHoldings.class);
+          LegacyHolding holding = response.getHoldings().iterator().next();
+          assertNull(holding.getCallNumber());
           testContext.completeNow();
         });
   }
