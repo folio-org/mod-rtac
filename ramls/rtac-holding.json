@@ -157,7 +157,6 @@
   "required": [
     "id",
     "location",
-    "callNumber",
     "status"
   ]
 }

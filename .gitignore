@@ -11,3 +11,7 @@ node_modules/
 /pom.xml.releaseBackup
 /release.properties
 /dependency-reduced-pom.xml
+
+# Local AI-assisted planning/review scratch (spec, plan, research, QA/review artifacts) —
+# never committed upstream.
+docs/superpowers/

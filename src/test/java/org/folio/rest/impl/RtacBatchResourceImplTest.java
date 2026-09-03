@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
@@ -41,6 +42,8 @@ import org.folio.rest.RestVerticle;
 import org.folio.rest.jaxrs.model.Error;
 import org.folio.rest.jaxrs.model.Holding;
 import org.folio.rest.jaxrs.model.Item;
+import org.folio.rest.jaxrs.model.LegacyHolding;
+import org.folio.rest.jaxrs.model.LegacyHoldings;
 import org.folio.rest.jaxrs.model.RtacHolding;
 import org.folio.rest.jaxrs.model.RtacHoldings;
 import org.folio.rest.jaxrs.model.RtacHoldingsBatch;
@@ -117,12 +120,90 @@ class RtacBatchResourceImplTest {
   }
 
   @Test
+  void shouldReturnRtacResponse_whenLegacyApiIsCalledAndItemHasNoCallNumber(
+      VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          RequestSpecification request =
+              RestAssured.given()
+                  .header(okapiTenantHeader)
+                  .header(okapiUrlHeader)
+                  .header(okapiUserHeader)
+                  .header(contentTypeHeader);
+          String body =
+              request
+                  .when()
+                  .get("/rtac/" + MockData.INSTANCE_ID_ITEM_NO_CALL_NUMBER)
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          LegacyHoldings response = MockData.stringToPojo(body, LegacyHoldings.class);
+          LegacyHolding holding = response.getHoldings().iterator().next();
+          assertNull(holding.getCallNumber());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
   void shouldReturnRtacResponse_whenPostValidInstanceIds(VertxTestContext testContext) {
     testContext.verify(
         () -> {
           String validInstanceIdsJson = pojoToJson(MockData.VALID_INSTANCE_IDS_RTAC_REQUEST);
           RequestSpecification request = createBaseRequest(validInstanceIdsJson);
           request.when().post().then().statusCode(200).contentType(ContentType.JSON);
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldReturnRtacResponse_whenItemHasNoCallNumber(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String requestJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_ITEM_NO_CALL_NUMBER);
+          RequestSpecification request = createBaseRequest(requestJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch response = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHolding holding =
+              response.getHoldings().iterator().next().getHoldings().iterator().next();
+          assertNull(holding.getCallNumber());
+          testContext.completeNow();
+        });
+  }
+
+  @Test
+  void shouldReturnRtacResponse_whenHoldingHasNoCallNumber(VertxTestContext testContext) {
+    testContext.verify(
+        () -> {
+          String requestJson =
+              pojoToJson(MockData.RTAC_REQUEST_WITH_INSTANCE_HOLDING_NO_CALL_NUMBER);
+          RequestSpecification request = createBaseRequest(requestJson);
+          String body =
+              request
+                  .when()
+                  .post()
+                  .then()
+                  .statusCode(200)
+                  .contentType(ContentType.JSON)
+                  .extract()
+                  .body()
+                  .asString();
+          RtacHoldingsBatch response = MockData.stringToPojo(body, RtacHoldingsBatch.class);
+          RtacHolding holding =
+              response.getHoldings().iterator().next().getHoldings().iterator().next();
+          assertNull(holding.getCallNumber());
           testContext.completeNow();
         });
   }
