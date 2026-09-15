@@ -3,9 +3,13 @@ package org.folio.mappers;
 import static org.folio.rest.impl.MockData.createInventoryHoldingsAndItemsAndNoPieces;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collections;
 import org.folio.models.InventoryHoldingsAndItemsAndPieces;
 import org.folio.rest.impl.MockData;
+import org.folio.rest.jaxrs.model.InventoryHoldingsAndItems;
 import org.folio.rest.jaxrs.model.Item;
 import org.junit.jupiter.api.Test;
 
@@ -83,5 +87,38 @@ class FolioToRtacMapperTest {
     assertEquals("Expected", rtacHoldingsResponse.get(2).getStatus());
     assertEquals(holding.getId(), rtacHoldingsResponse.get(3).getId());
     assertEquals("Expected", rtacHoldingsResponse.get(3).getStatus());
+  }
+
+  @Test
+  void testMapToRtacForItemWithNullCallNumber_returnsNullInsteadOfThrowing() {
+    final var objectMapper = new ObjectMapper();
+    final var instance = objectMapper.convertValue(
+        MockData.createInventoryHoldingsAndItemsAndNoPieces().getInventoryHoldingsAndItems(),
+        InventoryHoldingsAndItems.class);
+    instance.getItems().get(0).setCallNumber(null);
+    final var instanceAndPieces =
+        new InventoryHoldingsAndItemsAndPieces(instance, Collections.emptyList());
+    final var folioToRtacMapper = new FolioToRtacMapper(true);
+
+    final var rtacHoldings = folioToRtacMapper.mapToRtac(instanceAndPieces);
+
+    assertNull(rtacHoldings.getHoldings().get(0).getCallNumber());
+  }
+
+  @Test
+  void testMapToRtacForHoldingWithNullCallNumber_returnsNullInsteadOfThrowing() {
+    final var objectMapper = new ObjectMapper();
+    final var instance = objectMapper.convertValue(
+        MockData.createInventoryHoldingsAndItemsAndNoPieces().getInventoryHoldingsAndItems(),
+        InventoryHoldingsAndItems.class);
+    instance.setItems(Collections.emptyList());
+    instance.getHoldings().get(0).setCallNumber(null);
+    final var instanceAndPieces =
+        new InventoryHoldingsAndItemsAndPieces(instance, Collections.emptyList());
+    final var folioToRtacMapper = new FolioToRtacMapper(false);
+
+    final var rtacHoldings = folioToRtacMapper.mapToRtac(instanceAndPieces);
+
+    assertNull(rtacHoldings.getHoldings().get(0).getCallNumber());
   }
 }

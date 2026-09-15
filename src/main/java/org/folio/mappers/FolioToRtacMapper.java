@@ -197,13 +197,16 @@ public class FolioToRtacMapper {
   }
 
   private String mapCallNumber(Holding holding) {
-    return holding.getCallNumber().getCallNumber();
+    final var callNumber = holding.getCallNumber();
+    return Objects.isNull(callNumber) ? null : callNumber.getCallNumber();
   }
 
   private String mapCallNumber(Item item) {
     final var callNumber = item.getCallNumber();
-    return assembleCallNumber(
-      callNumber.getCallNumber(), callNumber.getPrefix(), callNumber.getSuffix());
+    return Objects.isNull(callNumber)
+        ? null
+        : assembleCallNumber(callNumber.getCallNumber(), callNumber.getPrefix(),
+            callNumber.getSuffix());
   }
 
   private String mapLocation(Holding holding) {
