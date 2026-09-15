@@ -1,3 +1,7 @@
+## 3.9.2 2026-09-15
+### Bug Fixes
+* Fix NPE when a holding or item has no call number [MODRTAC-164](https://folio-org.atlassian.net/browse/MODRTAC-164)
+
 ## 3.9.1 2026-05-26
 ### Bug Fixes
 * Fix Vert.x race condition and Dockefile issues [MODRTAC-154](https://folio-org.atlassian.net/browse/MODRTAC-154)
